@@ -63,7 +63,7 @@
               </template>
               <!-- 循环渲染“二级菜单” -->
               <el-menu-item index="/label">
-                <i></i>一级标签
+                <i></i>标签总览
               </el-menu-item>
             </el-submenu>
             <el-submenu index="2">
@@ -78,8 +78,8 @@
                 <i></i>群体画像
               </el-menu-item>
             </el-submenu>
-            <el-menu-item>
-              <i class="el-icon-s-platform"></i>智能推荐
+            <el-menu-item index="/champion">
+              <i class="el-icon-s-platform"></i>冠军模型
             </el-menu-item>
             <el-submenu index="3">
               <template slot="title">

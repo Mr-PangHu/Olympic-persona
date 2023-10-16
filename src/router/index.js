@@ -15,7 +15,7 @@ const router = new Router({
     {
       path: '/',
       component: () => import('@/components/layout/index'),
-      redirect: '/home', // 默认显示首页的二级路由
+      redirect: '/label', // 默认显示首页的二级路由
       children: [
         {
           path: 'home',
@@ -26,6 +26,11 @@ const router = new Router({
           path: 'label',
           name: 'my-label',
           component: () => import('@/components/labelsys/index')
+        },
+        {
+          path: 'champion',
+          name: 'champion-model',
+          component: () => import('@/components/champion/index')
         },
         {
           path: 'player-one',

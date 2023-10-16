@@ -48,7 +48,7 @@
             <el-table-column prop="shoulder" label="肩宽" width="120" align="center"></el-table-column>
             <el-table-column prop="weight" label="体重" width="120" align="center"></el-table-column>
             <el-table-column prop="VO2MAX" label="最大摄氧量（L/min）" width="120" align="center"></el-table-column>
-            <el-table-column prop="WYF" label="无氧阀功率（W）" width="120" align="center"></el-table-column>
+            <el-table-column prop="WYF" label="无氧阈功率（W）" width="120" align="center"></el-table-column>
             <el-table-column prop="WL" label="卧拉（kg）" width="120" align="center"></el-table-column>
             <el-table-column prop="SD" label="深蹲（kg）" width="120" align="center"></el-table-column>
             <el-table-column prop="CGY" label="测功仪2000m（mm:ss）" width="120" align="center"></el-table-column>
@@ -63,8 +63,15 @@
             <!-- <el-table-column label="状态" prop="state"></el-table-column> -->
             <el-table-column fixed="right" label="操作" align="center" width="150">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" @click="HuiXian(scope.row)">编辑</el-button>
-                    <el-button type="danger" size="mini" @click="del(scope.$index, scope.row)">删除</el-button>
+                  <div class="operatin-button">
+                    <div class="addordelete-button">
+                      <el-button type="primary" size="mini" @click="HuiXian(scope.row)">编辑</el-button>
+                      <el-button type="danger" size="mini" @click="del(scope.$index, scope.row)">删除</el-button>
+                    </div>
+                    <div class="persona-button">
+                      <el-button type="success" size="mini" @click="goToPersona()">画像</el-button>
+                    </div>
+                  </div>
                 </template>
             </el-table-column>
       </el-table>
@@ -302,6 +309,9 @@ export default {
   },
 
   methods: {
+    goToPersona () {
+      this.$router.push('/player-one')
+    },
     handleSelect (value) {
       if (value === '重点培养') {
         this.changeinfo = this.info.filter(item => {
@@ -597,4 +607,20 @@ export default {
   width: 100%;
 }
 
+.operatin-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.addordelete-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+}
+.persona-button {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
 </style>
