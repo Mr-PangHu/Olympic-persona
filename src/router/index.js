@@ -28,12 +28,12 @@ const router = new Router({
           component: () => import('@/components/labelsys/index')
         },
         {
-          path: 'champion',
+          path: 'champion/:id',
           name: 'champion-model',
           component: () => import('@/components/champion/index')
         },
         {
-          path: 'player-one',
+          path: 'player-one/:id',
           name: 'playergroup-one',
           component: () => import('@/components/playergroup/one')
         },
@@ -46,6 +46,11 @@ const router = new Router({
           path: 'updatepwd',
           name: 'UserPwd',
           component: () => import('@/components/user/UserPwd')
+        },
+        {
+          path: 'worldhighlevel',
+          name: 'worldhighlevel',
+          component: () => import('@/components/worldhighlevel')
         }
       ]
     },
@@ -73,13 +78,6 @@ const whiteList = ['/login', '/register']
 router.beforeEach((to, from, next) => {
   const token = store.state.token
   if (token) {
-    // 如果有token, 证明已登录
-    // if (!store.state.userInfo.username) {
-    //   // 有token但是没有用户信息, 才去请求用户信息保存到vuex里
-    //   // 调用actions里方法请求数据
-    //   store.dispatch('initUserInfo')
-    //   // 下次切换页面vuex里有用户信息数据就不会重复请求用户信息
-    // }
     next() // 路由放行
   } else {
     // 如果无token

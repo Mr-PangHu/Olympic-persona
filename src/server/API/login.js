@@ -1,26 +1,43 @@
-let db = require('../db/index')
+let db = require('../db2/index')
 
 exports.login = (req, res) => {
-  var sql = 'select * from user where name = ? and password = ?'
-  db.query(sql, [req.body.params.name, req.body.params.password], (err, data) => {
+  var name = req.body.params.name
+  var password = req.body.params.password
+  var auth = req.body.params.role
+  var sql = 'select * from user where name = ?'
+  db.query(sql, name, (err, data) => {
     if (err) {
       return res.send({
         status: 400,
-        message: '登录失败'
+        message: err
       })
     }
-    if (data.length > 0) {
+    if (data.length === 0) {
       res.send({
-        status: 200,
-        message: '登录成功',
-        body: req.body,
-        token: 'wzb12138'
+        status: 401,
+        message: '用户名不存在'
       })
     } else {
-      res.send({
-        status: 202,
-        message: '用户名或密码错误'
-      })
+      if (data[0].password === password) {
+        if (data[0].auth === Number(auth)) {
+          res.send({
+            status: 200,
+            message: '登录成功',
+            data: data[0],
+            token: 'wzb12138'
+          })
+        } else {
+          res.send({
+            status: 403,
+            message: '角色权限错误'
+          })
+        }
+      } else {
+        res.send({
+          status: 402,
+          message: '密码错误'
+        })
+      }
     }
   })
 }

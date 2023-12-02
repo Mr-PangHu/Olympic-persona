@@ -79,17 +79,38 @@
 # dfs(0,n)
 # print(res)
 
-M = 10000
-n = 7
-prices = [1.0, 2.0, 1.0, 2.0, 2.0, 3.0, 2.0]
-K = 2
-dp = [[0] * n for _ in range(K+1)]
-for i in range(1,K+1):
-    maxdiff = -prices[0]
-    for j in range(1,n):
-        dp[i][j] = max(dp[i][j-1],maxdiff+prices[j])
-        maxdiff = max(maxdiff,dp[i-1][j-1]-prices[j])
-print(dp)
+# M = 10000
+# n = 7
+# prices = [1.0, 2.0, 1.0, 2.0, 2.0, 3.0, 2.0]
+# K = 2
+# dp = [[0] * n for _ in range(K+1)]
+# for i in range(1,K+1):
+#     maxdiff = -prices[0]
+#     for j in range(1,n):
+#         dp[i][j] = max(dp[i][j-1],maxdiff+prices[j])
+#         maxdiff = max(maxdiff,dp[i-1][j-1]-prices[j])
+# print(dp)
 
+# n = 5
+# m = 3
+# a = [9,2,3,4,1]
+# b = [
+#     [1,4],
+#     [2,3],
+#     [4,5]
+# ]
 
+# b_sorted = sorted(b, key=lambda x: x[0])  
+# res = []
+# for i in range(m):
+#     if b_sorted[i][1] > n: continue
+#     tmp = sum(a[b_sorted[i][0]-1 : b_sorted[i][1]])
+#     for j in range(i+1,m):
+#         if b_sorted[j][1] > n: continue
+#         if b_sorted[j][0] > b_sorted[i][1]:
+#             tmp += sum(a[b_sorted[j][0]-1 : b_sorted[j][1]])
+#         else:
+#             continue
+#     res.append(tmp)
+# print(max(res))
 

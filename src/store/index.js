@@ -5,8 +5,9 @@ import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const state = {
-  username: window.sessionStorage.getItem('username'),
-  token: window.sessionStorage.getItem('token')
+  id: window.sessionStorage.getItem('id'),
+  token: window.sessionStorage.getItem('token'),
+  auth: window.sessionStorage.getItem('auth')
 }
 const mutations = {
   // 将token保存到sessionStorage里，token表示登陆状态
@@ -14,19 +15,25 @@ const mutations = {
     state.token = data
     window.sessionStorage.setItem('token', data)
   },
+  // 保存用户权限
+  SET_AUTH: (state, data) => {
+    state.auth = data
+    window.sessionStorage.setItem('auth', data)
+  },
   // 获取用户名
-  GET_USER: (state, data) => {
-  // 把用户名存起来
-    state.username = data
-    window.sessionStorage.setItem('username', data)
+  SET_ID: (state, data) => {
+    state.id = data
+    window.sessionStorage.setItem('id', data)
   },
   // 登出
   LOGOUT: (state) => {
   // 登出的时候要清除token
     state.token = null
-    state.username = null
+    state.id = null
+    state.auth = null
     window.sessionStorage.removeItem('token')
-    window.sessionStorage.removeItem('username')
+    window.sessionStorage.removeItem('id')
+    window.sessionStorage.removeItem('auth')
   }
 }
 

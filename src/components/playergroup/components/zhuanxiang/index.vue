@@ -475,7 +475,7 @@ export default {
         justify-content: space-evenly;
         &-echarts {
             width: 600px;
-            height: 400px;
+            height: 500px;
         }
     }
   }

@@ -1,28 +1,40 @@
 <template>
-    <div class="champion__wrapper">
-        <div class="champion__model">
-            <div class="champion__model-title">冠军模型</div>
-            <div class="champion__model-filter">
+    <div class="xuanba__wrapper">
+        <div class="xuanba__model">
+            <div class="xuanba__model-title">选拔模型</div>
+            <div class="xuanba__model-filter">
               <el-select
                 v-model="selectValue"
                 multiple
                 clearable
                 collapse-tags
                 filterable
-                placeholder="请选择冠军模型指标"
-                class="champion__model-filter-selector"
+                placeholder="请选择指标"
+                class="xuanba__model-filter-selector"
                 @change="handleSelectChange"
               >
                 <el-option
-                  v-for="item in championOptions"
+                  v-for="item in xuanbaOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+              <el-select
+                v-model="templateSelect"
+                clearable
+                placeholder="请选择模板"
+                @change="handleTemplateChange">
+                <el-option
+                  v-for="item in templateOptions"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
                 </el-option>
               </el-select>
             </div>
-            <div class="champion__model-wrapper">
-                <div class="champion__model-wrapper-echarts" id="champion_show"></div>
+            <div class="xuanba__model-wrapper">
+                <div class="xuanba__model-wrapper-echarts" id="xuanba_show"></div>
             </div>
         </div>
     </div>
@@ -47,22 +59,52 @@ const NameMap = {
   dynamometer_6000m: '陆上赛艇6000米',
   dynamometer_30min: '陆上赛艇30分/20'
 }
-const OlympicGolden = {
-  [NameMap['vo2max_rel']]: 54,
-  [NameMap['p4']]: 370,
-  [NameMap['deep_squat_1rm']]: 100,
-  [NameMap['dead_lift_1rm']]: 110,
-  [NameMap['bench_press_1rm']]: 80,
-  [NameMap['bench_pull_1rm']]: 80,
-  [NameMap['fat_ratio']]: 15,
-  [NameMap['incline_brace']]: 180,
-  [NameMap['dynamometer_2000m']]: 413,
-  [NameMap['dynamometer_5000m']]: 1095,
-  [NameMap['dynamometer_6000m']]: 1316,
-  [NameMap['dynamometer_30min']]: -1
+const Province = {
+  [NameMap['vo2max_rel']]: 44,
+  [NameMap['p4']]: 290,
+  [NameMap['deep_squat_1rm']]: 70,
+  [NameMap['dead_lift_1rm']]: 80,
+  [NameMap['bench_press_1rm']]: 50,
+  [NameMap['bench_pull_1rm']]: 50,
+  [NameMap['fat_ratio']]: 18,
+  [NameMap['incline_brace']]: 150,
+  [NameMap['dynamometer_2000m']]: 435,
+  [NameMap['dynamometer_5000m']]: 1135,
+  [NameMap['dynamometer_6000m']]: -1,
+  [NameMap['dynamometer_30min']]: '7650/117'
+}
+const Country = {
+  [NameMap['vo2max_rel']]: 46,
+  [NameMap['p4']]: 320,
+  [NameMap['deep_squat_1rm']]: 80,
+  [NameMap['dead_lift_1rm']]: 90,
+  [NameMap['bench_press_1rm']]: 60,
+  [NameMap['bench_pull_1rm']]: 60,
+  [NameMap['fat_ratio']]: 17,
+  [NameMap['incline_brace']]: 160,
+  [NameMap['dynamometer_2000m']]: 425,
+  [NameMap['dynamometer_5000m']]: 1122,
+  [NameMap['dynamometer_6000m']]: -1,
+  [NameMap['dynamometer_30min']]: '7725/116'
+}
+const WorldChampionShip = {
+  [NameMap['vo2max_rel']]: 50,
+  [NameMap['p4']]: 350,
+  [NameMap['deep_squat_1rm']]: 90,
+  [NameMap['dead_lift_1rm']]: 100,
+  [NameMap['bench_press_1rm']]: 70,
+  [NameMap['bench_pull_1rm']]: 70,
+  [NameMap['fat_ratio']]: 16,
+  [NameMap['incline_brace']]: 170,
+  [NameMap['dynamometer_2000m']]: 417,
+  [NameMap['dynamometer_5000m']]: 1108,
+  [NameMap['dynamometer_6000m']]: -1,
+  [NameMap['dynamometer_30min']]: '7800/115'
 }
 const TemplateMap = {
-  '奥运金牌': OlympicGolden
+  '省市': Province,
+  '国家队': Country,
+  '世锦赛': WorldChampionShip
 }
 export default {
   data () {
@@ -70,7 +112,7 @@ export default {
       id: null,
       playerData: {},
       testData: [40, 280, 60, 60, 40, 40, 19, 160, 450, 1250, 0, '7550/120'],
-      championOptions: [{
+      xuanbaOptions: [{
         value: 'vo2max_rel',
         label: '最大摄氧量'
       }, {
@@ -107,8 +149,19 @@ export default {
         value: 'dynamometer_30min',
         label: '陆上赛艇30分/20'
       }],
+      templateOptions: [{
+        value: '省市',
+        label: '省市'
+      }, {
+        value: '国家队',
+        label: '国家队'
+      }, {
+        value: '世锦赛',
+        label: '世锦赛'
+      }],
       selectValue: [],
-      championindicator: []
+      templateSelect: '',
+      xuanbaindicator: []
     }
   },
   mounted () {
@@ -118,7 +171,7 @@ export default {
   // watch: {
   //   quan (newValue, oldValue) {
   //     this.quan = newValue
-  //     this.setChampionChart()
+  //     this.setxuanbaChart()
   //   }
   // },
   methods: {
@@ -143,6 +196,7 @@ export default {
         console.log('获取数据失败' + err)
       })
     },
+    // 成绩转化为分数，0表示数值越低分数越高，1相反
     convert (v, t, flag = 0) {
       if (flag === 0) {
         return (1 + (v - t) / t).toFixed(2) * 100
@@ -150,23 +204,26 @@ export default {
       return (1 - (v - t) / t).toFixed(2) * 100
     },
     handleSelectChange (value) {
-      this.championindicator = this.selectValue.map(item => {
+      this.xuanbaindicator = this.selectValue.map(item => {
         return {
           name: NameMap[item],
           max: 120
         }
       })
-      this.setChampionChart()
+      this.setxuanbaChart()
     },
-    setChampionChart () {
-      var chartDom = document.getElementById('champion_show')
+    handleTemplateChange () {
+      this.setxuanbaChart()
+    },
+    setxuanbaChart () {
+      var chartDom = document.getElementById('xuanba_show')
       var myChart = echarts.init(chartDom)
       var option
       const mostRecentData = EINDEX.map(item => {
         const t = this.playerData[item]
         return t[t.length - 1]
       })
-      const template = TemplateMap['奥运金牌']
+      const template = TemplateMap[this.templateSelect]
       const mostRecentTempData = this.selectValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
@@ -191,7 +248,7 @@ export default {
         },
         {
           value: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
-          name: '奥运金牌运动员'
+          name: '选拔标准'
         }
       ]
       // const lineStyle = {
@@ -202,7 +259,7 @@ export default {
         // backgroundColor: '#161627',
         color: ['#67F9D8', '#FFE434'],
         title: {
-          text: 'Champion Model',
+          text: 'xuanba Model',
           left: 'center',
           top: 10,
           textStyle: {
@@ -211,7 +268,7 @@ export default {
         },
         legend: {
           bottom: 5,
-          data: ['最近一次', '奥运金牌运动员'],
+          data: ['最近一次', '选拔标准'],
           itemGap: 20,
           textStyle: {
             color: '#666',
@@ -219,7 +276,7 @@ export default {
           }
         },
         radar: {
-          indicator: this.championindicator,
+          indicator: this.xuanbaindicator,
           shape: 'circle',
           splitNumber: 5,
           axisName: {
@@ -253,7 +310,7 @@ export default {
         },
         series: [
           {
-            name: 'Champion Model',
+            name: 'xuanba Model',
             type: 'radar',
             emphasis: {
               lineStyle: {
@@ -280,7 +337,7 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.champion {
+.xuanba {
   &__wrapper {
     display: flex;
     flex-direction: column;

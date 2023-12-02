@@ -17,9 +17,40 @@
               </el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="姓名">
+            <el-select
+              v-model="playerName"
+              placeholder="请输入姓名"
+              size="small"
+              @change="handleSelectPlayerName"
+              filterable
+            >
+              <el-option
+                v-for="item in playerNameOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="性别">
+            <el-select
+              v-model="playerGender"
+              placeholder="请选择性别"
+              size="small"
+              @change="handleSelectPlayerGender"
+            >
+              <el-option
+                v-for="item in playerGenderOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="all">筛选</el-button>
-            <el-button type="info" size="small">重置</el-button>
+            <el-button type="primary" size="small">筛选</el-button>
+            <el-button type="info" size="small" @click="reset">重置</el-button>
           </el-form-item>
         </el-form>
         <!-- 添加运动员的按钮 -->
@@ -36,40 +67,29 @@
         border
         stripe
         @selection-change="handleSelectionChange"
-        :header-cell-style="rowClass"
-        :cell-style="cellStyle">
+      >
             <el-table-column fixed type="selection" width="55" align="center"></el-table-column>
-            <el-table-column prop="name" label="姓名" width="120" align="center"></el-table-column>
-            <el-table-column prop="age" label="年龄" width="120" align="center"></el-table-column>
-            <el-table-column prop="gender" label="性别" width="120" align="center"></el-table-column>
-            <el-table-column prop="level" label="级别" width="120" align="center"></el-table-column>
-            <el-table-column prop="event" label="项目" width="120" align="center"></el-table-column>
-            <el-table-column prop="height" label="身高" width="120" align="center"></el-table-column>
-            <el-table-column prop="shoulder" label="肩宽" width="120" align="center"></el-table-column>
-            <el-table-column prop="weight" label="体重" width="120" align="center"></el-table-column>
-            <el-table-column prop="VO2MAX" label="最大摄氧量（L/min）" width="120" align="center"></el-table-column>
-            <el-table-column prop="WYF" label="无氧阈功率（W）" width="120" align="center"></el-table-column>
-            <el-table-column prop="WL" label="卧拉（kg）" width="120" align="center"></el-table-column>
-            <el-table-column prop="SD" label="深蹲（kg）" width="120" align="center"></el-table-column>
-            <el-table-column prop="CGY" label="测功仪2000m（mm:ss）" width="120" align="center"></el-table-column>
-            <el-table-column prop="power" label="力量（分）" width="120" align="center"></el-table-column>
-            <el-table-column prop="NL" label="耐力（分）" width="120" align="center"></el-table-column>
-            <el-table-column prop="perform" label="比赛成绩" width="160" align="center"></el-table-column>
-            <el-table-column prop="SBBW" label="伤病部位" width="120" align="center"></el-table-column>
-            <el-table-column prop="SBtime" label="受伤时间" width="120" align="center"></el-table-column>
-            <el-table-column prop="ZLZK" label="治疗状况" width="120" align="center"></el-table-column>
-            <el-table-column prop="ZLtime" label="治疗时长" width="120" align="center"></el-table-column>
-            <!-- <el-table-column prop="address" label="地址" align="center" show-overflow-tooltip></el-table-column> -->
-            <!-- <el-table-column label="状态" prop="state"></el-table-column> -->
-            <el-table-column fixed="right" label="操作" align="center" width="150">
+            <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+            <el-table-column prop="birthday" label="出生日期" align="center"></el-table-column>
+            <el-table-column prop="age" label="年龄" align="center"></el-table-column>
+            <el-table-column prop="gender" label="性别" align="center"></el-table-column>
+            <el-table-column prop="marital_status" label="婚姻状况" align="center"></el-table-column>
+            <el-table-column prop="education_level" label="受教育程度" align="center"></el-table-column>
+            <el-table-column prop="professional_training_years" label="专业训练年限（练赛艇算起）" width="120" align="center"></el-table-column>
+            <el-table-column prop="training_experience" label="训练经历" align="center"></el-table-column>
+            <el-table-column prop="sports_level" label="运动等级" align="center"></el-table-column>
+            <el-table-column prop="height" label="身高" align="center"></el-table-column>
+            <el-table-column prop="weight" label="体重" align="center"></el-table-column>
+            <el-table-column fixed="right" label="操作" align="center">
                 <template slot-scope="scope">
                   <div class="operatin-button">
                     <div class="addordelete-button">
-                      <el-button type="primary" size="mini" @click="HuiXian(scope.row)">编辑</el-button>
-                      <el-button type="danger" size="mini" @click="del(scope.$index, scope.row)">删除</el-button>
+                      <el-button type="primary" size="mini" @click="editBasicInfo(scope.row)">编辑</el-button>
+                      <el-button type="danger" size="mini" @click="deleteBasicInfo(scope.$index, scope.row)">删除</el-button>
                     </div>
                     <div class="persona-button">
-                      <el-button type="success" size="mini" @click="goToPersona()">画像</el-button>
+                      <el-button type="success" size="mini" @click="goToPersona(scope.row)">画像</el-button>
+                      <el-button type="success" size="mini" @click="goToChampion(scope.row)">对比</el-button>
                     </div>
                   </div>
                 </template>
@@ -86,155 +106,112 @@
         layout="total, sizes, prev, pager, next, jumper" />
       <!-- 新增标签区域 -->
       <el-dialog title="新增标签" :visible.sync="dialogaddVisible">
-        <el-form :model="label_add" ref="label_add">
+        <el-form :model="basicInfo" ref="basicInfo">
             <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
-              <el-input v-model="label_add.name" style="width: 180px"></el-input>
+              <el-input v-model="basicInfo.name" style="width: 180px"></el-input>
             </el-form-item>
-            <el-form-item label="出生日期" :label-width="formLabelWidth" prop="date">
-              <el-date-picker v-model="label_add.date" type="date" placeholder="选择日期" @change="getAge" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+            <el-form-item label="出生日期" :label-width="formLabelWidth" prop="birthday">
+              <el-date-picker v-model="basicInfo.birthday" type="date" placeholder="选择日期" @change="getAge" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
             <el-form-item label="性别" :label-width="formLabelWidth" prop="gender">
-              <el-radio-group v-model="label_add.gender" size="small">
+              <el-radio-group v-model="basicInfo.gender" size="small">
                 <el-radio label="男" border>男</el-radio>
                 <el-radio label="女" border>女</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="级别" :label-width="formLabelWidth" prop="level">
-              <el-select v-model="label_add.level" placeholder="请选择级别">
+            <el-form-item label="婚姻状况" :label-width="formLabelWidth" prop="marital_status">
+              <el-radio-group v-model="basicInfo.marital_status" size="small">
+                <el-radio label="已婚" border>已婚</el-radio>
+                <el-radio label="未婚" border>未婚</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="受教育程度" :label-width="formLabelWidth" prop="education_level">
+              <el-select v-model="basicInfo.education_level" placeholder="请选择">
+                <el-option
+                  v-for="item in educationLevelOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="专业训练年限（练赛艇算起）" :label-width="formLabelWidth" prop="professional_training_years">
+              <el-input v-model="basicInfo.professional_training_years" style="width: 180px"></el-input>
+            </el-form-item>
+            <el-form-item label="训练经历" :label-width="formLabelWidth" prop="training_experience">
+              <el-input v-model="basicInfo.training_experience" style="width: 180px"></el-input>
+            </el-form-item>
+            <el-form-item label="运动等级" :label-width="formLabelWidth" prop="sports_level">
+              <el-select v-model="basicInfo.sports_level" placeholder="请选择级别">
                 <el-option label="轻量级" value="轻量级"></el-option>
                 <el-option label="公开级" value="公开级"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="主力项目" :label-width="formLabelWidth" prop="event">
-              <el-checkbox-group v-model="label_add.event" size="small">
-                <el-checkbox label="单人单桨" border></el-checkbox>
-                <el-checkbox label="单人双桨" border></el-checkbox>
-              </el-checkbox-group>
-            </el-form-item>
             <el-form-item label="身高" :label-width="formLabelWidth" prop="height">
-              <el-input v-model="label_add.height" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="肩宽" :label-width="formLabelWidth" prop="shoulder">
-              <el-input v-model="label_add.shoulder" style="width: 180px"></el-input>
+              <el-input v-model="basicInfo.height" style="width: 180px"></el-input>
             </el-form-item>
             <el-form-item label="体重" :label-width="formLabelWidth" prop="weight">
-              <el-input v-model="label_add.weight" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="最大摄氧量" :label-width="formLabelWidth" prop="VO2MAX">
-              <el-input v-model="label_add.VO2MAX" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="无氧阀功率" :label-width="formLabelWidth" prop="WYF">
-              <el-input v-model="label_add.WYF" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="卧拉" :label-width="formLabelWidth" prop="WL">
-              <el-input v-model="label_add.WL" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="深蹲" :label-width="formLabelWidth" prop="SD">
-              <el-input v-model="label_add.SD" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="测功仪2000m" :label-width="formLabelWidth" prop="CGY">
-              <el-input v-model="label_add.CGY" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="力量" :label-width="formLabelWidth" prop="power">
-              <el-input v-model="label_add.power" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="耐力" :label-width="formLabelWidth" prop="NL">
-              <el-input v-model="label_add.NL" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="比赛成绩" :label-width="formLabelWidth" prop="perform">
-              <el-input v-model="label_add.perform" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="伤病部位" :label-width="formLabelWidth" prop="SBBW">
-              <el-input v-model="label_add.SBBW" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="受伤时间" :label-width="formLabelWidth" prop="SBtime">
-              <el-input v-model="label_add.SBtime" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="治疗状况" :label-width="formLabelWidth" prop="ZLZK">
-              <el-input v-model="label_add.ZLZK" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="治疗时长" :label-width="formLabelWidth" prop="ZLtime">
-              <el-input v-model="label_add.ZLtime" style="width: 180px"></el-input>
+              <el-input v-model="basicInfo.weight" style="width: 180px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="ClearForm('label_add')">取 消</el-button>
-            <el-button type="primary" @click="add">确 定</el-button>
+            <el-button @click="ClearForm('basicInfo')">取 消</el-button>
+            <el-button type="primary" @click="addBasicInfo">确 定</el-button>
         </div>
       </el-dialog>
       <!-- 修改标签区域 -->
       <el-dialog title="修改标签" :visible.sync="dialogupdateVisible">
-        <el-form :model="label_add" ref="label_add">
+        <el-form :model="basicInfo" ref="basicInfo">
             <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
-              <el-input v-model="label_add.name" style="width: 180px"></el-input>
+              <el-input v-model="basicInfo.name" style="width: 180px"></el-input>
             </el-form-item>
-            <el-form-item label="年龄" :label-width="formLabelWidth" prop="age">
-              <el-input v-model="label_add.age" style="width: 180px"></el-input>
+            <el-form-item label="出生日期" :label-width="formLabelWidth" prop="birthday">
+              <el-date-picker v-model="basicInfo.birthday" type="date" placeholder="选择日期" @change="getAge" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
             </el-form-item>
             <el-form-item label="性别" :label-width="formLabelWidth" prop="gender">
-              <el-radio-group v-model="label_add.gender" size="small">
+              <el-radio-group v-model="basicInfo.gender" size="small">
                 <el-radio label="男" border>男</el-radio>
                 <el-radio label="女" border>女</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="级别" :label-width="formLabelWidth" prop="level">
-              <el-select v-model="label_add.level" placeholder="请选择级别">
+            <el-form-item label="婚姻状况" :label-width="formLabelWidth" prop="marital_status">
+              <el-radio-group v-model="basicInfo.marital_status" size="small">
+                <el-radio label="已婚" border>已婚</el-radio>
+                <el-radio label="未婚" border>未婚</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="受教育程度" :label-width="formLabelWidth" prop="education_level">
+              <el-select v-model="basicInfo.education_level" placeholder="请选择">
+                <el-option
+                  v-for="item in educationLevelOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="专业训练年限（练赛艇算起）" :label-width="formLabelWidth" prop="professional_training_years">
+              <el-input v-model="basicInfo.professional_training_years" style="width: 180px"></el-input>
+            </el-form-item>
+            <el-form-item label="训练经历" :label-width="formLabelWidth" prop="training_experience">
+              <el-input v-model="basicInfo.training_experience" style="width: 180px"></el-input>
+            </el-form-item>
+            <el-form-item label="运动等级" :label-width="formLabelWidth" prop="sports_level">
+              <el-select v-model="basicInfo.sports_level" placeholder="请选择级别">
                 <el-option label="轻量级" value="轻量级"></el-option>
                 <el-option label="公开级" value="公开级"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="主力项目" :label-width="formLabelWidth" prop="event">
-              <el-input v-model="label_add.event" style="width: 180px"></el-input>
-            </el-form-item>
             <el-form-item label="身高" :label-width="formLabelWidth" prop="height">
-              <el-input v-model="label_add.height" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="肩宽" :label-width="formLabelWidth" prop="shoulder">
-              <el-input v-model="label_add.shoulder" style="width: 180px"></el-input>
+              <el-input v-model="basicInfo.height" style="width: 180px"></el-input>
             </el-form-item>
             <el-form-item label="体重" :label-width="formLabelWidth" prop="weight">
-              <el-input v-model="label_add.weight" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="最大摄氧量" :label-width="formLabelWidth" prop="VO2MAX">
-              <el-input v-model="label_add.VO2MAX" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="无氧阀功率" :label-width="formLabelWidth" prop="WYF">
-              <el-input v-model="label_add.WYF" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="卧拉" :label-width="formLabelWidth" prop="WL">
-              <el-input v-model="label_add.WL" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="深蹲" :label-width="formLabelWidth" prop="SD">
-              <el-input v-model="label_add.SD" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="测功仪2000m" :label-width="formLabelWidth" prop="CGY">
-              <el-input v-model="label_add.CGY" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="力量" :label-width="formLabelWidth" prop="power">
-              <el-input v-model="label_add.power" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="耐力" :label-width="formLabelWidth" prop="NL">
-              <el-input v-model="label_add.NL" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="比赛成绩" :label-width="formLabelWidth" prop="perform">
-              <el-input v-model="label_add.perform" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="伤病部位" :label-width="formLabelWidth" prop="SBBW">
-              <el-input v-model="label_add.SBBW" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="受伤时间" :label-width="formLabelWidth" prop="SBtime">
-              <el-input v-model="label_add.SBtime" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="治疗状况" :label-width="formLabelWidth" prop="ZLZK">
-              <el-input v-model="label_add.ZLZK" style="width: 180px"></el-input>
-            </el-form-item>
-            <el-form-item label="治疗时长" :label-width="formLabelWidth" prop="ZLtime">
-              <el-input v-model="label_add.ZLtime" style="width: 180px"></el-input>
+              <el-input v-model="basicInfo.weight" style="width: 180px"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-            <el-button @click="ClearForm('label_add')">取 消</el-button>
-            <el-button type="primary" @click="update">确 定</el-button>
+            <el-button @click="ClearForm('basicInfo')">取 消</el-button>
+            <el-button type="primary" @click="updateBasicInfo">确 定</el-button>
         </div>
       </el-dialog>
     </el-card>
@@ -243,56 +220,27 @@
 
 <script>
 import axios from 'axios'
+import { formatDate } from '@/utils/formatDate'
+import { getAge } from '@/utils/getAge'
 export default {
   data () {
     return {
-      id: '',
-      name: '',
-      age: '',
-      gender: '',
-      level: '',
-      event: '',
-      height: '',
-      shoulder: '',
-      weight: '',
-      VO2MAX: '',
-      WYF: '',
-      WL: '',
-      SD: '',
-      CGY: '',
-      power: '',
-      NL: '',
-      perform: '',
-      SBBW: '',
-      SBtime: '',
-      ZLZK: '',
-      ZLtime: '',
       info: [],
       multipleSelection: [],
       dialogaddVisible: false,
       dialogupdateVisible: false,
-      label_add: {
+      basicInfo: {
         name: '',
+        birthday: '',
         age: '',
-        date: '',
         gender: '',
-        level: '',
-        event: [],
+        marital_status: '',
+        education_level: '',
+        professional_training_years: '',
+        training_experience: '',
+        sports_level: '',
         height: 0,
-        shoulder: 0,
-        weight: 0,
-        VO2MAX: 0,
-        WYF: 0,
-        WL: 0,
-        SD: 0,
-        CGY: '',
-        power: 0,
-        NL: 0,
-        perform: '',
-        SBBW: '',
-        SBtime: '',
-        ZLZK: '',
-        ZLtime: ''
+        weight: 0
       },
       totalData: 10,
       currentPage: 1, //  el-pagination 第几页
@@ -304,13 +252,79 @@ export default {
       value: '',
       changeinfo: [],
       HuiXianid: '',
-      formLabelWidth: '120px'
+      formLabelWidth: '120px',
+      playerName: '',
+      playerNameOptions: [],
+      playerGender: '',
+      playerGenderOptions: [{
+        label: '男',
+        value: '男'
+      },
+      {
+        label: '女',
+        value: '女'
+      }],
+      educationLevelOptions: [{
+        label: '初中',
+        value: '初中'
+      },
+      {
+        label: '高中',
+        value: '高中'
+      },
+      {
+        label: '中专',
+        value: '中专'
+      },
+      {
+        label: '大专',
+        value: '大专'
+      }]
     }
   },
-
+  mounted () {
+    this.getPlayerName()
+    this.getBasicInfo()
+  },
   methods: {
-    goToPersona () {
-      this.$router.push('/player-one')
+    handleSelectPlayerGender (gender) {
+      this.changeinfo = this.info.filter(item => {
+        return item.gender === gender
+      })
+      this.totalData = this.changeinfo.length
+    },
+    getPlayerName () {
+      axios.get('http://127.0.0.1/list/searchName').then(res => {
+        const temp = res.data.data.map(item => {
+          return {
+            label: item.name,
+            value: item.name
+          }
+        })
+        this.playerNameOptions = temp
+        // console.log(this.playerNameOptions)
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    handleSelectPlayerName (name) {
+      this.changeinfo = this.info.filter(item => {
+        return item.name === name
+      })
+      this.totalData = this.changeinfo.length
+    },
+    reset () {
+      this.value = ''
+      this.playerName = ''
+      this.playerGender = ''
+      this.changeinfo = this.info
+      this.totalData = this.changeinfo.length
+    },
+    goToPersona (row) {
+      this.$router.push({ name: 'playergroup-one', params: { id: row.id } })
+    },
+    goToChampion (row) {
+      this.$router.push({ name: 'champion-model', params: { id: row.id } })
     },
     handleSelect (value) {
       if (value === '重点培养') {
@@ -325,14 +339,10 @@ export default {
       this.pagesize = size
       // 每次改变页码大小,重定向第一页
       // this.currentPage = 1
-      // // 调用接口数据
-      // this.all()
     },
     // 点击第几页把页码传进来，发送接口请求改变数据
     handleCurrentChange (currentPage) {
       this.currentPage = currentPage
-      // // 调用接口数据
-      // this.all()
     },
     // 清空表单数据
     ClearForm (formName) {
@@ -340,11 +350,17 @@ export default {
       this.dialogupdateVisible = false
       this.$refs[formName].resetFields()// 点击取消按钮，清空el-input
     },
-    all () { // 查找info表全部数据
-      axios.get('http://127.0.0.1/list/all').then(res => {
+    getBasicInfo () { // 查找info表全部数据
+      axios.get('http://127.0.0.1/list/getBasicInfo').then(res => {
         // console.log(res.data)
-        this.info = res.data
-        this.changeinfo = res.data
+        const tmp = res.data
+        const formatTmp = tmp.map(item => (
+          {
+            ...item,
+            birthday: formatDate(item.birthday)
+          }))
+        this.info = formatTmp
+        this.changeinfo = formatTmp
         this.totalData = res.data.length
       }).catch(err => {
         console.log('获取数据失败' + err)
@@ -362,34 +378,24 @@ export default {
     handleSelectionChange (val) {
       this.multipleSelection = val
     },
-    rowClass ({ rowIndex, columnIndex }) {
-      if (rowIndex === 0) {
-        if (columnIndex === 9 || columnIndex === 13) {
-          return {color: 'red'}
-        }
-      }
-    },
-    cellStyle ({row, column, rowIndex, columnIndex}) {
-      if (column.property === 'VO2MAX' || column.property === 'CGY') {
-        return {color: 'red', 'font-weight': 700}
-      }
-    },
+    // rowClass ({ rowIndex, columnIndex }) {
+    //   if (rowIndex === 0) {
+    //     if (columnIndex === 9 || columnIndex === 13) {
+    //       return {color: 'red'}
+    //     }
+    //   }
+    // },
+    // cellStyle ({row, column, rowIndex, columnIndex}) {
+    //   if (column.property === 'VO2MAX' || column.property === 'CGY') {
+    //     return {color: 'red', 'font-weight': 700}
+    //   }
+    // },
     getAge (e) {
-      var date = new Date()
-      var year = date.getFullYear()
-      var ayear = e.substring(0, 4)
-      this.label_add.age = year - Number(ayear)
+      this.basicInfo.age = getAge(e)
     },
-    get () {
-      axios.get('http://127.0.0.1/user').then(res => {
-        console.log(res.data)
-      }).catch(err => {
-        console.log('获取数据失败' + err)
-      })
-    },
-    del (index, row) { // 删除操作
+    deleteBasicInfo (index, row) { // 删除操作
       // console.log(index, row)
-      axios.get('http://127.0.0.1/list/del', {
+      axios.get('http://127.0.0.1/list/deleteBasicInfo', {
         params: {
           id: row.id
         }
@@ -398,7 +404,7 @@ export default {
           this.$message({
             message: '删除成功'
           })
-          this.all()
+          this.getBasicInfo()
         } else {
           this.$message({
             message: '删除失败',
@@ -409,40 +415,30 @@ export default {
         console.log('操作失败' + err)
       })
     },
-    add () { // 添加操作
-      // console.log(this.label_add.age)
-      axios.get('http://127.0.0.1/list/add', {
+    addBasicInfo () { // 添加操作
+      // console.log(this.basicInfo.age)
+      axios.get('http://127.0.0.1/list/addBasicInfo', {
         params: {
-          name: this.label_add.name,
-          age: this.label_add.age,
-          gender: this.label_add.gender,
-          level: this.label_add.level,
-          event: this.label_add.event.join('/'),
-          height: this.label_add.height,
-          shoulder: this.label_add.shoulder,
-          weight: this.label_add.weight,
-          VO2MAX: this.label_add.VO2MAX,
-          WYF: this.label_add.WYF,
-          WL: this.label_add.WL,
-          SD: this.label_add.SD,
-          CGY: this.label_add.CGY,
-          power: this.label_add.power,
-          NL: this.label_add.NL,
-          perform: this.label_add.perform,
-          SBBW: this.label_add.SBBW,
-          SBtime: this.label_add.SBtime,
-          ZLZK: this.label_add.ZLZK,
-          ZLtime: this.label_add.ZLtime
+          name: this.basicInfo.name,
+          birthday: this.basicInfo.birthday,
+          age: this.basicInfo.age,
+          gender: this.basicInfo.gender,
+          marital_status: this.basicInfo.marital_status,
+          education_level: this.basicInfo.education_level,
+          professional_training_years: this.basicInfo.professional_training_years,
+          training_experience: this.basicInfo.training_experience,
+          sports_level: this.basicInfo.sports_level,
+          height: this.basicInfo.height,
+          weight: this.basicInfo.weight
         }
       }).then(res => {
-        console.log(res.data)
         if (res.data.status === 200) {
           this.$message({
             message: '添加成功'
           })
           this.dialogaddVisible = false
-          this.all()
-          this.ClearForm(this.label_add)
+          this.getBasicInfo()
+          this.ClearForm(this.basicInfo)
         } else {
           this.$message({
             message: '添加失败',
@@ -453,66 +449,47 @@ export default {
         console.log('操作失败' + err)
       })
     },
-    HuiXian (row) { // 回显数据
+    editBasicInfo (row) { // 回显数据
       this.dialogupdateVisible = true
       this.HuiXianid = row.id
       this.$nextTick(() => {
         // 先让对话框出现, 它绑定空值的对象, 才能resetFields清空用初始空值
-        this.label_add.name = row.name
-        this.label_add.age = row.age
-        this.label_add.gender = row.gender
-        this.label_add.level = row.level
-        this.label_add.event = row.event
-        this.label_add.height = row.height
-        this.label_add.shoulder = row.shoulder
-        this.label_add.weight = row.weight
-        this.label_add.VO2MAX = row.VO2MAX
-        this.label_add.WYF = row.WYF
-        this.label_add.WL = row.WL
-        this.label_add.SD = row.SD
-        this.label_add.CGY = row.CGY
-        this.label_add.power = row.power
-        this.label_add.NL = row.NL
-        this.label_add.perform = row.perform
-        this.label_add.SBBW = row.SBBW
-        this.label_add.SBtime = row.SBtime
-        this.label_add.ZLZK = row.ZLZK
-        this.label_add.ZLtime = row.ZLtime
+        this.basicInfo.name = row.name
+        this.basicInfo.birthday = row.birthday
+        this.basicInfo.age = row.age
+        this.basicInfo.gender = row.gender
+        this.basicInfo.marital_status = row.marital_status
+        this.basicInfo.education_level = row.education_level
+        this.basicInfo.professional_training_years = row.professional_training_years
+        this.basicInfo.training_experience = row.training_experience
+        this.basicInfo.sports_level = row.sports_level
+        this.basicInfo.height = row.height
+        this.basicInfo.weight = row.weight
       })
     },
-    update () { // 修改操作
-      axios.get('http://127.0.0.1/list/update', {
+    updateBasicInfo () { // 修改操作
+      axios.get('http://127.0.0.1/list/updateBasicInfo', {
         params: {
           id: this.HuiXianid,
-          name: this.label_add.name,
-          age: this.label_add.age,
-          gender: this.label_add.gender,
-          level: this.label_add.level,
-          event: this.label_add.event,
-          height: this.label_add.height,
-          shoulder: this.label_add.shoulder,
-          weight: this.label_add.weight,
-          VO2MAX: this.label_add.VO2MAX,
-          WYF: this.label_add.WYF,
-          WL: this.label_add.WL,
-          SD: this.label_add.SD,
-          CGY: this.label_add.CGY,
-          power: this.label_add.power,
-          NL: this.label_add.NL,
-          perform: this.label_add.perform,
-          SBBW: this.label_add.SBBW,
-          SBtime: this.label_add.SBtime,
-          ZLZK: this.label_add.ZLZK,
-          ZLtime: this.label_add.ZLtime
+          name: this.basicInfo.name,
+          birthday: this.basicInfo.birthday,
+          age: this.basicInfo.age,
+          gender: this.basicInfo.gender,
+          marital_status: this.basicInfo.marital_status,
+          education_level: this.basicInfo.education_level,
+          professional_training_years: this.basicInfo.professional_training_years,
+          training_experience: this.basicInfo.training_experience,
+          sports_level: this.basicInfo.sports_level,
+          height: this.basicInfo.height,
+          weight: this.basicInfo.weight
         }
       }).then(res => {
-        // console.log(res.data);
         if (res.data.status === 200) {
           this.$message({
             message: '修改成功'
           })
           this.dialogupdateVisible = false
-          this.all()
+          this.getBasicInfo()
         } else {
           this.$message({
             message: '修改失败',

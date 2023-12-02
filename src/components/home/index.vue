@@ -16,10 +16,15 @@
           <div class="gragh_pannel" id="height_show"></div>
         </el-col>
         <el-col :sm="8" :xs="8">
-          <div class="gragh_pannel" id="pie_show"></div>
+          <div class="gragh_pannel" id="pie_show" style="display: flex; flex-direction: column; align-items: center; justify-content: center">
+            <h2>总人数：100</h2>
+            <h2>运动员数量：60</h2>
+            <h2>教练员数量：10</h2>
+            <h2>科研人员数量：10</h2>
+          </div>
         </el-col>
         <el-col :sm="8" :xs="8">
-          <div class="gragh_pannel" id="pie_show"></div>
+          <div class="gragh_pannel" id="jingji_show"></div>
         </el-col>
       </el-row>
     </div>
@@ -33,37 +38,31 @@
           <div class="gragh_pannel" id="map_show"></div>
         </el-col>
         <el-col :sm="8" :xs="8">
-          <div class="gragh_pannel" id="pie_show"></div>
+          <div class="gragh_pannel" id="pie_show" style="display: flex; flex-direction: column; align-items: center">
+            <div style="font-size: 20px; font-weight: 700; text-align:center; margin-top: 10px; margin-bottom: 10px">运动员伤病情况统计表</div>
+            <el-table
+              :data="tableData"
+              border
+              style="width: 90%">
+              <el-table-column
+                prop="name"
+                label="姓名"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="shangbing"
+                label="伤病部位"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="date"
+                label="受伤时间">
+              </el-table-column>
+            </el-table>
+          </div>
         </el-col>
       </el-row>
     </div>
-
-    <!-- <div class="container-fluid">
-      <div class="column_pannel" id="column_show"></div>
-    </div>
-    <div class="container-fluid">
-      <el-row class="curve-pie" :gutter="10">
-        <el-col :sm="12" :xs="12">
-          <div class="map_pannel" id="map_show"></div>
-        </el-col>
-        <el-col :sm="12" :xs="12">
-          <div class="map_pannel" id="leida_show"></div>
-        </el-col>
-      </el-row>
-    </div>
-    <div class="container-fluid">
-      <div class="pannel_test" id="test_show"></div>
-    </div>
-    <div class="container-fluid">
-      <el-row class="curve-pie" :gutter="10">
-        <el-col :sm="12" :xs="12">
-          <div class="pannel_test1" id="test1_show"></div>
-        </el-col>
-        <el-col :sm="12" :xs="12">
-          <div class="pannel_test1" id="test2_show"></div>
-        </el-col>
-      </el-row>
-    </div> -->
   </div>
 </template>
 
@@ -74,7 +73,28 @@ import 'echarts/extension/bmap/bmap'
 export default {
   data () {
     return {
-      info: []
+      info: [],
+      tableData: [{
+        name: '周牧',
+        shangbing: '膝',
+        date: '2023-05-03'
+      }, {
+        name: '潘刚',
+        shangbing: '踝',
+        date: '2023-05-02'
+      }, {
+        name: '尤志宏',
+        shangbing: '腰',
+        date: '2023-05-02'
+      }, {
+        name: '郎雪',
+        shangbing: '腰',
+        date: '2023-05-01'
+      }, {
+        name: '邹爱民',
+        shangbing: '膝',
+        date: '2023-05-01'
+      }]
     }
   },
   name: 'my-homepage',
@@ -82,6 +102,7 @@ export default {
     this.setHeightChart()
     this.setGenderChart()
     this.setMapChart()
+    this.setJingjiChart()
     // this.all()
     // // 面积图
     // this.setCurveChartFn()
@@ -295,8 +316,8 @@ export default {
           }
         },
         bmap: {
-          center: [121.48, 31.22],
-          zoom: 5,
+          center: [135, 33],
+          zoom: 6,
           roam: true,
           mapStyle: {
             styleJson: [
@@ -474,6 +495,46 @@ export default {
         ]
       }
       MapChart.setOption(mapOption)
+    },
+
+    setJingjiChart () {
+      var chartDom = document.getElementById('jingji_show')
+      var myChart = echarts.init(chartDom)
+      var option
+
+      option = {
+        title: {
+          text: '竞赛成绩统计图',
+          top: 10,
+          left: 100
+        },
+        legend: {
+          data: ['冠军数量', '趋势'],
+          left: 300,
+          top: 10
+        },
+        xAxis: {
+          type: 'category',
+          data: ['省市比赛', '世锦赛', '亚运会', '奥运会']
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: [50, 30, 20, 10],
+            type: 'bar',
+            name: '冠军数量'
+          },
+          {
+            data: [50, 30, 20, 10],
+            type: 'line',
+            name: '趋势'
+          }
+        ]
+      }
+
+      option && myChart.setOption(option)
     }
     // all () {
     //   axios.get('http://127.0.0.1/list/all').then(res => {
@@ -1271,6 +1332,8 @@ export default {
   border: 1px solid #e7e7e9;
   background-color: #fff !important;
   // margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
 }
 
 .column_pannel {

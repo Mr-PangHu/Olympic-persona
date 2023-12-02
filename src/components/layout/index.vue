@@ -2,8 +2,6 @@
   <el-container class="main-container">
     <!-- 头部区域 -->
     <el-header>
-      <!-- 左侧的 logo -->
-      <!-- <img src="../assets/images/logo.png" alt="" style="width:12%" /> -->
       <span class='name'>运动员画像系统</span>
       <!-- 右侧的菜单 -->
       <el-menu
@@ -42,7 +40,7 @@
         </div>
         <!-- 左侧导航菜单 -->
         <el-menu
-          :default-active="1"
+          :default-active="'1'"
           class="el-menu-vertical-demo"
           background-color="#23262E"
           text-color="#fff"
@@ -50,42 +48,38 @@
           unique-opened
           router
         >
-          <template>
-            <!-- 不包含子菜单的“一级菜单” -->
             <el-menu-item index="/home">
               <i class="el-icon-s-home"></i>首页
             </el-menu-item>
-
-            <!-- 包含子菜单的“一级菜单” -->
-            <el-submenu index="1">
+            <el-submenu v-if="!showPersona" index="1">
               <template slot="title">
-                <i class="el-icon-price-tag"></i>标签体系
+                <i class="el-icon-price-tag"></i>运动员信息
               </template>
-              <!-- 循环渲染“二级菜单” -->
               <el-menu-item index="/label">
-                <i></i>标签总览
+                <i></i>基础信息
               </el-menu-item>
             </el-submenu>
-            <el-submenu index="2">
+            <el-submenu v-if="showPersona" index="2">
               <template slot="title">
-                <i class="el-icon-data-analysis"></i>运动员分群
+                <i class="el-icon-data-analysis"></i>运动员画像
               </template>
-              <!-- 循环渲染“二级菜单” -->
-              <el-menu-item index="/player-one">
+              <el-menu-item :index="personaPath">
                 <i></i>个人画像
               </el-menu-item>
-              <el-menu-item index="/player-groups">
+              <!-- <el-menu-item index="/player-groups">
                 <i></i>群体画像
-              </el-menu-item>
+              </el-menu-item> -->
             </el-submenu>
-            <el-menu-item index="/champion">
-              <i class="el-icon-s-platform"></i>冠军模型
+            <el-menu-item v-if="showPersona" :index="championPath">
+              <i class="el-icon-s-platform"></i>画像模型
+            </el-menu-item>
+            <el-menu-item index="/worldhighlevel">
+              <i class="el-icon-trophy"></i>世界高水平
             </el-menu-item>
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>个人中心
               </template>
-              <!-- 循环渲染“二级菜单” -->
               <el-menu-item>
                 <i class="el-icon-s-operation"></i>基本资料
               </el-menu-item>
@@ -93,7 +87,6 @@
                 <i class="el-icon-key"></i>重置密码
               </el-menu-item>
             </el-submenu>
-          </template>
         </el-menu>
       </el-aside>
       <el-container>
@@ -110,13 +103,40 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     return {
+      showPersona: true,
+      personaPath: '',
+      championPath: ''
     }
   },
   name: 'my-homepage',
+  mounted () {
+    this.getShowPersona()
+    this.getPersonaPath()
+  },
   methods: {
+    getShowPersona () {
+      const auth = window.sessionStorage.getItem('auth')
+      this.showPersona = auth === '3'
+    },
+    getPersonaPath () {
+      if (!this.showPersona) return
+      const athleteId = window.sessionStorage.getItem('id')
+      axios.get('http://127.0.0.1/list/getId', {
+        params: {
+          athleteId
+        }
+      }).then(res => {
+        const id = res.data[0].id
+        this.personaPath = '/player-one/' + id
+        this.championPath = '/champion/' + id
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     logoutFn () {
       // 询问用户是否退出登录
       this.$confirm('您确认退出登录吗？', '提示', {

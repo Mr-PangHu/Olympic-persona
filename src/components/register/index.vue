@@ -45,14 +45,14 @@ export default {
           { required: true, message: '请输入账号', trigger: 'blur' },
           {
             pattern: /^[a-zA-Z0-9]{1,10}$/,
-            message: '用户名必须是1-10的大小写字母数字',
+            message: '用户名必须是1-10位的大小写字母数字',
             trigger: 'blur'
           }],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           {
             pattern: /^\S{6,15}$/,
-            message: '密码必须是6-15的非空字符',
+            message: '密码必须是6-15位的非空字符',
             trigger: 'blur'
           }],
         repassword: [{ required: true, validator: samePwd, trigger: 'blur' }]

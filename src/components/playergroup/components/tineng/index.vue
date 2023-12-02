@@ -1,11 +1,74 @@
 <template>
     <div class="tineng__wrapper">
         <div class="tineng__wsy">
-            <div class="tineng__wsy-title">体能指标</div>
-            <div class="tineng__wsy-wrapper">
+            <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 30px">
+              <div class="tineng__wsy-title">体能</div>
+              <el-switch
+                v-model="switchValue"
+                active-text="ECharts图"
+                inactive-text="表格"
+                @change="handleSwitchChange"
+              >
+              </el-switch>
+            </div>
+            <div>
+              <el-form :inline="true" ref="tinengForm" :model="tinengForm" label-width="70px">
+                  <el-form-item label="体能指标">
+                      <el-select
+                          v-model="tinengForm.tinengSelectValues"
+                          placeholder="请选择体能指标"
+                          multiple
+                          clearable
+                          collapse-tags
+                          filterable
+                          @change="handleTinengSelectChange"
+                          style="width: 290px"
+                      >
+                        <el-option
+                          v-for="item in tinengOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                  </el-form-item>
+                  <el-form-item label="测试时间">
+                    <el-date-picker
+                      v-model="tinengForm.dateRange"
+                      type="daterange"
+                      :picker-options="pickerOptions"
+                      range-separator="至"
+                      start-placeholder="开始日期"
+                      end-placeholder="结束日期"
+                      @change="handleDateRangeChange"
+                    >
+                    </el-date-picker>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="handleReset">重置</el-button>
+                  </el-form-item>
+              </el-form>
+            </div>
+            <div class="tineng__wsy-wrapper" v-show="switchValue">
                 <div class="tineng__wsy-wrapper-echarts" id="tineng_show1"></div>
-                <div class="tineng__wsy-wrapper-echarts" id="tineng_show2"></div>
-                <div class="tineng__wsy-wrapper-echarts" id="tineng_show3"></div>
+            </div>
+            <div class="tineng__wsy-table" v-show="!switchValue">
+              <el-table
+                :data="tableData"
+                border
+                style="width: 100%"
+                :cell-style="setCellStyle"
+              >
+                <el-table-column v-if="tinengForm.tinengSelectValues.length" prop="date" label="日期" align="center"></el-table-column>
+                <el-table-column
+                  v-for="item in tinengForm.tinengSelectValues"
+                  :prop="item"
+                  :label="tinengOptions.filter(i => i.value === item)[0].label"
+                  :key="item"
+                  align="center"
+                >
+                </el-table-column>
+              </el-table>
             </div>
         </div>
     </div>
@@ -13,16 +76,235 @@
 
 <script>
 import * as echarts from 'echarts'
+import axios from 'axios'
+import { formatDate } from '@/utils/formatDate'
 export default {
+  data () {
+    return {
+      id: 0,
+      switchValue: true,
+      tableData: [],
+      pickerOptions: null,
+      selectDate: [],
+      selectItemValues: {},
+      tinengData: {},
+      series: [],
+      tinengForm: {
+        tinengSelectValues: [],
+        dateRange: ''
+      },
+      tinengOptions: [{
+        value: 'sprint_run_30m',
+        label: '基础体能-30m冲刺跑'
+      }, {
+        value: 'bench_press_1rm',
+        label: '基础体能-卧推1RM'
+      }, {
+        value: 'deep_squat_1rm',
+        label: '基础体能-深蹲1RM'
+      }, {
+        value: 'standing_jump_both_legs',
+        label: '基础体能-立定跳远(双腿)'
+      }, {
+        value: 'pull_up',
+        label: '基础体能-引体向上'
+      }, {
+        value: 'dynamometer_2000m',
+        label: '专项体能-测功仪2000m'
+      }, {
+        value: 'dynamometer_30min',
+        label: '专项体能-测功仪30min-20SR'
+      }]
+    }
+  },
   mounted () {
-    this.setTiNengChart1()
-    this.setTiNengChart2()
-    this.setTiNengChart3()
+    this.getPlayerId()
   },
   methods: {
+    setCellStyle ({rowIndex, columnIndex, row, column}) {
+      const tmpMax = {}
+      const tmpMin = {}
+      for (var k in this.selectItemValues) {
+        tmpMax[k] = Math.max(...this.selectItemValues[k])
+        tmpMin[k] = Math.min(...this.selectItemValues[k])
+      }
+      console.log(this.selectItemValues)
+      for (var k1 in this.selectItemValues) {
+        if (row[k1] === tmpMax[k1] && column.property === k1) return 'font-weight: 700;'
+        else if (row[k1] === tmpMin[k1] && column.property === k1) return 'font-weight: 700; color: red'
+      }
+    },
+    handleSwitchChange (v) {
+      if (v) this.setTiNengChart1()
+      else this.setTable()
+    },
+    setTable () {
+      if (!this.tinengForm.tinengSelectValues.length) {
+        this.tableData = []
+        return
+      }
+      this.tableData = this.selectDate.map((item, index) => {
+        var tmp = {}
+        tmp['date'] = item
+        for (var key in this.selectItemValues) {
+          tmp[key] = this.selectItemValues[key][index]
+        }
+        return tmp
+      })
+    },
+    handleReset () {
+      this.selectDate = this.tinengData.date.map(item => formatDate(item))
+      this.tinengForm.dateRange = []
+      this.tinengForm.tinengSelectValues = []
+      this.series = []
+      if (this.switchValue) this.setTiNengChart1()
+      else this.setTable()
+    },
+    handleDateRangeChange () {
+      var startDate = this.tinengForm.dateRange[0]
+      var endDate = this.tinengForm.dateRange[1]
+
+      var timeArray = this.tinengData.date
+
+      var selectedTimes = timeArray.filter((time) => {
+        var currentDate = new Date(time)
+        return currentDate >= startDate && currentDate <= endDate
+      })
+
+      var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
+      const copy = this.selectItemValues
+      for (var key in this.selectItemValues) {
+        this.selectItemValues[key] = sortedTimes.map((selectedTime) => {
+          var index = timeArray.indexOf(selectedTime)
+          return copy[key][index]
+        })
+      }
+      const tmp = []
+      for (var key1 in this.selectItemValues) {
+        tmp.push({
+          name: this.tinengOptions.filter(item => item.value === key1)[0].label,
+          data: this.selectItemValues[key1],
+          type: 'line',
+          // stack: 'Total',
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' }
+            ]
+          },
+          showBackground: true
+        })
+      }
+      this.series = tmp
+      this.selectDate = sortedTimes.map(item => formatDate(item))
+      if (this.switchValue) this.setTiNengChart1()
+      else this.setTable()
+    },
+    handleTinengSelectChange () {
+      this.series = []
+      let tmp = {}
+      this.tinengForm.tinengSelectValues.forEach(item => {
+        tmp[item] = this.tinengData[item]
+      })
+      this.selectItemValues = tmp
+      for (var key in this.selectItemValues) {
+        this.series.push({
+          name: this.tinengOptions.filter(item => item.value === key)[0].label,
+          data: this.selectItemValues[key],
+          type: 'line',
+          // stack: `Total${i}`,
+          markPoint: {
+            data: [
+              { type: 'max', name: 'Max' },
+              { type: 'min', name: 'Min' }
+            ]
+          },
+          showBackground: true
+        })
+      }
+      if (this.switchValue) this.setTiNengChart1()
+      else this.setTable()
+    },
+    getPlayerId () {
+      const auth = window.sessionStorage.getItem('auth')
+      if (auth === '2') {
+        const id = this.$route.params.id
+        axios.get('http://127.0.0.1/list/getAthleteId', {
+          params: {
+            id
+          }
+        }).then(res => {
+          const athleteId = res.data[0].athlete_id
+          this.id = athleteId
+        }).then(res => {
+          this.getTinengData()
+        }).catch(err => {
+          console.log('获取数据失败' + err)
+        })
+      } else {
+        this.id = window.sessionStorage.getItem('id')
+        this.getTinengData()
+      }
+    },
+    getTinengData () {
+      const getBasicTinengData = axios.get('http://127.0.0.1/tineng/getBasicTinengData', {
+        params: {
+          id: this.id
+        }
+      })
+      const getProTinengData = axios.get('http://127.0.0.1/tineng/getProTinengData', {
+        params: {
+          id: this.id
+        }
+      })
+      Promise.all([getBasicTinengData, getProTinengData]).then(res => {
+        const basicData = res[0].data
+        const proData = res[1].data.map(item => (
+          {
+            dynamometer_2000m: item.dynamometer_2000m,
+            dynamometer_30min: item.dynamometer_30min
+          }
+        ))
+        let tmp = {}
+        for (var key1 in basicData[0]) {
+          tmp[key1] = []
+        }
+        for (var key2 in proData[0]) {
+          tmp[key2] = []
+        }
+        basicData.forEach(item => {
+          for (var key in item) {
+            tmp[key].push(item[key])
+          }
+        })
+        proData.forEach(item => {
+          for (var key in item) {
+            tmp[key].push(item[key])
+          }
+        })
+        this.tinengData = tmp
+        this.selectDate = this.tinengData.date.map(item => formatDate(item))
+      }).then(
+        () => {
+          const timeArray = this.tinengData.date
+          const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))))
+          const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))))
+
+          this.pickerOptions = {
+            disabledDate: time => {
+              const currentDate = new Date(time)
+              return currentDate < minDate || currentDate > maxDate
+            }
+          }
+        }
+      ).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
     setTiNengChart1 () {
       var chartDom = document.getElementById('tineng_show1')
       var myChart = echarts.init(chartDom)
+      myChart.clear()
       var option
 
       option = {
@@ -48,131 +330,13 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: ['卧推1RM', '卧推3RM', '深蹲1RM', '深蹲3RM', '硬拉1RM', '硬拉3RM'],
-          name: 'kg',
-          nameLocation: 'center',
-          nameTextStyle: {
-            padding: [10, 0, 0, 400]
-          },
-          axisLabel: {
-            rotate: 20
-          }
+          data: this.selectDate,
+          name: '日期'
         },
         yAxis: {
           type: 'value'
         },
-        series: [
-          {
-            name: '值',
-            data: [100, 87.5, 140, 120, 160, 130],
-            type: 'bar',
-            showBackground: true,
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
-              ])
-            },
-            emphasis: {
-              itemStyle: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: '#2378f7' },
-                  { offset: 0.7, color: '#2378f7' },
-                  { offset: 1, color: '#83bff6' }
-                ])
-              }
-            }
-          }
-        ]
-      }
-
-      option && myChart.setOption(option)
-    },
-    setTiNengChart2 () {
-      var chartDom = document.getElementById('tineng_show2')
-      var myChart = echarts.init(chartDom)
-      var option
-
-      option = {
-        xAxis: {
-          type: 'category',
-          data: ['三级跳远(单腿)', '三级跳远(双腿)', '立定跳远(单腿)', '立定跳远(双腿)', '垂直纵跳'],
-          name: 'cm',
-          nameLocation: 'center',
-          nameTextStyle: {
-            padding: [10, 0, 0, 400]
-          },
-          axisLabel: {
-            rotate: 20
-          }
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [300, 450, 200, 270, 75],
-            type: 'line',
-            smooth: true
-          }
-        ]
-      }
-
-      option && myChart.setOption(option)
-    },
-    setTiNengChart3 () {
-      var chartDom = document.getElementById('tineng_show3')
-      var myChart = echarts.init(chartDom)
-      var option
-
-      option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        toolbox: {
-          show: true,
-          feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
-            dataView: { readOnly: false },
-            magicType: { type: ['line', 'bar'] },
-            restore: {},
-            saveAsImage: {}
-          }
-        },
-        xAxis: {
-          type: 'category',
-          data: ['测功仪500m', '测功仪2000m', '测功仪5000m', '测功仪30min-20SR'],
-          name: 'mm:ss.00',
-          nameLocation: 'center',
-          nameTextStyle: {
-            padding: [10, 0, 0, 1000]
-          },
-          axisLabel: {
-            rotate: 20
-          }
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [90, 390, 1030, 100],
-            type: 'line',
-            smooth: true,
-            markPoint: {
-              data: [
-                { type: 'max', name: 'Max' },
-                { type: 'min', name: 'Min' }
-              ]
-            },
-            markLine: {
-              data: [{ type: 'average', name: 'Avg' }]
-            }
-          }
-        ]
+        series: this.series
       }
 
       option && myChart.setOption(option)
@@ -188,13 +352,16 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     padding: 20px;
+    width: 100%;
   }
   &__wsy {
     display: flex;
     flex-direction: column;
+    width: 100%;
     &-title {
         font-size: 20px;
         font-weight: 700;
+        margin-right: 50px;
     }
     &-wrapper {
         display: flex;
@@ -202,14 +369,19 @@ export default {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-evenly;
-        #tineng_show3 {
-            width: 1300px;
-        }
         &-echarts {
-            width: 500px;
-            height: 400px;
+            width: 1500px;
+            height: 800px;
         }
+    }
+    &-table {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 95%;
+      margin-left: 20px;
     }
   }
 }
+
 </style>
