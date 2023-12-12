@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <el-card class="box-card">
-      <div slot="header" class="clearfix">
-        <span>标签列表</span>
+  <div class="labelsys__wrapper">
+    <div class="labelsys__topper">
+      <div class="labelsys__topper-img"></div>
+      <div class="labelsys__topper-overlay"></div>
+      <div class="labelsys__topper-title">
+        <h1>运动员总览</h1>
       </div>
+    </div>
+    <el-card class="box-card">
       <!-- 搜索区域 -->
       <div class="search-box">
         <el-form :inline="true">
@@ -53,8 +57,6 @@
             <el-button type="info" size="small" @click="reset">重置</el-button>
           </el-form-item>
         </el-form>
-        <!-- 添加运动员的按钮 -->
-        <el-button type="primary" size="small" class="btn-pub" @click="dialogaddVisible = 'true'">添加</el-button>
       </div>
 
       <!-- 标签体系区域 -->
@@ -68,7 +70,7 @@
         stripe
         @selection-change="handleSelectionChange"
       >
-            <el-table-column fixed type="selection" width="55" align="center"></el-table-column>
+            <!-- <el-table-column fixed type="selection" width="55" align="center"></el-table-column> -->
             <el-table-column prop="name" label="姓名" align="center"></el-table-column>
             <el-table-column prop="birthday" label="出生日期" align="center"></el-table-column>
             <el-table-column prop="age" label="年龄" align="center"></el-table-column>
@@ -80,16 +82,16 @@
             <el-table-column prop="sports_level" label="运动等级" align="center"></el-table-column>
             <el-table-column prop="height" label="身高" align="center"></el-table-column>
             <el-table-column prop="weight" label="体重" align="center"></el-table-column>
-            <el-table-column fixed="right" label="操作" align="center">
+            <el-table-column fixed="right" label="操作" align="center" width="150">
                 <template slot-scope="scope">
                   <div class="operatin-button">
-                    <div class="addordelete-button">
+                    <!-- <div class="addordelete-button">
                       <el-button type="primary" size="mini" @click="editBasicInfo(scope.row)">编辑</el-button>
                       <el-button type="danger" size="mini" @click="deleteBasicInfo(scope.$index, scope.row)">删除</el-button>
-                    </div>
+                    </div> -->
                     <div class="persona-button">
-                      <el-button type="success" size="mini" @click="goToPersona(scope.row)">画像</el-button>
-                      <el-button type="success" size="mini" @click="goToChampion(scope.row)">对比</el-button>
+                      <el-button round size="mini" @click="goToPersona(scope.row)">画像</el-button>
+                      <el-button round size="mini" @click="goToChampion(scope.row)">对比</el-button>
                     </div>
                   </div>
                 </template>
@@ -105,7 +107,7 @@
         @size-change="handleSizeChange"
         layout="total, sizes, prev, pager, next, jumper" />
       <!-- 新增标签区域 -->
-      <el-dialog title="新增标签" :visible.sync="dialogaddVisible">
+      <!-- <el-dialog title="新增标签" :visible.sync="dialogaddVisible">
         <el-form :model="basicInfo" ref="basicInfo">
             <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
               <el-input v-model="basicInfo.name" style="width: 180px"></el-input>
@@ -158,9 +160,9 @@
             <el-button @click="ClearForm('basicInfo')">取 消</el-button>
             <el-button type="primary" @click="addBasicInfo">确 定</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -->
       <!-- 修改标签区域 -->
-      <el-dialog title="修改标签" :visible.sync="dialogupdateVisible">
+      <!-- <el-dialog title="修改标签" :visible.sync="dialogupdateVisible">
         <el-form :model="basicInfo" ref="basicInfo">
             <el-form-item label="姓名" :label-width="formLabelWidth" prop="name">
               <el-input v-model="basicInfo.name" style="width: 180px"></el-input>
@@ -213,7 +215,7 @@
             <el-button @click="ClearForm('basicInfo')">取 消</el-button>
             <el-button type="primary" @click="updateBasicInfo">确 定</el-button>
         </div>
-      </el-dialog>
+      </el-dialog> -->
     </el-card>
   </div>
 </template>
@@ -505,99 +507,68 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.main-container {
-  height: 100%;
-  .el-header,
-  .el-aside {
-    background-color: #23262e;
+.labelsys {
+  &__wrapper {
+    width: 100%;
   }
-  .el-header {
-    padding: 0;
-    display: flex;
-    justify-content: space-between;
-    .name {
-      padding-left: 15px;
-      color: white;
-      font-size: 24px;
-      font-weight: 900;
-      line-height: 60px;
+  &__topper {
+    height: 600px;
+    width: 100%;
+    position: relative;
+    &-img {
+      height: 100%;
+      background-image: url('../../assets/images/444.jpg');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
     }
-  }
-  .el-main {
-    overflow-y: scroll;
-    height: 0;
-    background-color: #f2f2f2;
-  }
-  .el-footer {
-    background-color: #eee;
-    font-size: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
-// 左侧边栏用户信息区域
-.user-box {
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
-  background-color: #23262e;
-  user-select: none;
-  //   img {
-  //     width: 35px;
-  //     height: 35px;
-  //     border-radius: 50%;
-  //     background-color: #fff;
-  //     margin-right: 15px;
-  //     object-fit: cover;
-  //   }
-  span {
-    color: white;
-    font-size: 12px;
-  }
-}
-
-// 侧边栏菜单的样式
-.el-aside {
-  .el-submenu,
-  .el-menu-item {
-    width: 200px;
-    user-select: none;
-  }
-}
-
-.search-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  .btn-pub {
-    margin-top: 5px;
+    &-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent linear-gradient(180deg,rgba(0,57,124,.1),rgba(0,44,94,.3) 22%,rgba(0,37,79,.5) 50%,#001d3e) 0 0 no-repeat padding-box;
+    }
+    &-title {
+      width: 100%;
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      h1 {
+        width: 80%;
+        margin: 0 auto;
+        font-family: "Effra",Arial,sans-serif;
+        font-style: italic;
+        font-size: 50px;
+        color: white;
+        line-height: 75px;
+      }
+    }
   }
 }
 
 .box-card {
   margin: 0 auto;
-  width: 100%;
+  width: 95%;
 }
 
 .operatin-button {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  width: 100%;
+  // display: flex;
+  // flex-direction: column;
+  // align-items: center;
 }
-.addordelete-button {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  margin-bottom: 5px;
-}
+// .addordelete-button {
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: flex-start;
+//   margin-bottom: 5px;
+// }
 .persona-button {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: center;
 }
 </style>

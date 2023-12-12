@@ -1,9 +1,16 @@
 <template>
-  <div>
+  <div class="worldhigh__wrapper">
+    <div class="worldhigh__topper">
+      <div class="worldhigh__topper-img"></div>
+      <div class="worldhigh__topper-overlay"></div>
+      <div class="worldhigh__topper-title">
+        <h1>世界高水平</h1>
+      </div>
+    </div>
     <el-card class="box-card">
         <div class="worldhighlevel__wrapper">
             <div class="worldhighlevel__model">
-                <div class="worldhighlevel__model-title">世界高水平成绩</div>
+                <!-- <div class="worldhighlevel__model-title">世界高水平成绩</div> -->
                 <div class="worldhighlevel__model-filter">
                     <el-select
                         v-model="selectYear"
@@ -109,6 +116,7 @@
 import axios from 'axios'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/formatTime'
+import { secondToMinute } from '@/utils/secondToMinute'
 export default {
   data () {
     return {
@@ -275,7 +283,9 @@ export default {
             var result = params[0].name + '<br>'
 
             params.forEach(function (item) {
-              result += '<span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + item.color + '"></span>' + item.seriesName + ': ' + '<span style="align-self:flex-end;font-weight:700">' + item.value + 's<br>' + '</span>'
+              const seconds = Number(item.value)
+              const formatSeconds = secondToMinute(seconds)
+              result += '<div style="display:flex;flex-direction:row;justify-content:space-between"><span><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + item.color + '"></span>' + item.seriesName + '&nbsp;&nbsp;</span>' + '<span style="font-weight:700">' + formatSeconds + '</span></div>'
             })
 
             return result
@@ -325,14 +335,50 @@ export default {
 </script>
 
 <style lang='less' scoped>
-
+.worldhigh {
+  &__wrapper {
+    width: 100%;
+  }
+  &__topper {
+    height: 600px;
+    width: 100%;
+    position: relative;
+    &-img {
+      height: 100%;
+      background-image: url('../../assets/images/777.jpg');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    &-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent linear-gradient(180deg,rgba(0,57,124,.1),rgba(0,44,94,.3) 22%,rgba(0,37,79,.5) 50%,#001d3e) 0 0 no-repeat padding-box;
+    }
+    &-title {
+      width: 100%;
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      h1 {
+        width: 80%;
+        margin: 0 auto;
+        font-family: "Effra",Arial,sans-serif;
+        font-style: italic;
+        font-size: 50px;
+        color: white;
+        line-height: 75px;
+      }
+    }
+  }
+}
 .box-card {
   margin: 0 auto;
-  width: 100%;
-  padding: 10px;
-  .main {
-    margin-left: 100px;
-  }
+  width: 95%;
 }
 
 .worldhighlevel {

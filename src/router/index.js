@@ -14,8 +14,9 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      component: () => import('@/components/layout/index'),
-      redirect: '/label', // 默认显示首页的二级路由
+      // component: () => import('@/components/layout/index'),
+      component: () => import('@/components/home/index'),
+      redirect: '/home', // 默认显示首页的二级路由
       children: [
         {
           path: 'home',

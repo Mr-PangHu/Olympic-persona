@@ -1,5 +1,12 @@
 <template>
-  <div>
+  <div class="champion__wrapper">
+    <div class="champion__topper">
+      <div class="champion__topper-img"></div>
+      <div class="champion__topper-overlay"></div>
+      <div class="champion__topper-title">
+        <h1>画像模型</h1>
+      </div>
+    </div>
     <el-card class="box-card">
         <!-- <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="选拔模型" name="xuanba">
@@ -10,7 +17,7 @@
             </el-tab-pane>
         </el-tabs> -->
         <div class="persona_model">
-          <div class="persona_model-title">画像模型</div>
+          <!-- <div class="persona_model-title">画像模型</div> -->
           <div class="xuanba__model-filter">
             <el-select
               v-model="selectXuanbaValue"
@@ -217,8 +224,8 @@ export default {
         value: '世锦赛',
         label: '世锦赛'
       }],
-      selectXuanbaValue: [],
-      templateSelect: '',
+      selectXuanbaValue: ['vo2max_rel', 'deep_squat_1rm', 'bench_press_1rm', 'bench_pull_1rm', 'dynamometer_2000m'],
+      templateSelect: '省市',
       xuanbaindicator: []
       // selectChampionValue: [],
       // championindicator: []
@@ -272,6 +279,10 @@ export default {
           }
         })
         this.playerData = tmp
+      }).then(() => {
+        this.renderIndicator()
+        this.setxuanbaChart()
+        this.setChampionChart()
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
@@ -283,13 +294,16 @@ export default {
       }
       return (1 - (v - t) / t).toFixed(2) * 100
     },
-    handleXuanbaSelectChange (value) {
+    renderIndicator () {
       this.xuanbaindicator = this.selectXuanbaValue.map(item => {
         return {
           name: NameMap[item],
           max: 120
         }
       })
+    },
+    handleXuanbaSelectChange (value) {
+      this.renderIndicator()
       this.setxuanbaChart()
       this.setChampionChart()
     },
@@ -385,12 +399,7 @@ export default {
           name: '选拔标准'
         }
       ]
-      // const lineStyle = {
-      //   width: 1,
-      //   opacity: 0.5
-      // }
       option = {
-        // backgroundColor: '#161627',
         color: ['#67F9D8', '#33CC00', '#CC99FF', '#FFE434'],
         title: {
           text: '选拔模型',
@@ -399,6 +408,9 @@ export default {
           textStyle: {
             color: '#666'
           }
+        },
+        tooltip: {
+          trigger: 'item'
         },
         legend: {
           bottom: 5,
@@ -451,15 +463,7 @@ export default {
                 width: 4
               }
             },
-            // lineStyle: lineStyle,
             data: data
-            // symbol: 'none',
-            // itemStyle: {
-            //   color: '#F9713C'
-            // },
-            // areaStyle: {
-            //   opacity: 0.1
-            // }
           }
         ]
       }
@@ -563,12 +567,7 @@ export default {
           name: '奥运金牌运动员'
         }
       ]
-      // const lineStyle = {
-      //   width: 1,
-      //   opacity: 0.5
-      // }
       option = {
-        // backgroundColor: '#161627',
         color: ['#67F9D8', '#33CC00', '#CC99FF', '#FFE434'],
         title: {
           text: '冠军模型',
@@ -577,6 +576,9 @@ export default {
           textStyle: {
             color: '#666'
           }
+        },
+        tooltip: {
+          trigger: 'item'
         },
         legend: {
           bottom: 5,
@@ -592,7 +594,6 @@ export default {
           shape: 'circle',
           splitNumber: 5,
           axisName: {
-            // color: 'rgb(238, 197, 102)'
             color: '#428BD4'
           },
           splitLine: {
@@ -629,15 +630,7 @@ export default {
                 width: 4
               }
             },
-            // lineStyle: lineStyle,
             data: data
-            // symbol: 'none',
-            // itemStyle: {
-            //   color: '#F9713C'
-            // },
-            // areaStyle: {
-            //   opacity: 0.1
-            // }
           }
         ]
       }
@@ -649,13 +642,50 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.champion {
+  &__wrapper {
+    width: 100%;
+  }
+  &__topper {
+    height: 600px;
+    width: 100%;
+    position: relative;
+    &-img {
+      height: 100%;
+      background-image: url('../../assets/images/666.jpg');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    &-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent linear-gradient(180deg,rgba(0,57,124,.1),rgba(0,44,94,.3) 22%,rgba(0,37,79,.5) 50%,#001d3e) 0 0 no-repeat padding-box;
+    }
+    &-title {
+      width: 100%;
+      position: absolute;
+      bottom: 60px;
+      left: 0;
+      right: 0;
+      h1 {
+        width: 80%;
+        margin: 0 auto;
+        font-family: "Effra",Arial,sans-serif;
+        font-style: italic;
+        font-size: 50px;
+        color: white;
+        line-height: 75px;
+      }
+    }
+  }
+}
 .box-card {
   margin: 0 auto;
-  width: 100%;
-  padding: 10px;
-  .main {
-    margin-left: 100px;
-  }
+  width: 95%;
 }
 .persona_model {
   display: flex;
@@ -678,6 +708,7 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     // padding: 20px;
+    flex: 1;
   }
   &__model {
     display: flex;
@@ -695,8 +726,8 @@ export default {
         justify-content: space-evenly;
         padding: 10px;
         &-echarts {
-            width: 900px;
-            height: 800px;
+            width: 650px;
+            height: 600px;
         }
     }
   }
@@ -708,6 +739,7 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     // padding: 20px;
+    flex: 1;
   }
   &__model {
     display: flex;
@@ -725,8 +757,8 @@ export default {
         justify-content: space-evenly;
         padding: 10px;
         &-echarts {
-            width: 900px;
-            height: 800px;
+            width: 650px;
+            height: 600px;
         }
     }
   }

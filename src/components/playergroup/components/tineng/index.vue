@@ -63,7 +63,7 @@
                 <el-table-column
                   v-for="item in tinengForm.tinengSelectValues"
                   :prop="item"
-                  :label="tinengOptions.filter(i => i.value === item)[0].label"
+                  :label="formatLabel(item)"
                   :key="item"
                   align="center"
                 >
@@ -78,6 +78,8 @@
 import * as echarts from 'echarts'
 import axios from 'axios'
 import { formatDate } from '@/utils/formatDate'
+import { formatSeconds, formatMMToSeconds } from '@/utils/formatTime'
+import { secondToMinute } from '@/utils/secondToMinute'
 export default {
   data () {
     return {
@@ -121,6 +123,16 @@ export default {
     this.getPlayerId()
   },
   methods: {
+    formatLabel (item) {
+      const label = this.tinengOptions.filter(i => i.value === item)[0].label
+      let danwei = ''
+      if (label === '基础体能-30m冲刺跑') danwei = 's'
+      if (label === '基础体能-卧推1RM' || label === '基础体能-深蹲1RM') danwei = 'kg'
+      if (label === '基础体能-引体向上') danwei = '个'
+      if (label === '基础体能-立定跳远(双腿)') danwei = 'cm'
+      if (label === '专项体能-测功仪2000m' || label === '专项体能-测功仪30min-20SR') danwei = "mm'ss.00"
+      return label + '（' + danwei + '）'
+    },
     setCellStyle ({rowIndex, columnIndex, row, column}) {
       const tmpMax = {}
       const tmpMin = {}
@@ -128,7 +140,6 @@ export default {
         tmpMax[k] = Math.max(...this.selectItemValues[k])
         tmpMin[k] = Math.min(...this.selectItemValues[k])
       }
-      console.log(this.selectItemValues)
       for (var k1 in this.selectItemValues) {
         if (row[k1] === tmpMax[k1] && column.property === k1) return 'font-weight: 700;'
         else if (row[k1] === tmpMin[k1] && column.property === k1) return 'font-weight: 700; color: red'
@@ -147,7 +158,11 @@ export default {
         var tmp = {}
         tmp['date'] = item
         for (var key in this.selectItemValues) {
-          tmp[key] = this.selectItemValues[key][index]
+          let d = this.selectItemValues[key][index]
+          if (key === 'dynamometer_2000m' || key === 'dynamometer_30min') {
+            d = secondToMinute(d)
+          }
+          tmp[key] = d
         }
         return tmp
       })
@@ -274,12 +289,20 @@ export default {
         }
         basicData.forEach(item => {
           for (var key in item) {
-            tmp[key].push(item[key])
+            var d = item[key]
+            if (key === 'sprint_run_30m') {
+              d = formatSeconds(d)
+            }
+            tmp[key].push(d)
           }
         })
         proData.forEach(item => {
           for (var key in item) {
-            tmp[key].push(item[key])
+            var d = item[key]
+            if (key === 'dynamometer_2000m' || key === 'dynamometer_30min') {
+              d = formatMMToSeconds(d)
+            }
+            tmp[key].push(d)
           }
         })
         this.tinengData = tmp
@@ -310,6 +333,21 @@ export default {
       option = {
         tooltip: {
           trigger: 'axis',
+          formatter: function (params) {
+            var result = params[0].name + '<br>'
+
+            params.forEach(function (item) {
+              let v = Number(item.value)
+              if (item.seriesName === '基础体能-30m冲刺跑') v = v + 's'
+              if (item.seriesName === '基础体能-卧推1RM' || item.seriesName === '基础体能-深蹲1RM') v = v + 'kg'
+              if (item.seriesName === '基础体能-引体向上') v = v + '个'
+              if (item.seriesName === '基础体能-立定跳远(双腿)') v = v + 'cm'
+              if (item.seriesName === '专项体能-测功仪2000m' || item.seriesName === '专项体能-测功仪30min-20SR') v = secondToMinute(v)
+              result += '<div style="display:flex;flex-direction:row;justify-content:space-between"><span><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + item.color + '"></span>' + item.seriesName + '&nbsp;&nbsp;</span>' + '<span style="font-weight:700">' + v + '</span></div>'
+            })
+
+            return result
+          },
           axisPointer: {
             type: 'shadow'
           }
