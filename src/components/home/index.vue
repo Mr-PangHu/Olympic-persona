@@ -25,6 +25,7 @@
               <el-menu-item>基本资料</el-menu-item>
               <el-menu-item index="/updatepwd">重置密码</el-menu-item>
             </el-submenu>
+            <el-menu-item @click="logoutFn">切换账号</el-menu-item>
         </el-menu>
       </nav>
     </header>
@@ -95,6 +96,22 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    logoutFn () {
+      // 询问用户是否退出登录
+      this.$confirm('您确认退出登录吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          // TODO：执行退出登录的操作
+          // 1. 清空 token
+          this.$store.commit('LOGOUT')
+          // 2. 跳转到登录页面
+          this.$router.push('/login')
+        })
+        .catch((err) => err)
     }
   }
 }
