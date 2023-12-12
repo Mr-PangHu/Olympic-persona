@@ -13,7 +13,10 @@
             <el-input v-model="form.repassword" type="password" placeholder="请再次确认密码"></el-input>
         </el-form-item>
         </el-form>
-        <el-button type="primary" round @click="register('form')" class="btn">注册</el-button>
+        <el-row>
+          <el-button type="primary" round @click="register('form')" class="btn">注册</el-button>
+          <el-button type="primary" round class="btn" @click="returnLogin">返回登录</el-button>
+        </el-row>
     </div>
   </div>
 </template>
@@ -97,6 +100,9 @@ export default {
           })
         }
       })
+    },
+    returnLogin () {
+      this.$router.push('/login')
     }
   }
 }
@@ -130,7 +136,7 @@ export default {
     padding-bottom: 30px;
   }
   .btn {
-    width: 60%;
+    width: 47%;
     margin: auto;
   }
 </style>
