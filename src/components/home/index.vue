@@ -25,7 +25,7 @@
               <el-menu-item>基本资料</el-menu-item>
               <el-menu-item index="/updatepwd">重置密码</el-menu-item>
             </el-submenu>
-            <el-menu-item @click="logoutFn">切换账号</el-menu-item>
+            <el-menu-item @click="logoutFn">切换账号1</el-menu-item>
         </el-menu>
       </nav>
     </header>
