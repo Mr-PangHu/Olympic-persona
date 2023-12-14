@@ -117,6 +117,9 @@ import axios from 'axios'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/formatTime'
 import { secondToMinute } from '@/utils/secondToMinute'
+
+let minValue = 0
+let minValueMe = 0
 export default {
   data () {
     return {
@@ -170,6 +173,7 @@ export default {
       const d1000mTime = formatTime(this.fenduanForm.d1000mValue)
       const d1500mTime = formatTime(this.fenduanForm.d1500mValue)
       const d2000mTime = formatTime(this.fenduanForm.d2000mValue)
+      minValueMe = Math.min(...[d500mTime, d1000mTime, d1500mTime, d2000mTime])
       if (this.series.length > this.cNumber) {
         this.series.pop()
         this.country.pop()
@@ -240,28 +244,55 @@ export default {
         this.country = tmp.map(item => {
           return item.country
         })
+
+        // this.d500m = tmp.map(item => {
+        //   return item.d500m ? Number(formatTime(item.d500m).toFixed(2)) : 0
+        // })
+        // this.d1000m = tmp.map(item => {
+        //   return item.d1000m ? (Number(formatTime(item.d1000m).toFixed(2)) - Number(formatTime(item.d500m).toFixed(2))).toFixed(2) : 0
+        // })
+        // this.d1500m = tmp.map(item => {
+        //   return item.d1500m ? (Number(formatTime(item.d1500m).toFixed(2)) - Number(formatTime(item.d1000m).toFixed(2))).toFixed(2) : 0
+        // })
+        // this.d2000m = tmp.map(item => {
+        //   return item.d2000m ? (Number(formatTime(item.d2000m).toFixed(2)) - Number(formatTime(item.d1500m).toFixed(2))).toFixed(2) : 0
+        // })
         this.d500m = tmp.map(item => {
-          return item.d500m ? Number(formatTime(item.d500m).toFixed(2)) : 0
+          return item.d500m === '00:00:00.000' ? 0 : (item.d500m ? Number(formatTime(item.d500m).toFixed(2)) : 0)
         })
+
         this.d1000m = tmp.map(item => {
-          return item.d1000m ? Number(formatTime(item.d1000m).toFixed(2)) : 0
+          return item.d1000m === '00:00:00.000' ? 0 : (item.d1000m ? (Number(formatTime(item.d1000m).toFixed(2)) - Number(formatTime(item.d500m).toFixed(2))).toFixed(2) : 0)
         })
+
         this.d1500m = tmp.map(item => {
-          return item.d1500m ? Number(formatTime(item.d1500m).toFixed(2)) : 0
+          return item.d1500m === '00:00:00.000' ? 0 : (item.d1500m ? (Number(formatTime(item.d1500m).toFixed(2)) - Number(formatTime(item.d1000m).toFixed(2))).toFixed(2) : 0)
         })
+
         this.d2000m = tmp.map(item => {
-          return item.d2000m ? Number(formatTime(item.d2000m).toFixed(2)) : 0
+          return item.d2000m === '00:00:00.000' ? 0 : (item.d2000m ? (Number(formatTime(item.d2000m).toFixed(2)) - Number(formatTime(item.d1500m).toFixed(2))).toFixed(2) : 0)
         })
       }).then(
         () => {
+          const minLists = []
           this.series = this.country.map((item, index) => {
+            // let data = [this.d500m[index], this.d1000m[index], this.d1500m[index], this.d2000m[index]]
+            // if (this.d2000m[index] === 0) {
+            //   data = [this.d500m[index], this.d1000m[index], this.d1500m[index]]
+            // }
+            const dataPoints = [this.d500m[index], this.d1000m[index], this.d1500m[index], this.d2000m[index]]
+            const filteredDataPoints = dataPoints.filter(dataPoint => dataPoint !== 0)
+            minLists.push(Math.min(...filteredDataPoints))
             const tmp = {
               name: item,
               type: 'line',
-              data: [this.d500m[index], this.d1000m[index], this.d1500m[index], this.d2000m[index]]
+              data: filteredDataPoints,
+              showSymbol: filteredDataPoints.map(dataPoint => dataPoint !== 0) // 根据每个数据点的值决定是否显示数据点，只有非零的数据点才会被显示和连线。
             }
             return tmp
           })
+          minValue = Math.min(...minLists)
+          minValueMe = 0
           this.cNumber = this.country.length
           this.setWorldHighLevelChart()
         }).catch(err => {
@@ -311,7 +342,7 @@ export default {
             },
             dataView: { readOnly: false },
             magicType: { type: ['line', 'bar'] },
-            restore: {},
+            // restore: {},
             saveAsImage: {}
           }
         },
@@ -323,7 +354,20 @@ export default {
         },
         yAxis: {
           name: '成绩/s',
-          type: 'value'
+          nameGap: 28,
+          nameTextStyle: {
+            align: 'right' // 将y轴名称左
+          },
+          type: 'value',
+          // max: maxValueMe === 0 ? Math.floor(Math.max(maxValue) - 5) : Math.floor(Math.max(maxValue, maxValueMe) - 5),
+          min: minValueMe === 0 ? Math.floor(Math.min(minValue) - 3) : Math.floor(Math.min(minValue, minValueMe) - 3),
+          axisLabel: {
+            formatter: function (value) {
+              // return formatSectoTime(value)
+              return secondToMinute(value)
+            }
+          },
+          inverse: true // 将y轴的值按降序排列
         },
         series: this.series
       }

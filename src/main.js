@@ -13,6 +13,9 @@ Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(less)
 
+// 清除 token
+store.commit('LOGOUT')
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

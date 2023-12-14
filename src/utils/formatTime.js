@@ -15,6 +15,15 @@ export function formatTime (time) {
   return totalSeconds
 }
 
+//  把秒转换成00：00：00：00
+export function formatSectoTime (seconds) {
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const remainingSeconds = seconds % 60
+  const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toFixed(2).padStart(5, '0')}`
+  return formattedTime
+}
+
 export function formatSeconds (seconds) {
   const hasYinhao = seconds.indexOf('"') !== -1
   if (hasYinhao) {
