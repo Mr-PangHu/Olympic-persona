@@ -1,18 +1,21 @@
 <template>
-  <div class="bg">
+  <div class="bg" >
+    <div class="logo">
+      <img src="../../assets/images/TeamLogo.png" width="300px" height="200px">
+    </div>
     <div id="login">
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 30px">
           <span style="color: #222; font-weight: 600; font-size: 24px">登 录</span>
         </div>
         <el-form ref="form" :model="form" label-width="20%">
         <!-- <el-form ref="form" :model="form" :rules="loginRules" label-width="20%"> -->
-          <el-form-item label="用户名:" prop="username">
+          <el-form-item label="用户名:" prop="username" id="f">
               <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
           </el-form-item>
-          <el-form-item label="密  码:" prop="password">
+          <el-form-item label="密  码:" prop="password" id="f">
               <el-input v-model="form.password" type="password" placeholder="请输入密码"></el-input>
           </el-form-item>
-          <el-form-item label="角  色:" prop="roleValue" class="role">
+          <el-form-item label="角  色:" prop="roleValue" class="role" id="f">
             <el-radio-group v-model="form.roleValue">
               <el-radio :label="2">教练员</el-radio>
               <el-radio :label="3">运动员</el-radio>
@@ -104,30 +107,38 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.bg {
-    position: absolute;
+  .bg {
+    position:fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+    background-image:url('../../assets/images/bg.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
 }
+
 .el-form-item.role > .el-form-item__content {
   text-align: left;
 }
  #login {
-    height: 350px;
-    width: 350px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+    width: 400px;
+    height: 540px;
+    right: 139px;
+    top: 55%;
+    margin-top: -340px;
+    box-shadow: 0 2px 12px 0 rgba(255,255,255,.9);;
     background: #ffffff;
     opacity: 0.85;
     position: absolute;
-    top: 20%;
-    left: 40%;
     // text-align: center;
     display: flex;
     flex-direction: column;/*横向*/
     padding: 30px;
-    border-radius: 16px;
+    border-radius: 12px;
+    justify-content: space-between;
   }
 
   .btn1 {
@@ -143,7 +154,7 @@ export default {
     border: 0;
     color: #fff;
     cursor: pointer;
-    background-color: #4e6ef2;
+    background-color:#BDCEFC;
   }
   .btn2 {
     margin: 10px auto;
@@ -158,7 +169,7 @@ export default {
     border: 0;
     color: #fff;
     cursor: pointer;
-    background-color: #4e6ef2;
+    background-color: #BDCEFC;
   }
   .reg {
     color: red;
@@ -166,5 +177,13 @@ export default {
     bottom: 10px;
     right: 10px;
     cursor:pointer;
+  }
+  #f{
+    margin: 13%;
+  }
+  .logo {
+    position: absolute;
+    top: 80px;
+    left: 30px;
   }
 </style>
