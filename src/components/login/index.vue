@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAxios from '@/utils/request'
 // import { mapMutations } from 'vuex'
 export default {
   data () {
@@ -59,8 +59,10 @@ export default {
         if (!valid) {
           return false
         } else {
-          axios.post('http://127.0.0.1/login', {
-            params: {
+          myAxios({
+            url: '/login',
+            method: 'post',
+            data: {
               name: this.form.username,
               password: this.form.password,
               role: this.form.roleValue

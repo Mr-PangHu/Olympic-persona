@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAxios from '@/utils/request'
 export default {
   data () {
     var samePwd = (rule, value, callback) => {
@@ -69,8 +69,10 @@ export default {
         if (!valid) {
           return false
         } else {
-          axios.post('http://127.0.0.1/register', {
-            params: {
+          myAxios({
+            url: '/register',
+            method: 'post',
+            data: {
               name: this.form.username,
               password: this.form.password
             }

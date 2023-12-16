@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAxios from '@/utils/request'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/formatTime'
 import { secondToMinute } from '@/utils/secondToMinute'
@@ -187,7 +187,7 @@ export default {
       this.setWorldHighLevelChart()
     },
     getYear () {
-      axios.get('http://127.0.0.1/cm/getYear').then(res => {
+      myAxios.get('http://127.0.0.1/cm/getYear').then(res => {
         const yearArr = res.data
         this.yearOptions = yearArr.map(item => (
           {
@@ -200,7 +200,7 @@ export default {
       })
     },
     getCompByYear () {
-      axios.get('http://127.0.0.1/cm/getCompByYear', {
+      myAxios.get('/cm/getCompByYear', {
         params: {
           year: this.selectYear
         }
@@ -217,7 +217,7 @@ export default {
       })
     },
     getEventById () {
-      axios.get('http://127.0.0.1/cm/getEventById', {
+      myAxios.get('/cm/getEventById', {
         params: {
           comp: this.selectComp
         }
@@ -234,7 +234,7 @@ export default {
       })
     },
     getResultsByEvent (id, event) {
-      axios.get('http://127.0.0.1/cm/getResultsByEvent', {
+      myAxios.get('/cm/getResultsByEvent', {
         params: {
           id,
           event

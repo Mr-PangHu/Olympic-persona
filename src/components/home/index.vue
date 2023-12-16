@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAxios from '@/utils/request'
 export default {
   data () {
     return {
@@ -85,7 +85,7 @@ export default {
     getPersonaPath () {
       if (!this.showPersona) return
       const athleteId = window.sessionStorage.getItem('id')
-      axios.get('http://127.0.0.1/list/getId', {
+      myAxios.get('/list/getId', {
         params: {
           athleteId
         }

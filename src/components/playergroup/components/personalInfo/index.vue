@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAxios from '@/utils/request'
 import { formatDate } from '@/utils/formatDate'
 import { getAge } from '@/utils/getAge'
 import * as echarts from 'echarts'
@@ -131,7 +131,7 @@ export default {
   },
   methods: {
     getPersonInfo () {
-      axios.get('http://127.0.0.1/list/getPersonInfo', {
+      myAxios.get('/list/getPersonInfo', {
         params: {
           id: this.$route.params.id
         }

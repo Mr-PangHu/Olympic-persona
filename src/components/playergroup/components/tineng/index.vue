@@ -76,7 +76,7 @@
 
 <script>
 import * as echarts from 'echarts'
-import axios from 'axios'
+import myAxios from '@/utils/request'
 import { formatDate } from '@/utils/formatDate'
 import { formatSeconds, formatMMToSeconds } from '@/utils/formatTime'
 import { secondToMinute } from '@/utils/secondToMinute'
@@ -244,7 +244,7 @@ export default {
       const auth = window.sessionStorage.getItem('auth')
       if (auth === '2') {
         const id = this.$route.params.id
-        axios.get('http://127.0.0.1/list/getAthleteId', {
+        myAxios.get('/list/getAthleteId', {
           params: {
             id
           }
@@ -262,12 +262,12 @@ export default {
       }
     },
     getTinengData () {
-      const getBasicTinengData = axios.get('http://127.0.0.1/tineng/getBasicTinengData', {
+      const getBasicTinengData = myAxios.get('/tineng/getBasicTinengData', {
         params: {
           id: this.id
         }
       })
-      const getProTinengData = axios.get('http://127.0.0.1/tineng/getProTinengData', {
+      const getProTinengData = myAxios.get('/tineng/getProTinengData', {
         params: {
           id: this.id
         }

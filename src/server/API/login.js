@@ -1,9 +1,9 @@
 let db = require('../db2/index')
 
 exports.login = (req, res) => {
-  var name = req.body.params.name
-  var password = req.body.params.password
-  var auth = req.body.params.role
+  var name = req.body.name
+  var password = req.body.password
+  var auth = req.body.role
   var sql = 'select * from user where name = ?'
   db.query(sql, name, (err, data) => {
     if (err) {
@@ -45,7 +45,7 @@ exports.login = (req, res) => {
 exports.register = (req, res) => {
   const sql1 = 'select * from user where name = ?'
   const sql2 = 'insert into user (name, password) value (?, ?)'
-  db.query(sql1, [req.body.params.name], (err, data) => {
+  db.query(sql1, [req.body.name], (err, data) => {
     if (err) {
       return res.send({
         status: 400,
@@ -58,7 +58,7 @@ exports.register = (req, res) => {
         message: '用户名已存在'
       })
     } else {
-      db.query(sql2, [req.body.params.name, req.body.params.password], (err, data) => {
+      db.query(sql2, [req.body.name, req.body.password], (err, data) => {
         if (err) {
           return res.send({
             status: 400,

@@ -91,7 +91,7 @@
 
 <script>
 import * as echarts from 'echarts'
-import axios from 'axios'
+import myAxios from '@/utils/request'
 const EINDEX = ['vo2max_rel', 'p4', 'deep_squat_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'bench_pull_1rm', 'fat_ratio', 'incline_brace', 'dynamometer_2000m', 'dynamometer_5000m', 'dynamometer_6000m', 'dynamometer_30min']
 const NameMap = {
   vo2max_rel: '最大摄氧量',
@@ -245,7 +245,7 @@ export default {
       const auth = window.sessionStorage.getItem('auth')
       if (auth === '2') {
         const id = this.$route.params.id
-        axios.get('http://127.0.0.1/list/getAthleteId', {
+        myAxios.get('/list/getAthleteId', {
           params: {
             id
           }
@@ -263,7 +263,7 @@ export default {
       }
     },
     getPlayerData () {
-      axios.get('http://127.0.0.1/xuanba/getPlayerData', {
+      myAxios.get('/xuanba/getPlayerData', {
         params: {
           id: this.id
         }

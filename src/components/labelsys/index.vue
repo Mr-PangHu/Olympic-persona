@@ -221,7 +221,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import myAxios from '@/utils/request'
 import { formatDate } from '@/utils/formatDate'
 import { getAge } from '@/utils/getAge'
 export default {
@@ -296,7 +296,7 @@ export default {
       this.totalData = this.changeinfo.length
     },
     getPlayerName () {
-      axios.get('http://127.0.0.1/list/searchName').then(res => {
+      myAxios.get('/list/searchName').then(res => {
         const temp = res.data.data.map(item => {
           return {
             label: item.name,
@@ -353,7 +353,7 @@ export default {
       this.$refs[formName].resetFields()// 点击取消按钮，清空el-input
     },
     getBasicInfo () { // 查找info表全部数据
-      axios.get('http://127.0.0.1/list/getBasicInfo').then(res => {
+      myAxios.get('/list/getBasicInfo').then(res => {
         // console.log(res.data)
         const tmp = res.data
         const formatTmp = tmp.map(item => (
@@ -397,7 +397,7 @@ export default {
     },
     deleteBasicInfo (index, row) { // 删除操作
       // console.log(index, row)
-      axios.get('http://127.0.0.1/list/deleteBasicInfo', {
+      myAxios.get('/list/deleteBasicInfo', {
         params: {
           id: row.id
         }
@@ -419,7 +419,7 @@ export default {
     },
     addBasicInfo () { // 添加操作
       // console.log(this.basicInfo.age)
-      axios.get('http://127.0.0.1/list/addBasicInfo', {
+      myAxios.get('/list/addBasicInfo', {
         params: {
           name: this.basicInfo.name,
           birthday: this.basicInfo.birthday,
@@ -470,7 +470,7 @@ export default {
       })
     },
     updateBasicInfo () { // 修改操作
-      axios.get('http://127.0.0.1/list/updateBasicInfo', {
+      myAxios.get('/list/updateBasicInfo', {
         params: {
           id: this.HuiXianid,
           name: this.basicInfo.name,
