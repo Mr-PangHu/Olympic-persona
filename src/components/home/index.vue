@@ -25,7 +25,7 @@
               <el-menu-item>基本资料</el-menu-item>
               <el-menu-item index="/updatepwd">重置密码</el-menu-item>
             </el-submenu>
-            <el-menu-item @click="logoutFn">切换账号1</el-menu-item>
+            <el-menu-item @click="logoutFn">切换账号</el-menu-item>
         </el-menu>
       </nav>
     </header>
@@ -141,6 +141,16 @@ nav {
   width: 50%;
   position: relative;
   left: 50%;
+}
+.carousel__container {
+  position: relative;
+  overflow: hidden;
+}
+.carousel__container img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /deep/ .el-carousel__item::before {

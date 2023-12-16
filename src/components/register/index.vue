@@ -1,5 +1,8 @@
 <template>
   <div class="bg">
+    <div class="logo">
+      <img src="../../assets/images/TeamLogo.png" width="300px" height="200px">
+    </div>
     <div id="register">
         <h2>注 册</h2>
         <el-form ref="form" :model="form" :rules="regRules" label-width="25%">
@@ -117,20 +120,26 @@ export default {
     right: 0;
     /* background: url('../assets/img/register_bg.jpg');
     background-size: 100% 100%; */
+    background: url('../../assets/images/bg2.jpg');
+    background-size: 100% 100%;
+    background-repeat: no-repeat
 }
  #register {
-    height: 350px;
-    width: 350px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
-    background: #ffffff;
-    opacity: 0.85;
-    position: absolute;
-    top: 20%;
-    left: 40%;
-    text-align: center;
-    display: flex;
-    flex-direction: column;/*横向*/
-    padding: 30px;
+  width: 400px;
+  height: 400px;
+  right: 139px;
+  top: 55%;
+  margin-top: -320px;
+  box-shadow: 0 2px 12px 0 rgba(255,255,255,.9);;
+  background: #ffffff;
+  opacity: 0.85;
+  position: absolute;
+  text-align: center;
+  display: flex;
+  flex-direction: column;/*横向*/
+  padding: 30px;
+  border-radius: 12px;
+  justify-content: space-between;
   }
   #register h2 {
     padding-bottom: 30px;
@@ -138,5 +147,13 @@ export default {
   .btn {
     width: 47%;
     margin: auto;
+  }
+  .logo {
+    position: absolute;
+    top: 80px;
+    left: 30px;
+  }
+  .el-form-item{
+    margin-bottom: 45px;
   }
 </style>
