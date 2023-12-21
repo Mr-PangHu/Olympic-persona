@@ -5,6 +5,7 @@ let login = require('./API/login')
 let cm = require('./API/cm')
 let tineng = require('./API/tineng')
 let xuanba = require('./API/xuanba')
+let jineng = require('./API/jineng')
 
 router.post('/login', login.login)
 router.post('/register', login.register)
@@ -26,6 +27,10 @@ router.get('/cm/getResultsByEvent', cm.getResultsByEvent)
 
 router.get('/tineng/getBasicTinengData', tineng.getBasicTinengData)
 router.get('/tineng/getProTinengData', tineng.getProTinengData)
+
+router.get('/jineng/getBodyData', jineng.getBodyData)
+router.get('/jineng/getBloodData', jineng.getBloodData)
+router.get('/jineng/getAerobicData', jineng.getAerobicData)
 
 router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
 
