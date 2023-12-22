@@ -23,6 +23,7 @@ router.get('/cm/getCompByYear', cm.getCompByYear)
 router.get('/cm/getYear', cm.getYear)
 router.get('/cm/getEventById', cm.getEventById)
 router.get('/cm/getResultsByEvent', cm.getResultsByEvent)
+router.get('/cm/getResultsByEventPre', cm.getResultsByEventPre)
 
 router.get('/tineng/getBasicTinengData', tineng.getBasicTinengData)
 router.get('/tineng/getProTinengData', tineng.getProTinengData)

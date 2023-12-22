@@ -244,7 +244,7 @@ export default {
       })
     },
     getResultsByEvent (id, event) {
-      axios.get('http://localhost/cm/getResultsByEvent', {
+      axios.get('http://localhost/cm/getResultsByEventPre', {
         params: {
           id,
           event

@@ -66,3 +66,27 @@ exports.getResultsByEvent = (req, res) => { // 通过赛事项目获取成绩
     }
   })
 }
+
+exports.getResultsByEventPre = (req, res) => { // 通过赛事项目获取成绩预测
+  var event = "U23 Men_s Coxed Four"
+  var id = 311
+  var sql1 = `SELECT id FROM comp_perf_intl_event WHERE id = ? and event_type = ?`
+  db.query(sql1, [id, event], (err, data) => {
+    console.log(err)
+    if (err) {
+      return res.send('错误：' + err.message)
+    }
+    console.log(data)
+    if (data.length !== 0) {
+      const id = data[0].id
+      var sql2 = `SELECT * FROM comp_perf_intl_result WHERE comp_perf_intl_event_id = ?`
+      db.query(sql2, [id], (err, data) => {
+        if (err) {
+          return res.send('错误：' + err.message)
+        }
+        console.log(data)
+        res.send(data)
+      })
+    }
+  })
+}
