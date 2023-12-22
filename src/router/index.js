@@ -46,13 +46,24 @@ const router = new Router({
         {
           path: 'updatepwd',
           name: 'UserPwd',
-          component: () => import('@/components/user/UserPwd')
+          component: () => import('@/components/user/userPwd')
         },
         {
           path: 'worldhighlevel',
           name: 'worldhighlevel',
           component: () => import('@/components/worldhighlevel')
+        },
+        {
+          path: 'markpredict',
+          name: 'markpredict',
+          component: () => import('@/components/markpredict')
+        },
+        {
+          path: 'tiredpredict',
+          name: 'tiredpredict',
+          component: () => import('@/components/tiredpredict')
         }
+
       ]
     },
     {
