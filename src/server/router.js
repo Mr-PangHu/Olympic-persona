@@ -3,6 +3,7 @@ let router = express.Router()
 let info = require('./API/list')
 let login = require('./API/login')
 let cm = require('./API/cm')
+let fp = require('./API/fatigue_predict')
 let tineng = require('./API/tineng')
 let xuanba = require('./API/xuanba')
 
@@ -24,6 +25,9 @@ router.get('/cm/getYear', cm.getYear)
 router.get('/cm/getEventById', cm.getEventById)
 router.get('/cm/getResultsByEvent', cm.getResultsByEvent)
 router.get('/cm/getResultsByEventPre', cm.getResultsByEventPre)
+
+router.get('/fatigue_predict/getSimilarityData', fp.getSimilarityData)
+// router.get('/fatigue_predict/getLastTenData',fp.getLastTenData)
 
 router.get('/tineng/getBasicTinengData', tineng.getBasicTinengData)
 router.get('/tineng/getProTinengData', tineng.getProTinengData)

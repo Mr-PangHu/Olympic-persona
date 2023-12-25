@@ -8,109 +8,29 @@
       </div>
     </div>
     <el-card class="box-card">
-        <div class="tiredpredict__wrapper">
-            <div class="tiredpredict__model">
-                <div style="text-align: right; margin-bottom: 1%;">
-                  今天日期
-                    <el-date-picker
-                      v-model="todaydate"
-                      type="date"
-                      disabled
-                      clearable="false"
-                      placeholder="今天日期">
-                    </el-date-picker>
+      <div class="tiredpredict__wrapper">
+        <div class="tiredpredict__model">
+          <div style="text-align: right; margin-bottom: 1%;">
+            今天日期
+            <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期">
+            </el-date-picker>
 
-                    <el-select
-                        v-model="selectEvent"
-                        clearable
-                        collapse-tags
-                        filterable
-                        placeholder="请选择项目"
-                        class="worldhighlevel__model-filter-selector"
-                        @change="handleSelectEventChange"
-                    >
-                        <el-option
-                        v-for="item in eventOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class="tiredpredict__model-wrapper">
-                    <div class="tiredpredict__model-wrapper-echarts">
-                      <el-table
-                        :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
-                        style="width: 100% ">
-                        <el-table-column
-                          prop="project"
-                          label="项目名"
-                          width="100"
-                          >
-                        </el-table-column>
-                        <el-table-column
-                          prop="name"
-                          label="姓名"
-                          width="80">
-                        </el-table-column>
-                        <el-table-column
-                          prop="id"
-                          label="ID"
-                          width="100">
-                        </el-table-column>
-                        <el-table-column
-                          prop="sex"
-                          label="性别"
-                          width="50">
-                        </el-table-column>
-                        <el-table-column
-                          prop="date"
-                          label="日期"
-                          width="100">
-                        </el-table-column>
-                        <el-table-column
-                          prop="lastmark"
-                          label="上次成绩"
-                          width="100">
-                        </el-table-column>
-                        <!-- <el-table-column
-                          prop="draw"
-                          label="成绩曲线"
-                          width="300">
-                          <div class = 'tiredpredict_show'></div>
-                        </el-table-column> -->
-                        <!-- type="expand"  -->
-                        <el-table-column label="成绩曲线">
-                          <template slot-scope="scope">
-                            <div :id="scope.row.id" style="width: 250px; height: 250px;"></div>
-                          </template>
-                        </el-table-column>
+            <el-select v-model="selectEvent" clearable collapse-tags filterable placeholder="请选择项目"
+              class="worldhighlevel__model-filter-selector" @change="handleSelectEventChange">
+              <el-option v-for="item in eventOptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="tiredpredict__model-wrapper">
+            <div class="chart-data" v-for="item in echartsDataList" :key="item.id">
+              <div class="chart-item" :id="item.title">
 
-                        <el-table-column
-                          prop="premark"
-                          label="预测成绩"
-                          width="100">
-                        </el-table-column>
-                        <el-table-column
-                          prop="reason"
-                          label="预测理由">
-                        </el-table-column>
-                      </el-table>
-                      <el-pagination
-                        @size-change="handleSizeChange"
-                        @current-change="handleCurrentChange"
-                        :current-page="currentPage"
-                        :page-sizes="[5, 10, 15, 20]"
-                        :page-size="pageSize"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="tableData.length">
-                      </el-pagination>
-                    </div>
-
-                </div>
-
+              </div>
             </div>
+          </div>
+
         </div>
+      </div>
     </el-card>
   </div>
 </template>
@@ -146,7 +66,18 @@ export default {
         d1000mValue: '',
         d1500mValue: '',
         d2000mValue: ''
-      }
+      },
+      echartsDataList: [
+        {
+          id: 1,
+          name: '',
+          title: 'echart1',
+          echarts: {
+            data1: [10, 11, 13, 11, 12, 12, 9],
+            data2: [1, -2, 2, 5, 3, 2, 0]
+          }
+        }
+      ]
     }
   },
   created () {
@@ -157,10 +88,91 @@ export default {
   },
   mounted () {
     this.getYear()
-    this.gettiredpredict()
-    this.getResultsByEvent()
+    this.getEchartsData()
+    // this.getTwoPairData()
+    this.$nextTick(() => {
+      this.echartsDataList.forEach(item => {
+        console.log(item)
+        this.initEcharts(item)
+      })
+    })
   },
   methods: {
+    initEcharts (item) {
+      const data1 = item.echarts.data1
+      const data2 = item.echarts.data2
+      const chartDom = document.getElementById(item.title)
+      const myChart = echarts.init(chartDom)
+      const option = {
+        // title: {
+        //   text: 'Temperature Change in the Coming Week'
+        // },
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {},
+        toolbox: {
+          show: true,
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none'
+            },
+            dataView: { readOnly: false },
+            magicType: { type: ['line', 'bar'] },
+            restore: {},
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: '{value} °C'
+          }
+        },
+        series: [
+          {
+            name: 'Highest',
+            type: 'line',
+            data: data1,
+            tiredLine: {
+              data: [{ type: 'average', name: 'Avg' }]
+            }
+          },
+          {
+            name: 'Lowest',
+            type: 'line',
+            data: data2,
+            tiredLine: {
+              data: [
+                { type: 'average', name: 'Avg' },
+                [
+                  {
+                    symbol: 'none',
+                    x: '90%',
+                    yAxis: 'max'
+                  },
+                  {
+                    symbol: 'circle',
+                    label: {
+                      position: 'start',
+                      formatter: 'Max'
+                    },
+                    type: 'max',
+                    name: '最高点'
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      }
+      myChart.setOption(option)
+    },
     handleSelectYearChange () {
       this.getCompByYear()
     },
@@ -178,25 +190,8 @@ export default {
     handleCurrentChange (val) {
       this.currentPage = val
     },
-    handleCompare () {
-      if (!this.fenduanForm.d500mValue || !this.fenduanForm.d1000mValue || !this.fenduanForm.d1500mValue || !this.fenduanForm.d2000mValue) return
-      const d500mTime = formatTime(this.fenduanForm.d500mValue)
-      const d1000mTime = formatTime(this.fenduanForm.d1000mValue)
-      const d1500mTime = formatTime(this.fenduanForm.d1500mValue)
-      const d2000mTime = formatTime(this.fenduanForm.d2000mValue)
-      if (this.series.length > this.cNumber) {
-        this.series.pop()
-        this.country.pop()
-      }
-      this.series.push({
-        name: 'Me',
-        type: 'line',
-        data: [d500mTime, d1000mTime, d1500mTime, d2000mTime]
-      })
-      this.country.push('Me')
-      this.settiredpredictChart()
-    },
     getYear () {
+      console.log('****')
       axios.get('http://localhost/cm/getYear').then(res => {
         const yearArr = res.data
         this.yearOptions = yearArr.map(item => (
@@ -222,6 +217,13 @@ export default {
             label: item.comp_name
           }
         ))
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getEchartsData () {
+      axios.get('http://localhost/fatigue_predict/getSimilarityData').then(res => {
+        console.log(res)
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
@@ -291,166 +293,12 @@ export default {
         }).catch(err => {
         console.log('获取数据失败' + err)
       })
-    },
-    settiredpredictChart (idvar) {
-      // var chartDom = document.getElementsByName('tiredpredict_show')
-      // var myChart = echarts.init(chartDom)
-      // var myChart = echarts.init(document.getElementsByName('tiredpredict_show'))
-      var myChart = echarts.init(document.getElementById(idvar))
-
-      var option
-
-      option = {
-        title: {
-          text: this.selectComp + this.selectEventName
-        },
-        tooltip: {
-          trigger: 'axis',
-          formatter: function (params) {
-            var result = params[0].name + '<br>'
-
-            params.forEach(function (item) {
-              result += '<span style="display:inline-block;margin-right:0px;border-radius:50%;width:0px;height:0px;left:0px;background-color:' + item.color + '"></span>' + item.seriesName + ': ' + '<span style="align-self:flex-end;font-weight:700">' + item.value + '</span>'
-            })
-
-            return result
-          }
-        },
-        grid: {
-          top: '4%',
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        toolbox: {
-          show: true,
-          top: '5%',
-          feature: {
-            dataZoom: {
-              yAxisIndex: 'none'
-            },
-            dataView: { readOnly: false },
-            magicType: { type: ['line', 'bar'] },
-            restore: {},
-            saveAsImage: {}
-          }
-        },
-        xAxis: {
-          name: '分段',
-          type: 'category',
-          boundaryGap: false,
-          data: ['2022-10', '2022-11', '2022-12', '2023-01']
-        },
-        yAxis: {
-          name: '成绩/s',
-          type: 'value'
-        },
-        series: this.series.slice(0, 1)
-      }
-
-      option && myChart.setOption(option)
-      console.log('aaaaaaaaaaaa')
-    },
-    gettiredpredict () {
-      this.tableData = [{
-        project: '世锦赛2023',
-        date: '2016-05-03',
-        id: 'tiredpredict_show' + 1,
-        name: '张三',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '50米跑成绩增加：7s->6.8s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-02',
-        id: 'tiredpredict_show' + 2,
-        name: '李四',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-04',
-        id: 'tiredpredict_show' + 3,
-        name: '王小虎',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-01',
-        id: 'tiredpredict_show' + 4,
-        name: '李老六',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-02',
-        id: 'tiredpredict_show' + 5,
-        name: '李四',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-04',
-        id: 'tiredpredict_show' + 6,
-        name: '王小虎',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-01',
-        id: 'tiredpredict_show' + 7,
-        name: '李老六',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-02',
-        id: 'tiredpredict_show' + 8,
-        name: '李四',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-04',
-        id: 'tiredpredict_show' + 9,
-        name: '王小虎',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-01',
-        id: 'tiredpredict_show' + 10,
-        name: '李老六',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }]
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
-
 .box-card {
   margin: 0 auto;
   width: 95%;
@@ -460,10 +308,12 @@ export default {
   &__wrapper {
     width: 100%;
   }
+
   &__topper {
     height: 600px;
     width: 100%;
     position: relative;
+
     &-img {
       height: 100%;
       background-image: url('../../assets/images/777.jpg');
@@ -471,24 +321,27 @@ export default {
       background-size: cover;
       background-repeat: no-repeat;
     }
+
     &-overlay {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: transparent linear-gradient(180deg,rgba(0,57,124,.1),rgba(0,44,94,.3) 22%,rgba(0,37,79,.5) 50%,#001d3e) 0 0 no-repeat padding-box;
+      background: transparent linear-gradient(180deg, rgba(0, 57, 124, .1), rgba(0, 44, 94, .3) 22%, rgba(0, 37, 79, .5) 50%, #001d3e) 0 0 no-repeat padding-box;
     }
+
     &-title {
       width: 100%;
       position: absolute;
       bottom: 60px;
       left: 0;
       right: 0;
+
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra",Arial,sans-serif;
+        font-family: "Effra", Arial, sans-serif;
         font-style: italic;
         font-size: 50px;
         color: white;
@@ -497,6 +350,7 @@ export default {
     }
   }
 }
+
 .tiredpredict {
   &__wrapper {
     display: flex;
@@ -504,19 +358,36 @@ export default {
     align-items: flex-start;
     // padding: 2%;
   }
+
   &__model {
     display: flex;
     flex-direction: column;
     width: 100%;
+
     &-title {
-        font-size: 20px;
-        font-weight: 700;
+      font-size: 20px;
+      font-weight: 700;
     }
+
     &-filter {
       margin-top: 10px;
       margin-bottom: 10px;
     }
+
     &-wrapper {
+      .chart-data {
+        border: 1px solid red;
+        display: flex;
+        flex-wrap: wrap;
+
+        .chart-item {
+          width: 19.5%;
+          height: 200px;
+          border: 1px solid red;
+        }
+      }
+
+      /*
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -525,6 +396,7 @@ export default {
         &-echarts {
             width: 90%
         }
+        */
     }
   }
 }

@@ -1,4 +1,4 @@
-let db = require('../db2/index')
+let db = require('../db/index')
 
 exports.login = (req, res) => {
   var name = req.body.name
