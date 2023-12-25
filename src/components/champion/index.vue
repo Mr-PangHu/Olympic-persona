@@ -92,6 +92,7 @@
 <script>
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
+import { formatMMToSeconds } from '@/utils/formatTime'
 const EINDEX = ['vo2max_rel', 'p4', 'deep_squat_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'bench_pull_1rm', 'fat_ratio', 'incline_brace', 'dynamometer_2000m', 'dynamometer_5000m', 'dynamometer_6000m', 'dynamometer_30min']
 const NameMap = {
   vo2max_rel: '最大摄氧量',
@@ -119,7 +120,8 @@ const Province = {
   [NameMap['dynamometer_2000m']]: 435,
   [NameMap['dynamometer_5000m']]: 1135,
   [NameMap['dynamometer_6000m']]: -1,
-  [NameMap['dynamometer_30min']]: '7650/117'
+  // [NameMap['dynamometer_30min']]: '7650/117'
+  [NameMap['dynamometer_30min']]: 117
 }
 const Country = {
   [NameMap['vo2max_rel']]: 46,
@@ -133,7 +135,8 @@ const Country = {
   [NameMap['dynamometer_2000m']]: 425,
   [NameMap['dynamometer_5000m']]: 1122,
   [NameMap['dynamometer_6000m']]: -1,
-  [NameMap['dynamometer_30min']]: '7725/116'
+  // [NameMap['dynamometer_30min']]: '7725/116'
+  [NameMap['dynamometer_30min']]: 116
 }
 const WorldChampionShip = {
   [NameMap['vo2max_rel']]: 50,
@@ -147,7 +150,8 @@ const WorldChampionShip = {
   [NameMap['dynamometer_2000m']]: 417,
   [NameMap['dynamometer_5000m']]: 1108,
   [NameMap['dynamometer_6000m']]: -1,
-  [NameMap['dynamometer_30min']]: '7800/115'
+  // [NameMap['dynamometer_30min']]: '7800/115'
+  [NameMap['dynamometer_30min']]: 115
 }
 const XuanbaTemplateMap = {
   '省市': Province,
@@ -290,9 +294,9 @@ export default {
     // 成绩转化为分数，0表示数值越低分数越高，1相反
     convert (v, t, flag = 0) {
       if (flag === 0) {
-        return (1 + (v - t) / t).toFixed(2) * 100
+        return Number((1 + (v - t) / t).toFixed(2) * 100)
       }
-      return (1 - (v - t) / t).toFixed(2) * 100
+      return Number((1 - (v - t) / t).toFixed(2) * 100)
     },
     renderIndicator () {
       this.xuanbaindicator = this.selectXuanbaValue.map(item => {
@@ -317,58 +321,59 @@ export default {
       var option
       const mostRecentData = EINDEX.map(item => {
         const t = this.playerData[item]
-        return t[t.length - 1]
+        let newArr = t
+        if (item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
+          newArr = t.map(ti => formatMMToSeconds(ti))
+        } else if (item === 'fat_ratio' || item === 'incline_brace') {
+          newArr = t.map(ti => Number(ti.slice(0, -1)))
+        }
+        return newArr[newArr.length - 1]
       })
       const avgData = EINDEX.map(item => {
         const t = this.playerData[item]
-        const tSum = t.reduce((total, cur) => total + cur, 0)
-        return Number((tSum / t.length).toFixed(2))
+        let newArr = t
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
+          if (item === 'fat_ratio') newArr = t.map(ti => Number(ti.slice(0, -1)))
+          else newArr = t.map(ti => formatMMToSeconds(ti))
+        }
+        if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
+        const tSum = newArr.reduce((total, cur) => total + cur, 0)
+        return Number((tSum / newArr.length).toFixed(2))
       })
       const bestData = EINDEX.map(item => {
         const t = this.playerData[item]
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
-          return Math.min(...t)
+        let newArr = t
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
+          if (item === 'fat_ratio') newArr = t.map(ti => Number(ti.slice(0, -1)))
+          else newArr = t.map(ti => formatMMToSeconds(ti))
+          return Math.min(...newArr)
         }
-        return Math.max(...t)
+        if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
+        return Math.max(...newArr)
       })
       const template = XuanbaTemplateMap[this.templateSelect]
       const mostRecentTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(mostRecentData[index], template[NameMap[item]], 1)
         }
-        // if (item === 'dynamometer_30min') {
-        //   const Etmp = template[item].split('/').map(t => parseInt(t))
-        //   const tmp = this.testData[index].split('/').map(t => parseInt(t))
-        //   return (this.convert(tmp[0], Etmp[0], 0) + this.convert(tmp[1], Etmp[1], 1)) / 2
-        // }
         return this.convert(mostRecentData[index], template[NameMap[item]], 0)
       })
       const avgTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(avgData[index], template[NameMap[item]], 1)
         }
-        // if (item === 'dynamometer_30min') {
-        //   const Etmp = template[item].split('/').map(t => parseInt(t))
-        //   const tmp = this.testData[index].split('/').map(t => parseInt(t))
-        //   return (this.convert(tmp[0], Etmp[0], 0) + this.convert(tmp[1], Etmp[1], 1)) / 2
-        // }
         return this.convert(avgData[index], template[NameMap[item]], 0)
       })
       const bestTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(bestData[index], template[NameMap[item]], 1)
         }
-        // if (item === 'dynamometer_30min') {
-        //   const Etmp = template[item].split('/').map(t => parseInt(t))
-        //   const tmp = this.testData[index].split('/').map(t => parseInt(t))
-        //   return (this.convert(tmp[0], Etmp[0], 0) + this.convert(tmp[1], Etmp[1], 1)) / 2
-        // }
         return this.convert(bestData[index], template[NameMap[item]], 0)
       })
 
@@ -485,58 +490,59 @@ export default {
       var option
       const mostRecentData = EINDEX.map(item => {
         const t = this.playerData[item]
-        return t[t.length - 1]
+        let newArr = t
+        if (item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
+          newArr = t.map(ti => formatMMToSeconds(ti))
+        } else if (item === 'fat_ratio' || item === 'incline_brace') {
+          newArr = t.map(ti => Number(ti.slice(0, -1)))
+        }
+        return newArr[newArr.length - 1]
       })
       const avgData = EINDEX.map(item => {
         const t = this.playerData[item]
-        const tSum = t.reduce((total, cur) => total + cur, 0)
-        return Number((tSum / t.length).toFixed(2))
+        let newArr = t
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
+          if (item === 'fat_ratio') newArr = t.map(ti => Number(ti.slice(0, -1)))
+          else newArr = t.map(ti => formatMMToSeconds(ti))
+        }
+        if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
+        const tSum = newArr.reduce((total, cur) => total + cur, 0)
+        return Number((tSum / newArr.length).toFixed(2))
       })
       const bestData = EINDEX.map(item => {
         const t = this.playerData[item]
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
-          return Math.min(...t)
+        let newArr = t
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
+          if (item === 'fat_ratio') newArr = t.map(ti => Number(ti.slice(0, -1)))
+          else newArr = t.map(ti => formatMMToSeconds(ti))
+          return Math.min(...newArr)
         }
-        return Math.max(...t)
+        if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
+        return Math.max(...newArr)
       })
       const template = OlympicTemplateMap['奥运金牌']
       const mostRecentTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(mostRecentData[index], template[NameMap[item]], 1)
         }
-        // if (item === 'dynamometer_30min') {
-        //   const Etmp = template[item].split('/').map(t => parseInt(t))
-        //   const tmp = this.testData[index].split('/').map(t => parseInt(t))
-        //   return (this.convert(tmp[0], Etmp[0], 0) + this.convert(tmp[1], Etmp[1], 1)) / 2
-        // }
         return this.convert(mostRecentData[index], template[NameMap[item]], 0)
       })
       const avgTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(avgData[index], template[NameMap[item]], 1)
         }
-        // if (item === 'dynamometer_30min') {
-        //   const Etmp = template[item].split('/').map(t => parseInt(t))
-        //   const tmp = this.testData[index].split('/').map(t => parseInt(t))
-        //   return (this.convert(tmp[0], Etmp[0], 0) + this.convert(tmp[1], Etmp[1], 1)) / 2
-        // }
         return this.convert(avgData[index], template[NameMap[item]], 0)
       })
       const bestTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
-        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m') {
+        if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(bestData[index], template[NameMap[item]], 1)
         }
-        // if (item === 'dynamometer_30min') {
-        //   const Etmp = template[item].split('/').map(t => parseInt(t))
-        //   const tmp = this.testData[index].split('/').map(t => parseInt(t))
-        //   return (this.convert(tmp[0], Etmp[0], 0) + this.convert(tmp[1], Etmp[1], 1)) / 2
-        // }
         return this.convert(bestData[index], template[NameMap[item]], 0)
       })
 

@@ -122,6 +122,22 @@ export default {
   mounted () {
     this.getPlayerId()
   },
+  watch: {
+    selectDate: {
+      handler (newValue, oldValue) {
+        if (this.switchValue) this.setTiNengChart1()
+        else this.setTable()
+      },
+      deep: true
+    },
+    selectItemValues: {
+      handler (newValue, oldValue) {
+        if (this.switchValue) this.setTiNengChart1()
+        else this.setTable()
+      },
+      deep: true
+    }
+  },
   methods: {
     formatLabel (item) {
       const label = this.tinengOptions.filter(i => i.value === item)[0].label
