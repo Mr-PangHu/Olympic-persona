@@ -13,4 +13,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 
-/src/server/db2/
+src/server/db2/
