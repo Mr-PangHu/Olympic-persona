@@ -67,26 +67,27 @@ export default {
         d1500mValue: '',
         d2000mValue: ''
       },
-      echartsDataList: [
-        // {
-        //   id: 1,
-        //   name: '',
-        //   title: 'echart1',
-        //   echarts: {
-        //     data1: [10, 11, 13, 11, 12, 12, 9, 12, 12, 9],
-        //     data2: [1, -2, 2, 5, 3, 2, 0, 3, 2, 0]
-        //   }
-        // },
-        // {
-        //   id: 2,
-        //   name: '',
-        //   title: 'echart2',
-        //   echarts: {
-        //     data1: [10, 11, 13, 11, 12, 12, 9, 12, 12, 9],
-        //     data2: [1, -2, 2, 5, 3, 2, 0, 3, 2, 0]
-        //   }
-        // }
-      ]
+      echartsDataList: []
+      // echartsDataList: [
+      //   {
+      //     id: 21,
+      //     name: '',
+      //     title: 'echart1',
+      //     echarts: {
+      //       data1: [10, 11, 13, 11, 12, 12, 9, 12, 12, 9],
+      //       data2: [1, -2, 2, 5, 3, 2, 0, 3, 2, 0]
+      //     }
+      //   },
+      //   {
+      //     id: 22,
+      //     name: '',
+      //     title: 'echart2',
+      //     echarts: {
+      //       data1: [10, 11, 13, 11, 12, 12, 9, 12, 12, 9],
+      //       data2: [1, -2, 2, 5, 3, 2, 0, 3, 2, 0]
+      //     }
+      //   }
+      // ]
     }
   },
   created () {
@@ -98,19 +99,34 @@ export default {
   mounted () {
     this.getYear()
     this.getEchartsData()
-    // this.getTwoPairData()
+    console.log('3333')
+    console.log(this.echartsDataList.length)
+    console.log(this.echartsDataList)
+    console.log('3333')
+    let i = 0
     this.$nextTick(() => {
       this.echartsDataList.forEach(item => {
+        console.log(i)
+        i = i + 1
+        // item
         console.log(item)
         this.initEcharts(item)
       })
     })
+    // this.getTwoPairData()
+    // this.$nextTick(() => {
+    //   this.echartsDataList.forEach(item => {
+    //     console.log(item)
+    //     this.initEcharts(item)
+    //   })
+    // })
   },
   methods: {
     initEcharts (item) {
+      console.log('8888****----')
+      console.log(item)
       const data1 = item.echarts.data1
       const data2 = item.echarts.data2
-      console.log('8888****----')
       console.log(data1)
       const chartDom = document.getElementById(item.title)
       const myChart = echarts.init(chartDom)
@@ -232,27 +248,33 @@ export default {
         console.log('获取数据失败' + err)
       })
     },
-    getEchartsData () {
+    async getEchartsData () {
       axios.get('http://localhost/fatigue_predict/getSimilarityData').then(res => {
-        console.log(res)
+        // console.log(res)
         var titles = ['dynamometer_2000m', 'dynamometer_30min', 'vo2max', 'vo2max_rel', 'p4', 'dynamometer_5000m',
           'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
           't', 'bnu', 'wbc', 'hct', 'c', 'rbc', 'fe']
         var count = 0
         for (const item of res.data.data1[0]) {
           var temp = {
-            'id': count + 1,
-            'name': titles[count],
-            'title': titles[count],
-            'echarts': {
-              'data1': item,
-              'data2': res.data.data2[0][count]
+            id: count + 1,
+            name: titles[count],
+            title: titles[count],
+            echarts: {
+              data1: item,
+              data2: item // res.data.data2[0][count]
             }
           }
           count++
           this.echartsDataList.push(temp)
         }
+        console.log('-------------------')
         console.log(this.echartsDataList)
+        // this.echartsDataList.forEach(item => {
+        //   console.log(item)
+        //   // this.initEcharts(item)
+        // })
+        console.log('-------------------')
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
