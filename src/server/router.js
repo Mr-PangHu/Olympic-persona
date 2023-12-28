@@ -20,6 +20,8 @@ router.get('/list/searchName', info.searchName)
 router.get('/list/getPersonInfo', info.getPersonInfo)
 router.get('/list/getId', info.getId)
 router.get('/list/getAthleteId', info.getAthleteId)
+router.get('/list/getGroupMember', info.getGroupMember)
+router.get('/list/getByUserId', info.getByUserId)
 
 router.get('/cm/getCompByYear', cm.getCompByYear)
 router.get('/cm/getYear', cm.getYear)

@@ -285,8 +285,9 @@ export default {
     }
   },
   mounted () {
+    this.getGroup()
     this.getPlayerName()
-    this.getBasicInfo()
+    // this.getBasicInfo()
   },
   methods: {
     handleSelectPlayerGender (gender) {
@@ -294,6 +295,40 @@ export default {
         return item.gender === gender
       })
       this.totalData = this.changeinfo.length
+    },
+    getGroup () {
+      const id = window.sessionStorage.getItem('id')
+      myAxios.get('/list/getByUserId', {
+        params: {
+          id
+        }
+      }).then(res => {
+        const group = res.data[0].group_id
+        this.group = group
+        if (group === 0) {
+          this.getBasicInfo()
+        } else {
+          myAxios.get('/list/getGroupMember', {
+            params: {
+              group
+            }
+          }).then(res => {
+            const tmp = res.data
+            console.log(tmp)
+            const formatTmp = tmp.map(item => (
+              {
+                ...item,
+                birthday: formatDate(item.birthday)
+              }))
+            this.info = formatTmp
+            this.changeinfo = formatTmp
+            this.totalData = res.data.length
+          })
+        }
+      }
+      ).catch(err => {
+        console.log('获取数据失败' + err)
+      })
     },
     getPlayerName () {
       myAxios.get('/list/searchName').then(res => {

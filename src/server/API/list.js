@@ -93,3 +93,23 @@ exports.getAthleteId = (req, res) => { // 获取Id
     res.send(data)
   })
 }
+
+exports.getGroupMember = (req, res) => { // 获取教练对应队友的信息
+  var sql = 'select * from person_info where group_id = ?'
+  db.query(sql, [req.query.group], (err, data) => {
+    if (err) {
+      return res.send('错误：' + err.message)
+    }
+    res.send(data)
+  })
+}
+
+exports.getByUserId = (req, res) => {
+  var sql = 'select * from user where id = ?'
+  db.query(sql, [req.query.id], (err, data) => {
+    if (err) {
+      return res.send('错误：' + err.message)
+    }
+    res.send(data)
+  })
+}
