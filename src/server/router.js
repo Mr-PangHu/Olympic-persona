@@ -38,6 +38,7 @@ router.get('/jineng/getAerobicData', jineng.getAerobicData)
 router.get('/zhuanxiang/getAthleteData', zhuanxiang.getAthleteData)
 router.get('/zhuanxiang/getSummaryData', zhuanxiang.getSummaryData)
 router.get('/zhuanxiang/getMetricsData', zhuanxiang.getMetricsData)
+router.get('/zhuanxiang/getGroundData', zhuanxiang.getGroundData)
 
 router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
 

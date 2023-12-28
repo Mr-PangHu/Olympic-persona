@@ -31,3 +31,13 @@ exports.getMetricsData = (req, res) => { // 获取全部水上专项指标数据
     res.send(data)
   })
 }
+
+exports.getGroundData = (req, res) => { // 获取全部水上专项指标数据
+  var sql = 'SELECT *  FROM training_ground_training_monishuju WHERE athlete_id = ?'
+  db.query(sql, [req.query.id], (err, data) => {
+    if (err) {
+      return res.send('错误：' + err.message)
+    }
+    res.send(data)
+  })
+}
