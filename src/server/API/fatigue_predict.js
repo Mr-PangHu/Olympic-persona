@@ -15,7 +15,6 @@ async function modelPredict(inputs) {
       metrics: ['accuracy']
     }))
   var res = model.predict(inputs).dataSync()
-  console.log('model predict',res)
   return res
 }
 
@@ -66,9 +65,65 @@ function transposeArray(array) {
   }
   return result;
 }
+function findMinAndMaxIndexes(array) {
+  let minValue = array[0];
+  let minIndex = 0;
+  let maxValue = array[0];
+  let maxIndex = 0;
+
+  for (let i = 1; i < array.length; i++) {
+    if (array[i] < minValue) {
+      minValue = array[i];
+      minIndex = i;
+    }
+    if (array[i] > maxValue) {
+      maxValue = array[i];
+      maxIndex = i;
+    }
+  }
+  return {
+    minIndex: minIndex,
+    maxIndex: maxIndex
+  };
+}
+
+function getTime()
+{
+  var startDate = new Date(); // 获取当前日期
+  var datesArray = []; // 创建一个空数组来存储日期
+  for (var i = 0; i < 10; i++) {
+    var currentDate = new Date(startDate.getTime() - (i * 24 * 60 * 60 * 1000)) // 计算当前日期的后续日期
+    var year = currentDate.getFullYear() // 获取年份
+    var month = String(currentDate.getMonth() + 1).padStart(2, '0') // 获取月份，并补零
+    var day = String(currentDate.getDate()).padStart(2, '0') // 获取日期，并补零
+    var timeString = year + '-' + month + '-' + day // 格式化为字符串
+    datesArray.push(timeString) // 将具体时间插入数组
+  }
+  datesArray.reverse()
+  return datesArray
+}
+
+function getFatiguePredictDecision(data) {
+  // 该函数用于获取运动员第几天状态开始不对，比如说成绩开始下降，部分血液指标开始出现问题
+  var exceptionIndex = []
+  for (let i = 0; i < data.length; i++)
+  {
+    if (i == 0 || i == 1 || i == 5 || i == 6 || i == 11 || i == 14 || i == 15 || i == 19)
+    {
+      exceptionIndex.push(findMinAndMaxIndexes(data[i]).minIndex)
+    }
+    else
+    {
+      exceptionIndex.push(findMinAndMaxIndexes(data[i]).maxIndex)
+    }
+  }
+  exceptionIndex.sort()
+  // 直接获取中位数，也就是索引值
+  return exceptionIndex[10]
+}
 
 exports.getSimilarityData = (req,res) => {
-  console.log('getSimilarityData')
+  // console.log('getSimilarityData')
   var sql = 'select dynamometer_2000m,dynamometer_30min,vo2max,vo2max_rel,p4,dynamometer_5000m,dynamometer_6000m,bench_pull_1rm,dead_lift_1rm,bench_press_1rm,deep_squat_1rm,ck,hb,t,bnu,wbc,hct,c,rbc,fe from fatigue_predict where id>=1 and id<=10';
   db.query(sql, (err, data) => {
     if (err) {
@@ -91,7 +146,6 @@ exports.getSimilarityData = (req,res) => {
     model_inputs = tf.tensor3d([_inputs])
     // model_inputs = tf.randomNormal([1, 10, 20])
     // 调用模型预测结果
-    console.log('*************')
     // var result =await modelPredict(model_inputs)
     modelPredict(model_inputs).then((result) => {
       // 加载数据文件
@@ -120,7 +174,10 @@ exports.getSimilarityData = (req,res) => {
       {
         data2.push(transposeArray(json[labelsIndex[i]]))
       }
-      res.send({'data1':[transposeArray(_inputs)],'data2':data2})
+      _inputs = transposeArray(_inputs)
+      let exceptionDataIndex = getFatiguePredictDecision(_inputs)
+      let messages = '第'+exceptionDataIndex+'天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视'
+      res.send({'data1':[_inputs],'data2':data2,'msg':messages,'times':getTime()})
     })
   })
 }

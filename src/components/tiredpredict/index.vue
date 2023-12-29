@@ -22,10 +22,15 @@
             </el-select>
           </div>
           <div class="tiredpredict__model-wrapper">
-            <div class="chart-data" v-for="item in echartsDataList" :key="item.id">
-              <div class="chart-item" :id="item.title">
+            <div class="chart-data">
+              <div class="chart-item" v-for="item in echartsDataList" :key="item.id" :id="item.title">
 
               </div>
+            </div>
+          </div>
+          <div class="tiredpredict__model">
+            <div class="msg">
+              {{ messages }}
             </div>
           </div>
 
@@ -38,7 +43,6 @@
 <script>
 import axios from 'axios'
 import * as echarts from 'echarts'
-import { formatTime } from '@/utils/formatTime'
 export default {
   data () {
     return {
@@ -67,27 +71,8 @@ export default {
         d1500mValue: '',
         d2000mValue: ''
       },
-      echartsDataList: []
-      // echartsDataList: [
-      //   {
-      //     id: 21,
-      //     name: '',
-      //     title: 'echart1',
-      //     echarts: {
-      //       data1: [10, 11, 13, 11, 12, 12, 9, 12, 12, 9],
-      //       data2: [1, -2, 2, 5, 3, 2, 0, 3, 2, 0]
-      //     }
-      //   },
-      //   {
-      //     id: 22,
-      //     name: '',
-      //     title: 'echart2',
-      //     echarts: {
-      //       data1: [10, 11, 13, 11, 12, 12, 9, 12, 12, 9],
-      //       data2: [1, -2, 2, 5, 3, 2, 0, 3, 2, 0]
-      //     }
-      //   }
-      // ]
+      echartsDataList: [],
+      messages: '第5天出现异常'
     }
   },
   created () {
@@ -98,42 +83,24 @@ export default {
   },
   mounted () {
     this.getYear()
-    this.getEchartsData()
-    console.log('3333')
-    console.log(this.echartsDataList.length)
-    console.log(this.echartsDataList)
-    console.log('3333')
-    let i = 0
-    this.$nextTick(() => {
-      this.echartsDataList.forEach(item => {
-        console.log(i)
-        i = i + 1
-        // item
-        console.log(item)
-        this.initEcharts(item)
+    this.getEchartsData().then(() => {
+      this.$nextTick(() => {
+        this.echartsDataList.forEach(item => {
+          this.initEcharts(item)
+        })
       })
     })
-    // this.getTwoPairData()
-    // this.$nextTick(() => {
-    //   this.echartsDataList.forEach(item => {
-    //     console.log(item)
-    //     this.initEcharts(item)
-    //   })
-    // })
   },
   methods: {
     initEcharts (item) {
-      console.log('8888****----')
-      console.log(item)
       const data1 = item.echarts.data1
       const data2 = item.echarts.data2
-      console.log(data1)
       const chartDom = document.getElementById(item.title)
       const myChart = echarts.init(chartDom)
       const option = {
-        // title: {
-        //   text: 'Temperature Change in the Coming Week'
-        // },
+        title: {
+          text: item.title
+        },
         tooltip: {
           trigger: 'axis'
         },
@@ -153,17 +120,19 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Fri', 'Sat', 'Sun']
+          data: item.times
         },
         yAxis: {
           type: 'value',
+          min: (Math.min.apply(null, [Math.min.apply(null, data1), Math.min.apply(null, data2)]) * 0.95).toFixed(2),
+          max: (Math.max.apply(null, [Math.max.apply(null, data1), Math.max.apply(null, data2)]) * 1.05).toFixed(2),
           axisLabel: {
-            formatter: '{value} °C'
+            formatter: '{value}'
           }
         },
         series: [
           {
-            name: 'Highest',
+            name: 'current data',
             type: 'line',
             data: data1,
             tiredLine: {
@@ -171,28 +140,12 @@ export default {
             }
           },
           {
-            name: 'Lowest',
+            name: 'historical data',
             type: 'line',
             data: data2,
             tiredLine: {
               data: [
-                { type: 'average', name: 'Avg' },
-                [
-                  {
-                    symbol: 'none',
-                    x: '90%',
-                    yAxis: 'max'
-                  },
-                  {
-                    symbol: 'circle',
-                    label: {
-                      position: 'start',
-                      formatter: 'Max'
-                    },
-                    type: 'max',
-                    name: '最高点'
-                  }
-                ]
+                { type: 'average', name: 'Avg' }
               ]
             }
           }
@@ -202,9 +155,6 @@ export default {
     },
     handleSelectYearChange () {
       this.getCompByYear()
-    },
-    handleSelectCompChange () {
-      this.getEventById()
     },
     handleSelectEventChange (id) {
       const event = this.eventOptions.filter(item => item.value === id)[0].label
@@ -249,7 +199,7 @@ export default {
       })
     },
     async getEchartsData () {
-      axios.get('http://localhost/fatigue_predict/getSimilarityData').then(res => {
+      await axios.get('http://localhost/fatigue_predict/getSimilarityData').then(res => {
         // console.log(res)
         var titles = ['dynamometer_2000m', 'dynamometer_30min', 'vo2max', 'vo2max_rel', 'p4', 'dynamometer_5000m',
           'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
@@ -262,86 +212,17 @@ export default {
             title: titles[count],
             echarts: {
               data1: item,
-              data2: item // res.data.data2[0][count]
-            }
+              data2: res.data.data2[0][count]
+            },
+            times: res.times
           }
           count++
           this.echartsDataList.push(temp)
         }
-        console.log('-------------------')
-        console.log(this.echartsDataList)
-        // this.echartsDataList.forEach(item => {
-        //   console.log(item)
-        //   // this.initEcharts(item)
-        // })
-        console.log('-------------------')
+        console.log(res)
+        this.messages = res.data.msg
+        console.log(this.messages)
       }).catch(err => {
-        console.log('获取数据失败' + err)
-      })
-    },
-    getEventById () {
-      axios.get('http://localhost/cm/getEventById', {
-        params: {
-          comp: this.selectComp
-        }
-      }).then(res => {
-        const eventArr = res.data
-        this.eventOptions = eventArr.map(item => (
-          {
-            value: item.id,
-            label: item.event_type
-          }
-        ))
-      }).catch(err => {
-        console.log('获取数据失败' + err)
-      })
-    },
-    getResultsByEvent (id, event) {
-      axios.get('http://localhost/cm/getResultsByEventPre', {
-        params: {
-          id,
-          event
-        }
-      }).then(res => {
-        const tmp = res.data
-        this.country = tmp.map(item => {
-          return item.country
-        })
-        this.d500m = tmp.map(item => {
-          return item.d500m ? Number(formatTime(item.d500m).toFixed(2)) : 0
-        })
-        this.d1000m = tmp.map(item => {
-          return item.d1000m ? Number(formatTime(item.d1000m).toFixed(2)) : 0
-        })
-        this.d1500m = tmp.map(item => {
-          return item.d1500m ? Number(formatTime(item.d1500m).toFixed(2)) : 0
-        })
-        this.d2000m = tmp.map(item => {
-          return item.d2000m ? Number(formatTime(item.d2000m).toFixed(2)) : 0
-        })
-      }).then(
-        () => {
-          this.series = this.country.map((item, index) => {
-            const tmp = {
-              name: item,
-              type: 'line',
-              data: [this.d500m[index], this.d1000m[index], this.d1500m[index], this.d2000m[index]]
-            }
-            return tmp
-          })
-          this.cNumber = this.country.length
-          console.log(this.series)
-          this.settiredpredictChart('tiredpredict_show1')
-          this.settiredpredictChart('tiredpredict_show2')
-          this.settiredpredictChart('tiredpredict_show3')
-          this.settiredpredictChart('tiredpredict_show4')
-          this.settiredpredictChart('tiredpredict_show5')
-          this.settiredpredictChart('tiredpredict_show6')
-          this.settiredpredictChart('tiredpredict_show7')
-          this.settiredpredictChart('tiredpredict_show8')
-          this.settiredpredictChart('tiredpredict_show9')
-          this.settiredpredictChart('tiredpredict_show10')
-        }).catch(err => {
         console.log('获取数据失败' + err)
       })
     }
@@ -427,28 +308,25 @@ export default {
 
     &-wrapper {
       .chart-data {
-        border: 1px solid red;
+        // border: 1px solid red;
         display: flex;
+        // flex-direction: row;
         flex-wrap: wrap;
-
+        width: 100%;
         .chart-item {
-          width: 19.5%;
-          height: 200px;
-          border: 1px solid red;
+          width: 33%;
+          height: 400px;
+          // border: 1px solid red;
         }
+      }    }
+    .msg{
+        align-content: center;
+        display: block;
+        font-size: x-large;
+        color: red;
+        margin: 20px;
+        padding-left: 30%;
       }
-
-      /*
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-evenly;
-        &-echarts {
-            width: 90%
-        }
-        */
-    }
   }
 }
 </style>
