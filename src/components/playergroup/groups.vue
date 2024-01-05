@@ -10,6 +10,36 @@
     </el-card>
   </div>
 </template>
+<script>
+import myAxios from '@/utils/request'
+export default {
+  data () {
+    return {
+      ids: []
+    }
+  },
+  created () {
+    this.ids = this.$route.params.ids
+    console.log(this.ids)
+  },
+  mounted () {
+    this.getTestDataByIds()
+  },
+  methods: {
+    getTestDataByIds () {
+      const ids = this.ids
+      myAxios.get('/compare/getTestDataById', {
+        params: {
+          ids
+        }
+      }).then(res => {
+        const tmp = res.data
+        console.log(tmp)
+      })
+    }
+  }
+}
+</script>
 
 <style lang='less' scoped>
 
