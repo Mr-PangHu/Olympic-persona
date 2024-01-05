@@ -7,6 +7,7 @@ let tineng = require('./API/tineng')
 let xuanba = require('./API/xuanba')
 let jineng = require('./API/jineng')
 let zhuanxiang = require('./API/zhuanxiang')
+let compare = require('./API/compare')
 
 router.post('/login', login.login)
 router.post('/register', login.register)
@@ -41,5 +42,7 @@ router.get('/zhuanxiang/getMetricsData', zhuanxiang.getMetricsData)
 router.get('/zhuanxiang/getGroundData', zhuanxiang.getGroundData)
 
 router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
+
+router.get('/compare/getTestDataById', compare.getTestDataById)
 
 module.exports = router

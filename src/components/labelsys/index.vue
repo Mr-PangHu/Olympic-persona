@@ -56,6 +56,9 @@
             <el-button type="primary" size="small">筛选</el-button>
             <el-button type="info" size="small" @click="reset">重置</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="goToCompare()" size="small">测试成绩对比</el-button>
+          </el-form-item>
         </el-form>
       </div>
 
@@ -63,6 +66,7 @@
       <el-table
         ref="multipleTable"
         :data="changeinfo.slice((currentPage - 1) * pagesize, currentPage * pagesize)"
+        :row-key="(row)=>{ return row.id}"
         height="600"
         tooltip-effect="dark"
         style="width: 90%, margin-left: 50px"
@@ -71,6 +75,7 @@
         @selection-change="handleSelectionChange"
       >
             <!-- <el-table-column fixed type="selection" width="55" align="center"></el-table-column> -->
+            <el-table-column type="selection" width="55" :reserve-selection="true"></el-table-column>
             <el-table-column prop="name" label="姓名" align="center"></el-table-column>
             <el-table-column prop="birthday" label="出生日期" align="center"></el-table-column>
             <el-table-column prop="age" label="年龄" align="center"></el-table-column>
@@ -227,7 +232,9 @@ import { getAge } from '@/utils/getAge'
 export default {
   data () {
     return {
+      checked: false,
       info: [],
+      athleteIds: [], // 使用多人对比时需要获取多个运动员的id
       multipleSelection: [],
       dialogaddVisible: false,
       dialogupdateVisible: false,
@@ -314,7 +321,7 @@ export default {
             }
           }).then(res => {
             const tmp = res.data
-            console.log(tmp)
+            // console.log(tmp)
             const formatTmp = tmp.map(item => (
               {
                 ...item,
@@ -356,6 +363,10 @@ export default {
       this.playerGender = ''
       this.changeinfo = this.info
       this.totalData = this.changeinfo.length
+    },
+    goToCompare () {
+      const ids = this.multipleSelection.map(item => item.athlete_id)
+      this.$router.push({ name: 'playergroup-groups', params: { ids: ids } })
     },
     goToPersona (row) {
       this.$router.push({ name: 'playergroup-one', params: { id: row.id } })
@@ -414,6 +425,13 @@ export default {
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
+      console.log(this.multipleSelection)
+      this.athleteIds = []
+      for (let item of this.multipleSelection) {
+        const athleteId = item['athlete_id']
+        this.athleteIds.push(athleteId)
+      }
+      console.log(this.athleteIds)
     },
     // rowClass ({ rowIndex, columnIndex }) {
     //   if (rowIndex === 0) {

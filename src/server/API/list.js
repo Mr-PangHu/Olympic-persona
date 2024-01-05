@@ -94,7 +94,7 @@ exports.getAthleteId = (req, res) => { // 获取Id
   })
 }
 
-exports.getGroupMember = (req, res) => { // 获取教练对应队友的信息
+exports.getGroupMember = (req, res) => { // 获取登录者相同组别队员的信息
   var sql = 'select * from person_info where group_id = ?'
   db.query(sql, [req.query.group], (err, data) => {
     if (err) {
@@ -104,7 +104,7 @@ exports.getGroupMember = (req, res) => { // 获取教练对应队友的信息
   })
 }
 
-exports.getByUserId = (req, res) => {
+exports.getByUserId = (req, res) => { // 通过userid获取整个用户信息，这里为了得到登录者的组别
   var sql = 'select * from user where id = ?'
   db.query(sql, [req.query.id], (err, data) => {
     if (err) {
