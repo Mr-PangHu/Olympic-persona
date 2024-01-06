@@ -67,7 +67,11 @@
                     <div class="personalInfo__topper-info-main">
                         <div class="personalInfo__topper-info-main-left">
                             <div class="personalInfo__topper-info-main-left-avatar">
-                                <el-avatar :size="130" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+                                <!-- <el-avatar :size="130" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar> -->
+                                <el-avatar :size="130">
+                                  <img v-if="imageDataUrl" :src="imageDataUrl" alt="Image">
+                                  <img v-else src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" alt="Default Image">
+                                </el-avatar>
                             </div>
                             <div class="personalInfo__topper-info-main-left-name">
                                 {{ personInfo.name }}
@@ -121,7 +125,8 @@ export default {
         'width': '150px',
         'font-weight': '700'
       },
-      personInfo: {}
+      personInfo: {},
+      imageDataUrl: ''
     }
   },
   mounted () {
@@ -137,10 +142,20 @@ export default {
         }
       }).then(res => {
         const d = res.data[0]
+        // console.log(res.data[0])
         this.personInfo = d
+        this.displayImage(this.personInfo.image)
+        // console.log(this.personInfo.image)
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
+    },
+    displayImage (imageBinaryData) {
+      // 使用Pillow库将二进制数据转换为图像的data URL
+      console.log(imageBinaryData)
+      const imageBuffer = Buffer.from(imageBinaryData) // 将数组转换为 Buffer
+      const base64Data = imageBuffer.toString('base64') // 将 Buffer 转换为 Base64 编码的字符串
+      this.imageDataUrl = `data:image/jpg;base64,${base64Data}` // 将 Base64 编码的图像数据赋值给 imageDataUrl
     },
     formatDate (d) {
       return formatDate(d)
