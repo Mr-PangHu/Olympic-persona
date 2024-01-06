@@ -11,7 +11,7 @@
       <!-- 搜索区域 -->
       <div class="search-box">
         <el-form :inline="true">
-          <el-form-item label="标签分类">
+          <!-- <el-form-item label="标签分类">
             <el-select v-model="value" placeholder="请选择分类" size="small" @change="handleSelect">
               <el-option
                 v-for="item in options"
@@ -20,7 +20,7 @@
                 :value="item.value">
               </el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="姓名">
             <el-select
               v-model="playerName"
@@ -28,6 +28,7 @@
               size="small"
               @change="handleSelectPlayerName"
               filterable
+              :disabled="playerNameDisabled"
             >
               <el-option
                 v-for="item in playerNameOptions"
@@ -42,6 +43,7 @@
               v-model="playerGender"
               placeholder="请选择性别"
               size="small"
+              :disabled="playerGenderDisabled"
               @change="handleSelectPlayerGender"
             >
               <el-option
@@ -263,8 +265,10 @@ export default {
       HuiXianid: '',
       formLabelWidth: '120px',
       playerName: '',
+      playerNameDisabled: false,
       playerNameOptions: [],
       playerGender: '',
+      playerGenderDisabled: false,
       playerGenderOptions: [{
         label: '男',
         value: '男'
@@ -295,6 +299,20 @@ export default {
     this.getGroup()
     this.getPlayerName()
     // this.getBasicInfo()
+  },
+  watch: {
+    playerName: {
+      handler (newValue, oldValue) {
+        if (this.playerName) this.playerGenderDisabled = true
+      },
+      deep: true
+    },
+    playerGender: {
+      handler (newValue, oldValue) {
+        if (this.playerGender) this.playerNameDisabled = true
+      },
+      deep: true
+    }
   },
   methods: {
     handleSelectPlayerGender (gender) {
@@ -361,6 +379,8 @@ export default {
       this.value = ''
       this.playerName = ''
       this.playerGender = ''
+      this.playerNameDisabled = false
+      this.playerGenderDisabled = false
       this.changeinfo = this.info
       this.totalData = this.changeinfo.length
     },

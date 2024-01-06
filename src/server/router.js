@@ -7,12 +7,9 @@ let tineng = require('./API/tineng')
 let xuanba = require('./API/xuanba')
 let jineng = require('./API/jineng')
 let zhuanxiang = require('./API/zhuanxiang')
-<<<<<<< HEAD
 let shangbing = require('./API/shangbing')
 let jingji = require('./API/jingji')
-=======
 let compare = require('./API/compare')
->>>>>>> 395735e5ce3675ab403ab9582c9f96f4ef2236b4
 
 router.post('/login', login.login)
 router.post('/register', login.register)
