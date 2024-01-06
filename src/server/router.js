@@ -50,5 +50,6 @@ router.get('/jingji/getCompData', jingji.getCompData)
 router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
 
 router.get('/compare/getTestDataById', compare.getTestDataById)
+router.get('/compare/getTableData', compare.getTableData)
 
 module.exports = router
