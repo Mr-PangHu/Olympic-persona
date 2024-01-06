@@ -1,8 +1,9 @@
 <template>
     <div class="shangbing__wrapper">
         <div class="shangbing__FMS">
-            <div class="shangbing__FMS-title">FMS测试</div>
-            <div class="shangbing__FMS-point">综合得分：15</div>
+            <div class="shangbing__FMS-title">FMS测试 {{date[0]}}</div>
+
+            <div class="shangbing__FMS-point">综合得分：{{composite_score[0]}}</div>
             <div class="shangbing__FMS-wrapper">
                 <div class="shangbing__FMS-wrapper-echarts" id="FMS_show"></div>
             </div>
@@ -11,12 +12,91 @@
 </template>
 
 <script>
+import myAxios from '@/utils/request'
 import * as echarts from 'echarts'
+import { formatDate } from '@/utils/formatDate'
 export default {
+  data () {
+    return {
+      squat_score: [],
+      hurdle_step_left: [],
+      hurdle_step_right: [],
+      hurdle_step_score: [],
+      in_line_lunge_left: [],
+      in_line_lunge_right: [],
+      in_line_lunge_score: [],
+      shoulder_flexibility_left: [],
+      shoulder_flexibility_right: [],
+      shoulder_flexibility_score: [],
+      active_straight_leg_raise_left: [],
+      active_straight_leg_raise_right: [],
+      active_straight_leg_raise_score: [],
+      trunk_stability_pushup_score: [],
+      rotary_stability_left: [],
+      rotary_stability_right: [],
+      rotary_stability_score: [],
+      composite_score: [],
+      date: []
+    }
+  },
   mounted () {
-    this.setFMSChart()
+    this.getPlayerId()
+    // this.setFMSChart()
   },
   methods: {
+    getPlayerId () {
+      const auth = window.sessionStorage.getItem('auth')
+      if (auth === '2') {
+        const id = this.$route.params.id
+        myAxios.get('/list/getAthleteId', {
+          params: {
+            id
+          }
+        }).then(res => {
+          const athleteId = res.data[0].athlete_id
+          this.id = athleteId
+          // console.log(this.id)
+        }).then(res => {
+          this.getShangBingData()
+        }).catch(err => {
+          console.log('获取数据失败111' + err)
+        })
+      } else {
+        this.id = window.sessionStorage.getItem('id')
+        this.getShangBingData()
+      }
+    },
+    getShangBingData () {
+      myAxios.get('/shangbing/getFMSData', {
+        params: {
+          id: this.id
+        }
+      }).then(res => {
+        const dataFMS = res.data
+        this.squat_score.push(dataFMS[0].squat_score)
+        this.hurdle_step_left.push(dataFMS[0].hurdle_step_left)
+        this.hurdle_step_right.push(dataFMS[0].hurdle_step_right)
+        this.hurdle_step_score.push(dataFMS[0].hurdle_step_score)
+        this.in_line_lunge_left.push(dataFMS[0].in_line_lunge_left)
+        this.in_line_lunge_right.push(dataFMS[0].in_line_lunge_right)
+        this.in_line_lunge_score.push(dataFMS[0].in_line_lunge_score)
+        this.shoulder_flexibility_left.push(dataFMS[0].shoulder_flexibility_left)
+        this.shoulder_flexibility_right.push(dataFMS[0].shoulder_flexibility_right)
+        this.shoulder_flexibility_score.push(dataFMS[0].shoulder_flexibility_score)
+        this.active_straight_leg_raise_left.push(dataFMS[0].active_straight_leg_raise_left)
+        this.active_straight_leg_raise_right.push(dataFMS[0].active_straight_leg_raise_right)
+        this.active_straight_leg_raise_score.push(dataFMS[0].active_straight_leg_raise_score)
+        this.trunk_stability_pushup_score.push(dataFMS[0].trunk_stability_pushup_score)
+        this.rotary_stability_left.push(dataFMS[0].rotary_stability_left)
+        this.rotary_stability_right.push(dataFMS[0].rotary_stability_right)
+        this.rotary_stability_score.push(dataFMS[0].rotary_stability_score)
+        this.composite_score.push(dataFMS[0].composite_score)
+        this.date.push(formatDate(dataFMS[0].date))
+        console.log(this.composite_score)
+      }).then(res => {
+        this.setFMSChart()
+      })
+    },
     setFMSChart () {
       var chartDom = document.getElementById('FMS_show')
       var myChart = echarts.init(chartDom)
@@ -56,7 +136,7 @@ export default {
         series: [
           {
             name: '得分',
-            data: [2, 3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 1, 1, 3, 2, 2, 2],
+            data: [this.squat_score[0], this.hurdle_step_left[0], this.hurdle_step_right[0], this.hurdle_step_score[0], this.in_line_lunge_left[0], this.in_line_lunge_right[0], this.in_line_lunge_score[0], this.shoulder_flexibility_left[0], this.shoulder_flexibility_right[0], this.shoulder_flexibility_score[0], this.active_straight_leg_raise_left[0], this.active_straight_leg_raise_right[0], this.active_straight_leg_raise_score[0], this.trunk_stability_pushup_score[0], this.rotary_stability_left[0], this.rotary_stability_right[0], this.rotary_stability_score[0]],
             type: 'bar',
             showBackground: true,
             itemStyle: {
