@@ -44,5 +44,6 @@ router.get('/zhuanxiang/getGroundData', zhuanxiang.getGroundData)
 router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
 
 router.get('/compare/getTestDataById', compare.getTestDataById)
+router.get('/compare/getTableData', compare.getTableData)
 
 module.exports = router

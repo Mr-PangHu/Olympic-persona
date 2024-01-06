@@ -366,7 +366,8 @@ export default {
     },
     goToCompare () {
       const ids = this.multipleSelection.map(item => item.athlete_id)
-      this.$router.push({ name: 'playergroup-groups', params: { ids: ids } })
+      if (ids.length === 0) window.alert('请选择运动员')
+      else this.$router.push({ name: 'playergroup-groups', params: { ids: ids } })
     },
     goToPersona (row) {
       this.$router.push({ name: 'playergroup-one', params: { id: row.id } })
