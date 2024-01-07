@@ -20,6 +20,7 @@
             </el-submenu>
             <el-menu-item :index="championPath">画像模型</el-menu-item>
             <el-menu-item index="/worldhighlevel">世界高水平</el-menu-item>
+            <el-menu-item index="/knowledge">知识图谱模块</el-menu-item>
             <el-submenu index="3">
               <template slot="title">个人中心</template>
               <el-menu-item>基本资料</el-menu-item>
