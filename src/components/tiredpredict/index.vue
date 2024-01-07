@@ -214,7 +214,7 @@ export default {
               data1: item,
               data2: res.data.data2[0][count]
             },
-            times: res.times
+            times: res.data.times
           }
           count++
           this.echartsDataList.push(temp)

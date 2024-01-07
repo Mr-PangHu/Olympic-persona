@@ -175,7 +175,7 @@ exports.getSimilarityData = (req,res) => {
         data2.push(transposeArray(json[labelsIndex[i]]))
       }
       _inputs = transposeArray(_inputs)
-      let exceptionDataIndex = getFatiguePredictDecision(_inputs)
+      let exceptionDataIndex = getFatiguePredictDecision(_inputs) + 1
       let messages = '第'+exceptionDataIndex+'天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视'
       res.send({'data1':[_inputs],'data2':data2,'msg':messages,'times':getTime()})
     })
