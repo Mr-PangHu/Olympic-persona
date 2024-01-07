@@ -1,8 +1,8 @@
 <template>
   <div class="bg">
-    <div class="logo">
+    <!-- <div class="logo">
       <img src="../../assets/images/TeamLogo.png" width="300px" height="200px">
-    </div>
+    </div> -->
     <div id="register">
         <h2>注 册</h2>
         <el-form ref="form" :model="form" :rules="regRules" label-width="25%">
@@ -122,7 +122,7 @@ export default {
     right: 0;
     /* background: url('../assets/img/register_bg.jpg');
     background-size: 100% 100%; */
-    background: url('../../assets/images/bg2.jpg');
+    background: url('../../assets/images/bg1.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat
 }

@@ -111,7 +111,7 @@ export default {
         label: '有氧能力-最大摄氧量'
       }, {
         value: 'vo2max_rel',
-        label: '身体成分-相对最大摄氧量'
+        label: '有氧能力-相对最大摄氧量'
       }, {
         value: 'wbc',
         label: '血常规-白细胞'

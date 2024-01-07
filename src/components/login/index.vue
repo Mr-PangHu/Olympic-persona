@@ -1,8 +1,8 @@
 <template>
   <div class="bg" >
-    <div class="logo">
+    <!-- <div class="logo">
       <img src="../../assets/images/TeamLogo.png" width="300px" height="200px">
-    </div>
+    </div> -->
     <div id="login">
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; margin-bottom: 30px">
           <span style="color: #222; font-weight: 600; font-size: 24px">登 录</span>
