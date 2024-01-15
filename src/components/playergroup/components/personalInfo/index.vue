@@ -125,14 +125,13 @@ export default {
         'width': '150px',
         'font-weight': '700'
       },
-      personInfo: {},
+      personInfo: [],
+      chartData: [],
       imageDataUrl: ''
     }
   },
   mounted () {
     this.getPersonInfo()
-    this.setChart()
-    this.setBodyChart()
   },
   methods: {
     getPersonInfo () {
@@ -144,10 +143,23 @@ export default {
         const d = res.data[0]
         // console.log(res.data[0])
         this.personInfo = d
+        this.getChartData()
+        this.setBodyChart()
         this.displayImage(this.personInfo.image)
         // console.log(this.personInfo.image)
       }).catch(err => {
         console.log('获取数据失败' + err)
+      })
+    },
+    getChartData () {
+      myAxios.get('/quickview/getTestPersonInfo', {
+        params: {
+          id: this.personInfo.athlete_id
+        }
+      }).then(res => {
+        const data = res.data[0]
+        this.chartData = data
+        this.setChart()
       })
     },
     displayImage (imageBinaryData) {
@@ -166,11 +178,12 @@ export default {
     setChart () {
       var chartDom = document.getElementById('general_show')
       var myChart = echarts.init(chartDom)
+      console.log(this.chartData)
       var option
 
       const data = [
         {
-          value: [93.8, 93.5, 65.1, 113.8, 114.9, 105.5],
+          value: [this.chartData.cgy2000m_score, this.chartData.cgy5000m_score, this.chartData.cgy30min20str_score, this.chartData.cgy500m_score, this.chartData.cgy10str_score, this.chartData.strength_score],
           name: '我',
           areaStyle: {
             color: 'rgba(144, 144, 144, 0.5)'
@@ -239,9 +252,10 @@ export default {
     setBodyChart () {
       var chartDom = document.getElementById('bodyShape_show')
       var myChart = echarts.init(chartDom)
+      console.log(this.personInfo)
       var option
 
-      const data = [121, 321, 141, 52, 198, 289, 139, 121, 321, 141, 52, 198, 289]
+      const data = [this.personInfo.squat_reach, this.personInfo.ankle_circumference, this.personInfo.achilles_tendon_length, this.personInfo.lower_leg_length_a, this.personInfo.lower_leg_length_b, this.personInfo.calf_circumference, this.personInfo.thigh_circumference, this.personInfo.waist_circumference, this.personInfo.chest_circumference, this.personInfo.hip_width, this.personInfo.shoulder_width, this.personInfo.upper_arm_length, this.personInfo.finger_length]
       option = {
         tooltip: {
           trigger: 'item'
