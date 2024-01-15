@@ -36,11 +36,12 @@ const mutations = {
     window.sessionStorage.removeItem('auth')
   }
 }
-
 const actions = {
 }
 // 配置为 vuex 的插件
-const plugins = [createPersistedState()]
+const plugins = [createPersistedState({
+  storage: sessionStorage
+})]
 
 export default new Vuex.Store({
   state,

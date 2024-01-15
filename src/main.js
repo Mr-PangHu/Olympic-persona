@@ -8,13 +8,15 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import less from 'less'
 import store from './store'
+import Vuex from 'vuex'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(less)
+Vue.use(Vuex)
 
 // 清除 token
-store.commit('LOGOUT')
+// store.commit('LOGOUT')
 
 /* eslint-disable no-new */
 new Vue({

@@ -30,6 +30,7 @@
 
 <script>
 import myAxios from '@/utils/request'
+import createPersistedState from 'vuex-persistedstate'
 // import { mapMutations } from 'vuex'
 export default {
   data () {
@@ -54,7 +55,6 @@ export default {
       }
     }
   },
-
   methods: {
     // ...mapMutations(['changeLogin']),
     login () {
@@ -77,6 +77,9 @@ export default {
               this.$store.commit('SET_TOKEN', res.data.token)
               this.$store.commit('SET_AUTH', res.data.data.auth)
               this.$store.commit('SET_ID', res.data.data.id)
+              this.$store.subscribe((mutation, state) => {
+                createPersistedState()(this.$store)
+              })
               this.$router.push({
                 path: '/home',
                 query: {
