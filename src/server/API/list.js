@@ -74,6 +74,16 @@ exports.getPersonInfo = (req, res) => { // 获取个人信息
   })
 }
 
+exports.getPersonInfoByAthleteId = (req, res) => { // 通过athlete_id获取个人信息
+  var sql = 'select * from person_info where athlete_id = ?'
+  db.query(sql, [req.query.id], (err, data) => {
+    if (err) {
+      return res.send('错误：' + err.message)
+    }
+    res.send(data)
+  })
+}
+
 exports.getId = (req, res) => { // 获取Id
   var sql = 'select id from person_info where athlete_id = ?'
   db.query(sql, [req.query.athleteId], (err, data) => {
