@@ -76,7 +76,7 @@
               <template slot="label">
                 <div>年龄<br>Age</div>
               </template>
-              {{this.personInfo.age}}
+              {{new Date().getFullYear()-this.personInfo.birthday.split('-')[0]}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -106,7 +106,7 @@
               <template slot="label">
                 <div>总分<br>Total Score</div>
               </template>
-              586.5
+              {{this.lastTestDataPersonInfo.cgy10str_score+this.lastTestDataPersonInfo.cgy2000m_score+this.lastTestDataPersonInfo.cgy30min20str_score+this.lastTestDataPersonInfo.cgy500m_score+this.lastTestDataPersonInfo.cgy5000m_score+this.lastTestDataPersonInfo.strength_score}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -138,7 +138,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template slot="header">
-                  <div id="last_testDate"></div>
+                  <div class="test"></div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -156,7 +156,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="pace" width="100">
-                  <template slot="header" >
+                  <template slot="cgy2000m_header" >
                     <div>配速</div>
                     <div>Pace</div>
                   </template>
@@ -697,144 +697,145 @@
 // import axios from 'axios'
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
-import { formatDate } from '@/utils/formatDate'
+// import { formatDate } from '@/utils/formatDate'
 // import 'echarts/extension/bmap/bmap'
 export default {
   data () {
     return {
       Erg2k: [{
         item: '测功仪2000m',
-        score: '93.8',
-        result: '07:06.0',
-        pace: '01:46.5',
-        standard: '06:57.0'
+        standard: '06:57.0',
+        score: [],
+        result: [],
+        pace: []
       }],
       Erg5k: [{
         item: '测功仪5000m',
-        score: '93.5',
-        result: '18:40.0',
-        pace: '01:52.0',
-        standard: '18:15.0'
+        standard: '18:15.0',
+        score: [],
+        result: [],
+        pace: []
       }],
       Erg30: [{
         item: '测功仪30分钟/20桨频',
-        score: '65.1',
-        result: '7670',
-        pace: '01:57.3',
-        standard: 'U20国际标准'
+        standard: 'U20国际标准',
+        score: [],
+        result: [],
+        pace: []
       }],
       Erg500m: [{
         item: '测功仪500m',
-        score: '113.8',
-        result: '410',
-        pace: '01:34.9',
-        standard: '360'
+        standard: '360',
+        score: [],
+        result: [],
+        pace: []
       }],
       Erg10str: [{
         item: '测功仪10桨',
-        score: '114.9',
-        result: '609',
-        pace: '01:23.1',
-        standard: '530'
+        standard: '530',
+        score: [],
+        result: [],
+        pace: []
       }],
       strengthBackSquat: [{
         item: '力量',
-        tScore: '105.5',
-        result: '109',
+        tScore: [],
+        result: [],
         standard: '100',
-        score: '109.0'
+        score: []
       }],
       benchPull: [{
-        result: '79',
+        result: [],
         standard: '70',
-        score: '112.9'
+        score: []
       }],
       benchPress: [{
-        result: '60',
+        result: [],
         standard: '70',
-        score: '85.7'
+        score: []
       }],
       Erg2kTest: [{
-        score: '90.8',
-        result: '07:10.7',
-        pace: '01:47.7',
-        diff: '-4.7'
+        score: [],
+        result: [],
+        pace: [],
+        diff: []
       }],
       Erg5kTest: [{
-        score: '86.6',
-        result: '19:08.8',
-        pace: '01:54.9',
-        diff: '-28.8'
+        score: [],
+        result: [],
+        pace: [],
+        diff: []
       }],
       Erg30Test: [{
-        score: '52.4',
-        result: '7567',
-        pace: '01:58.9',
-        diff: '103.0'
+        score: [],
+        result: [],
+        pace: [],
+        diff: []
       }],
       Erg500mTest: [{
-        score: '109.9',
-        result: '396',
-        pace: '01:36.0',
-        diff: '13.9'
+        score: [],
+        result: [],
+        pace: [],
+        diff: []
       }],
       Erg10strTest: [{
-        score: '113.2',
-        result: '600',
-        pace: '01:23.6',
-        diff: '9.0'
+        score: [],
+        result: [],
+        pace: [],
+        diff: []
       }],
       strengthBackSquatTest: [{
         item: '力量',
-        tScore: '100.4',
-        result: '105',
-        diff: '4.00',
-        score: '105.0'
+        tScore: [],
+        result: [],
+        diff: [],
+        score: []
       }],
       benchPullTest: [{
-        result: '73',
-        diff: '6.00',
-        score: '104.3'
+        result: [],
+        diff: [],
+        score: []
       }],
       benchPressTest: [{
-        result: '58',
-        diff: '2.00',
-        score: '82.9'
+        result: [],
+        diff: [],
+        score: []
       }],
-      tableData1: [{
-        score: '90.8',
-        result: '07:10.7',
-        pace: '01:47.7',
-        diff: '-4.7'
-      }, {
-        score: '86.6',
-        result: '19:08.8',
-        pace: '01:54.9',
-        diff: '-28.8'
-      }, {
-        score: '52.4',
-        result: '7567',
-        pace: '01:58.9',
-        diff: '103.0'
-      }, {
-        score: '109.9',
-        result: '396',
-        pace: '01:36.0',
-        diff: '13.9'
-      }, {
-        score: '113.2',
-        result: '600',
-        pace: '01:23.6',
-        diff: '9.0'
-      }],
+      // tableData1: [{
+      //   score: '90.8',
+      //   result: '07:10.7',
+      //   pace: '01:47.7',
+      //   diff: '-4.7'
+      // }, {
+      //   score: '86.6',
+      //   result: '19:08.8',
+      //   pace: '01:54.9',
+      //   diff: '-28.8'
+      // }, {
+      //   score: '52.4',
+      //   result: '7567',
+      //   pace: '01:58.9',
+      //   diff: '103.0'
+      // }, {
+      //   score: '109.9',
+      //   result: '396',
+      //   pace: '01:36.0',
+      //   diff: '13.9'
+      // }, {
+      //   score: '113.2',
+      //   result: '600',
+      //   pace: '01:23.6',
+      //   diff: '9.0'
+      // }],
       personInfo: [],
-      lastTestDataPersonInfo: []
+      lastTestDataPersonInfo: [],
+      TestDataPersonInfo: [],
+      testDate: ['2000-11-10']
     }
   },
   name: 'my-homepage',
   mounted () {
     this.getData()
-    this.setChart()
     // 2.0
     // this.setHeightChart()
     // this.setGenderChart()
@@ -868,7 +869,7 @@ export default {
         const d = res.data[0]
         // console.log(this.athleteId)
         this.personInfo = d
-        this.personInfo.birthday = formatDate(this.personInfo.birthday)
+        this.personInfo.birthday = this.personInfo.birthday.split('T')[0]
         // console.log(this.personInfo)
         myAxios.get('/quickview/getTestPersonInfo', {
           params: {
@@ -876,16 +877,85 @@ export default {
           }
         }).then(res => {
           this.lastTestDataPersonInfo = res.data[0]
-          this.lastTestDataPersonInfo.test_date = formatDate(this.lastTestDataPersonInfo.test_date)
-          this.addDivContent()
+          this.TestDataPersonInfo = res.data[1]
+          this.lastTestDataPersonInfo.test_date = this.lastTestDataPersonInfo.test_date.split('T')[0]
+          this.setDivContent()
+          this.TestDataPersonInfo.test_date = this.TestDataPersonInfo.test_date.split('T')[0]
+          // 最近一次的数据
+          this.Erg2k[0].score = this.lastTestDataPersonInfo.cgy2000m_score
+          this.Erg2k[0].result = this.lastTestDataPersonInfo.cgy2000m_result
+          this.Erg2k[0].pace = this.lastTestDataPersonInfo.cgy2000m_pace
+
+          this.Erg5k[0].score = this.lastTestDataPersonInfo.cgy5000m_score
+          this.Erg5k[0].result = this.lastTestDataPersonInfo.cgy5000m_result
+          this.Erg5k[0].pace = this.lastTestDataPersonInfo.cgy5000m_pace
+
+          this.Erg30[0].score = this.lastTestDataPersonInfo.cgy30min20str_score
+          this.Erg30[0].result = this.lastTestDataPersonInfo.cgy30min20str_result
+          this.Erg30[0].pace = this.lastTestDataPersonInfo.cgy30min20str_pace
+
+          this.Erg500m[0].score = this.lastTestDataPersonInfo.cgy500m_score
+          this.Erg500m[0].result = this.lastTestDataPersonInfo.cgy500m_result
+          this.Erg500m[0].pace = this.lastTestDataPersonInfo.cgy500m_pace
+
+          this.Erg10str[0].score = this.lastTestDataPersonInfo.cgy10str_score
+          this.Erg10str[0].result = this.lastTestDataPersonInfo.cgy10str_result
+          this.Erg10str[0].pace = this.lastTestDataPersonInfo.cgy10str_pace
+
+          this.strengthBackSquat[0].tScore = this.lastTestDataPersonInfo.strength_score
+          this.strengthBackSquat[0].score = this.lastTestDataPersonInfo.squat_score
+          this.strengthBackSquat[0].result = this.lastTestDataPersonInfo.squat_result
+
+          this.benchPull[0].score = this.lastTestDataPersonInfo.pull_score
+          this.benchPull[0].result = this.lastTestDataPersonInfo.pull_result
+
+          this.benchPress[0].score = this.lastTestDataPersonInfo.press_score
+          this.benchPress[0].result = this.lastTestDataPersonInfo.press_result
+
+          // 倒数第二次的数据
+          this.Erg2kTest[0].score = this.TestDataPersonInfo.cgy2000m_score
+          this.Erg2kTest[0].result = this.TestDataPersonInfo.cgy2000m_result
+          this.Erg2kTest[0].pace = this.TestDataPersonInfo.cgy2000m_pace
+          this.Erg2kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
+
+          this.Erg5kTest[0].score = this.TestDataPersonInfo.cgy5000m_score
+          this.Erg5kTest[0].result = this.TestDataPersonInfo.cgy5000m_result
+          this.Erg5kTest[0].pace = this.TestDataPersonInfo.cgy5000m_pace
+          this.Erg5kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
+
+          this.Erg30Test[0].score = this.TestDataPersonInfo.cgy30min20str_score
+          this.Erg30Test[0].result = this.TestDataPersonInfo.cgy30min20str_result
+          this.Erg30Test[0].pace = this.TestDataPersonInfo.cgy30min20str_pace
+          this.Erg30Test[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_result)) + 's'
+
+          this.Erg500mTest[0].score = this.TestDataPersonInfo.cgy500m_score
+          this.Erg500mTest[0].result = this.TestDataPersonInfo.cgy500m_result
+          this.Erg500mTest[0].pace = this.TestDataPersonInfo.cgy500m_pace
+          this.Erg500mTest[0].diff = this.TestDataPersonInfo.cgy500m_result - this.lastTestDataPersonInfo.cgy500m_result
+
+          this.Erg10strTest[0].score = this.TestDataPersonInfo.cgy10str_score
+          this.Erg10strTest[0].result = this.TestDataPersonInfo.cgy10str_result
+          this.Erg10strTest[0].pace = this.TestDataPersonInfo.cgy10str_pace
+          this.Erg10strTest[0].diff = this.TestDataPersonInfo.cgy10str_result - this.lastTestDataPersonInfo.cgy10str_result
+
+          this.strengthBackSquatTest[0].tScore = this.TestDataPersonInfo.strength_score
+          this.strengthBackSquatTest[0].score = this.TestDataPersonInfo.squat_score
+          this.strengthBackSquatTest[0].result = this.TestDataPersonInfo.squat_result
+          this.strengthBackSquatTest[0].diff = this.TestDataPersonInfo.squat_result - this.lastTestDataPersonInfo.squat_result
+
+          this.benchPullTest[0].score = this.TestDataPersonInfo.pull_score
+          this.benchPullTest[0].result = this.TestDataPersonInfo.pull_result
+          this.benchPullTest[0].diff = this.TestDataPersonInfo.pull_result - this.lastTestDataPersonInfo.pull_result
+
+          this.benchPressTest[0].score = this.TestDataPersonInfo.press_score
+          this.benchPressTest[0].result = this.TestDataPersonInfo.press_result
+          this.benchPressTest[0].diff = this.TestDataPersonInfo.press_result - this.lastTestDataPersonInfo.press_result
+          console.log(this.lastTestDataPersonInfo.test_date)
+          this.setChart()
         })
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
-    },
-    addDivContent () {
-      var divContent = document.getElementsById('last_testDate')
-      divContent.innerHTML = this.lastTestDataPersonInfo.test_date
     },
     setRowStyle ({row, rowIndex}) {
       return {
@@ -896,6 +966,16 @@ export default {
       if ((row['score'] >= 80 && column.property === 'score') || (row['tScore'] >= 80 && column.property === 'tScore')) return 'background-color: rgba(255, 0, 0, 0.8);'
       else if ((row['score'] < 80 && column.property === 'score') || (row['tScore'] < 80 && column.property === 'tScore')) return 'background-color: rgba(0, 255, 0, 0.8);'
     },
+    setDivContent () {
+      var divs = document.getElementsByName('.test')
+      console.log(this.lastTestDataPersonInfo.test_date)
+      divs.innerText = this.lastTestDataPersonInfo.test_date
+    },
+    timeStringToSeconds (timeString) {
+      const [minutes, seconds] = timeString.split(':').map(Number)
+      const totalSeconds = minutes * 60 + seconds
+      return totalSeconds
+    },
     setChart () {
       var chartDom = document.getElementById('chart_show')
       var myChart = echarts.init(chartDom)
@@ -903,15 +983,15 @@ export default {
 
       const data = [
         {
-          value: [93.8, 93.5, 65.1, 113.8, 114.9, 105.5],
-          name: '2023-11-27',
+          value: [this.lastTestDataPersonInfo.cgy2000m_score, this.lastTestDataPersonInfo.cgy5000m_score, this.lastTestDataPersonInfo.cgy30min20str_score, this.lastTestDataPersonInfo.cgy500m_score, this.lastTestDataPersonInfo.cgy10str_score, this.lastTestDataPersonInfo.strength_score],
+          name: this.lastTestDataPersonInfo.test_date,
           areaStyle: {
             color: 'rgba(51, 204, 0, 0.8)'
           }
         },
         {
-          value: [90.8, 86.6, 52.4, 109.9, 113.2, 100.4],
-          name: '2023-10-29'
+          value: [this.TestDataPersonInfo.cgy2000m_score, this.TestDataPersonInfo.cgy5000m_score, this.TestDataPersonInfo.cgy30min20str_score, this.TestDataPersonInfo.cgy500m_score, this.TestDataPersonInfo.cgy10str_score, this.TestDataPersonInfo.strength_score],
+          name: this.TestDataPersonInfo.test_date
         },
         {
           value: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -925,7 +1005,7 @@ export default {
         },
         legend: {
           top: 5,
-          data: ['2023-11-27', '2023-10-29', '标准'],
+          data: [this.lastTestDataPersonInfo.test_date, this.TestDataPersonInfo.test_date, '标准'],
           itemGap: 20,
           textStyle: {
             color: '#666',
