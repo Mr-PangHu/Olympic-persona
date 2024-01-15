@@ -14,3 +14,4 @@ yarn-error.log*
 *.sln
 
 /src/server/db2
+src/server/db/persona_test.sql

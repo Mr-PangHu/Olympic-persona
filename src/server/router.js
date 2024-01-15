@@ -26,8 +26,8 @@ router.get('/cm/getEventById', cm.getEventById)
 router.get('/cm/getResultsByEvent', cm.getResultsByEvent)
 router.get('/cm/getResultsByEventPre', cm.getResultsByEventPre)
 
-router.get('/fatigue_predict/getSimilarityData', fp.getSimilarityData)
-// router.get('/fatigue_predict/getLastTenData',fp.getLastTenData)
+// router.get('/fatigue_predict/getSimilarityData', fp.getSimilarityData)
+router.get('/fatigue_predict/getAllFatigueData',fp.getAllFatigueData)
 
 router.get('/tineng/getBasicTinengData', tineng.getBasicTinengData)
 router.get('/tineng/getProTinengData', tineng.getProTinengData)

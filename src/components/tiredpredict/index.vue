@@ -10,6 +10,11 @@
     <el-card class="box-card">
       <div class="tiredpredict__wrapper">
         <div class="tiredpredict__model">
+          <div class="tiredpredict__model">
+            <div class="msg">
+              {{ messages }}
+            </div>
+          </div>
           <div style="text-align: right; margin-bottom: 1%;">
             今天日期
             <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期">
@@ -28,12 +33,6 @@
               </div>
             </div>
           </div>
-          <div class="tiredpredict__model">
-            <div class="msg">
-              {{ messages }}
-            </div>
-          </div>
-
         </div>
       </div>
     </el-card>
@@ -48,6 +47,7 @@ export default {
     return {
       todaydate: new Date(),
       tableData: [],
+      allData: null,
       pageSize: 5,
       currentPage: 1,
       selectYear: '',
@@ -72,7 +72,7 @@ export default {
         d2000mValue: ''
       },
       echartsDataList: [],
-      messages: '第5天出现异常'
+      messages: ''
     }
   },
   created () {
@@ -80,14 +80,15 @@ export default {
     this.defaultValue.setHours(0)
     this.defaultValue.setMinutes(1)
     this.defaultValue.setSeconds(0)
+    const data = this.$route.params
+    this.allData = data.info
   },
-  mounted () {
+  async mounted () {
     this.getYear()
-    this.getEchartsData().then(() => {
-      this.$nextTick(() => {
-        this.echartsDataList.forEach(item => {
-          this.initEcharts(item)
-        })
+    await this.getEchartsData()
+    this.$nextTick(() => {
+      this.echartsDataList.forEach(item => {
+        this.initEcharts(item)
       })
     })
   },
@@ -168,7 +169,6 @@ export default {
       this.currentPage = val
     },
     getYear () {
-      console.log('****')
       axios.get('http://localhost/cm/getYear').then(res => {
         const yearArr = res.data
         this.yearOptions = yearArr.map(item => (
@@ -181,51 +181,55 @@ export default {
         console.log('获取数据失败' + err)
       })
     },
-    getCompByYear () {
-      axios.get('http://localhost/cm/getCompByYear', {
-        params: {
-          year: this.selectYear
+    getEchartsData () {
+      var titles = ['dynamometer_2000m', 'dynamometer_30min', 'vo2max', 'vo2max_rel', 'p4', 'dynamometer_5000m',
+        'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
+        't', 'bnu', 'wbc', 'hct', 'c', 'rbc', 'fe']
+      var count = 0
+      for (const item of this.allData.data.input) {
+        var temp = {
+          id: count + 1,
+          name: titles[count],
+          title: titles[count],
+          echarts: {
+            data1: item,
+            data2: this.allData.data.simData[count]
+          },
+          times: this.allData.data.times
         }
-      }).then(res => {
-        const compArr = res.data
-        this.compOptions = compArr.map(item => (
-          {
-            value: item.comp_name,
-            label: item.comp_name
-          }
-        ))
-      }).catch(err => {
-        console.log('获取数据失败' + err)
-      })
-    },
-    async getEchartsData () {
-      await axios.get('http://localhost/fatigue_predict/getSimilarityData').then(res => {
-        // console.log(res)
-        var titles = ['dynamometer_2000m', 'dynamometer_30min', 'vo2max', 'vo2max_rel', 'p4', 'dynamometer_5000m',
-          'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
-          't', 'bnu', 'wbc', 'hct', 'c', 'rbc', 'fe']
-        var count = 0
-        for (const item of res.data.data1[0]) {
-          var temp = {
-            id: count + 1,
-            name: titles[count],
-            title: titles[count],
-            echarts: {
-              data1: item,
-              data2: res.data.data2[0][count]
-            },
-            times: res.data.times
-          }
-          count++
-          this.echartsDataList.push(temp)
-        }
-        console.log(res)
-        this.messages = res.data.msg
-        console.log(this.messages)
-      }).catch(err => {
-        console.log('获取数据失败' + err)
-      })
+        count++
+        this.echartsDataList.push(temp)
+      }
+      this.messages = this.allData.data.message
     }
+    // async getEchartsData () {
+    //   await axios.get('http://localhost/fatigue_predict/getSimilarityData').then(res => {
+    //     // console.log(res)
+    //     var titles = ['dynamometer_2000m', 'dynamometer_30min', 'vo2max', 'vo2max_rel', 'p4', 'dynamometer_5000m',
+    //       'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
+    //       't', 'bnu', 'wbc', 'hct', 'c', 'rbc', 'fe']
+    //     var count = 0
+    //     for (const item of res.data.data1[0]) {
+    //       var temp = {
+    //         id: count + 1,
+    //         name: titles[count],
+    //         title: titles[count],
+    //         echarts: {
+    //           data1: item,
+    //           data2: res.data.data2[0][count]
+    //         },
+    //         times: res.data.times
+    //       }
+    //       count++
+    //       this.echartsDataList.push(temp)
+    //     }
+    //     console.log(res)
+    //     this.messages = res.data.msg
+    //     console.log(this.messages)
+    //   }).catch(err => {
+    //     console.log('获取数据失败' + err)
+    //   })
+    // }
   }
 }
 </script>
