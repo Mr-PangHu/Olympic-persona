@@ -10,6 +10,7 @@ let zhuanxiang = require('./API/zhuanxiang')
 let shangbing = require('./API/shangbing')
 let jingji = require('./API/jingji')
 let compare = require('./API/compare')
+let quickview = require('./API/quickview')
 
 router.post('/login', login.login)
 router.post('/register', login.register)
@@ -51,5 +52,7 @@ router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
 
 router.get('/compare/getTestDataById', compare.getTestDataById)
 router.get('/compare/getTableData', compare.getTableData)
+
+router.get('/quickview/getTestPersonInfo', quickview.getTestPersonInfo)
 
 module.exports = router

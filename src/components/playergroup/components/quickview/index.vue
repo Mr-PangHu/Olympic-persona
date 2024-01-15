@@ -70,13 +70,13 @@
               <template slot="label">
                 姓名<br>Name
               </template>
-              kooriookami
+              {{this.personInfo.name}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <div>年龄<br>Age</div>
               </template>
-              23
+              {{this.personInfo.age}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -88,19 +88,19 @@
               <template slot="label">
                 <div>身高<br>Height</div>
               </template>
-              172
+              {{this.personInfo.height}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <div>出生日期<br>Date of Birth</div>
               </template>
-              2000-11-5
+              {{this.personInfo.birthday}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <div>总排名<br>Rank</div>
               </template>
-              1
+              {{this.lastTestDataPersonInfo.test_rank}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -118,13 +118,13 @@
               <template slot="label">
                 <div>体重<br>Weight</div>
               </template>
-              60.0
+              {{this.personInfo.weight}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
                 <div>测试日期<br>Test Date</div>
               </template>
-              2023-11-27
+              {{this.lastTestDataPersonInfo.test_date}}
             </el-descriptions-item>
           </el-descriptions>
         </div>
@@ -138,7 +138,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template slot="header">
-                  <div>2023-11-27</div>
+                  <div id="last_testDate"></div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -216,7 +216,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template slot="header">
-                  <div>2023-11-27</div>
+                  <div id="last_testDate"></div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -255,7 +255,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template slot="header">
-                  <div>2023-11-27</div>
+                  <div id="last_testDate"></div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -294,7 +294,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template slot="header">
-                  <div>2023-11-27</div>
+                  <div id="last_testDate"></div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -325,39 +325,6 @@
                 </el-table-column>
               </el-table-column>
             </el-table>
-            <!-- <el-table
-              :data="tableData"
-              border
-              style="width: 100%"
-            >
-              <el-table-column prop="item" label="指标"  width="160"></el-table-column>
-              <el-table-column prop="score">
-                <template slot="header">
-                  <div>得分</div>
-                  <div>Score</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="成绩" align="center">
-                <el-table-column prop="result">
-                  <template slot="header">
-                    <div>实测值</div>
-                    <div>Result</div>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="pace">
-                  <template slot="header">
-                    <div>配速</div>
-                    <div>Pace</div>
-                  </template>
-                </el-table-column>
-                <el-table-column prop="standard" width="110">
-                  <template slot="header">
-                    <div>标准</div>
-                    <div>Standard</div>
-                  </template>
-                </el-table-column>
-              </el-table-column>
-            </el-table> -->
           </div>
           <div class="main__middle-middle">
             <div class="main__middle-middle-echarts" id="chart_show"></div>
@@ -544,7 +511,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template slot="header">
-                  <div>2023-11-27</div>
+                  <div id="last_testDate"></div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -729,6 +696,8 @@
 <script>
 // import axios from 'axios'
 import * as echarts from 'echarts'
+import myAxios from '@/utils/request'
+import { formatDate } from '@/utils/formatDate'
 // import 'echarts/extension/bmap/bmap'
 export default {
   data () {
@@ -832,37 +801,6 @@ export default {
         diff: '2.00',
         score: '82.9'
       }],
-      // tableData: [{
-      //   item: '测功仪2000m',
-      //   score: '93.8',
-      //   result: '07:06.0',
-      //   pace: '01:46.5',
-      //   standard: '06:57.0'
-      // }, {
-      //   item: '测功仪5000m',
-      //   score: '93.5',
-      //   result: '18:40.0',
-      //   pace: '01:52.0',
-      //   standard: '18:15.0'
-      // }, {
-      //   item: '测功仪30分钟/20桨频',
-      //   score: '65.1',
-      //   result: '7670',
-      //   pace: '01:57.3',
-      //   standard: 'U20国际标准'
-      // }, {
-      //   item: '测功仪500m',
-      //   score: '113.8',
-      //   result: '410',
-      //   pace: '01:34.9',
-      //   standard: '360'
-      // }, {
-      //   item: '测功仪10桨',
-      //   score: '114.9',
-      //   result: '609',
-      //   pace: '01:23.1',
-      //   standard: '530'
-      // }],
       tableData1: [{
         score: '90.8',
         result: '07:10.7',
@@ -888,34 +826,14 @@ export default {
         result: '600',
         pace: '01:23.6',
         diff: '9.0'
-      }]
-      // 2.0
-      // info: [],
-      // tableData: [{
-      //   name: '周牧',
-      //   shangbing: '膝',
-      //   date: '2023-05-03'
-      // }, {
-      //   name: '潘刚',
-      //   shangbing: '踝',
-      //   date: '2023-05-02'
-      // }, {
-      //   name: '尤志宏',
-      //   shangbing: '腰',
-      //   date: '2023-05-02'
-      // }, {
-      //   name: '郎雪',
-      //   shangbing: '腰',
-      //   date: '2023-05-01'
-      // }, {
-      //   name: '邹爱民',
-      //   shangbing: '膝',
-      //   date: '2023-05-01'
-      // }]
+      }],
+      personInfo: [],
+      lastTestDataPersonInfo: []
     }
   },
   name: 'my-homepage',
   mounted () {
+    this.getData()
     this.setChart()
     // 2.0
     // this.setHeightChart()
@@ -941,6 +859,34 @@ export default {
     // this.test2ChartFn()
   },
   methods: {
+    getData () {
+      myAxios.get('/list/getPersonInfo', {
+        params: {
+          id: this.$route.params.id
+        }
+      }).then(res => {
+        const d = res.data[0]
+        // console.log(this.athleteId)
+        this.personInfo = d
+        this.personInfo.birthday = formatDate(this.personInfo.birthday)
+        // console.log(this.personInfo)
+        myAxios.get('/quickview/getTestPersonInfo', {
+          params: {
+            id: d.athlete_id
+          }
+        }).then(res => {
+          this.lastTestDataPersonInfo = res.data[0]
+          this.lastTestDataPersonInfo.test_date = formatDate(this.lastTestDataPersonInfo.test_date)
+          this.addDivContent()
+        })
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    addDivContent () {
+      var divContent = document.getElementsById('last_testDate')
+      divContent.innerHTML = this.lastTestDataPersonInfo.test_date
+    },
     setRowStyle ({row, rowIndex}) {
       return {
         background: 'rgba(144, 147, 153, 0.2)'
