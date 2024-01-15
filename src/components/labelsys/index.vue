@@ -446,13 +446,13 @@ export default {
     },
     handleSelectionChange (val) {
       this.multipleSelection = val
-      console.log(this.multipleSelection)
+      // console.log(this.multipleSelection)
       this.athleteIds = []
       for (let item of this.multipleSelection) {
         const athleteId = item['athlete_id']
         this.athleteIds.push(athleteId)
       }
-      console.log(this.athleteIds)
+      // console.log(this.athleteIds)
     },
     // rowClass ({ rowIndex, columnIndex }) {
     //   if (rowIndex === 0) {
