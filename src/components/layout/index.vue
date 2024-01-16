@@ -64,7 +64,7 @@
                 <i class="el-icon-data-analysis"></i>运动员画像
               </template>
               <el-menu-item :index="personaPath">
-                <i></i>个人画像
+                <i></i>食物成分检索
               </el-menu-item>
               <!-- <el-menu-item index="/player-groups">
                 <i></i>群体画像
@@ -78,19 +78,13 @@
             </el-menu-item>
             <el-submenu index="4">
               <template slot="title">
-                <i class="el-icon-s-custom"></i>知识图谱模块
+                <i class="el-icon-data-analysis"></i>知识图谱
               </template>
-              <el-menu-item>
-                <i class="el-icon-s-operation"></i>食物成分检索
-              </el-menu-item>
-              <el-menu-item index="/updatepwd">
-                <i class="el-icon-key"></i>知识图谱检索
-              </el-menu-item>
-              <el-menu-item index="/updatepwd">
-                <i class="el-icon-key"></i>营养监控
-              </el-menu-item>
-              <el-menu-item index="/updatepwd">
-                <i class="el-icon-key"></i>大模型问答
+              <el-menu-item
+                v-for="item in menuData " :key="item.name"
+                :index="item.path">
+                <i :class="`el-icon-${item.icon}`"></i>
+                <span slot="title">{{ item.label }}</span>
               </el-menu-item>
             </el-submenu>
             <el-submenu index="3">
@@ -126,7 +120,33 @@ export default {
     return {
       showPersona: true,
       personaPath: '',
-      championPath: ''
+      championPath: '',
+      menuData: [
+        {
+          path:"/knowledge",
+          name:"knowledge",
+          label:'知识图谱展示',
+          icon: 'data-line',
+        },
+        {
+          path:"/search",
+          name:"search",
+          label:'食物成分查询',
+          icon: 'search',
+        },
+        {
+          path:"/foodtrack",
+          name:"foodtrack",
+          label:'日常营养',
+          icon: 's-home',
+        },
+        {
+          path:"/bigModel",
+          name:"bigModel",
+          label:'问答模式',
+          icon: 'ship',
+        }, 
+      ]
     }
   },
   name: 'my-homepage',
@@ -170,7 +190,7 @@ export default {
         })
         .catch((err) => err)
     }
-  }
+  },
 }
 </script>
 
