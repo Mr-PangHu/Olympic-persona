@@ -110,6 +110,9 @@ export default {
         })
         this.trainDateOptions.push.apply(this.trainDateOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
         // console.log(this.trainDateOptions)
+        this.dataFMS.sort((a, b) => {
+          return b.date.localeCompare(a.date)
+        })
         this.dataShow = this.dataFMS[0]// 默认显示最新的一次测试成绩
         console.log('moren', this.dataShow)
         this.dataShow['date'] = formatDate(this.dataShow['date'])
