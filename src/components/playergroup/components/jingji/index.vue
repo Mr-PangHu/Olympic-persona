@@ -1,5 +1,23 @@
 <template>
-  <el-table
+  <div>
+    <el-select
+        v-model="category"
+        clearable
+        collapse-tags
+        filterable
+        placeholder="请选择赛事类别"
+        class="compCategory__model-filter-selector"
+        @change="handleSelectCategoryChange"
+    >
+        <el-option
+        v-for="item in CompOptions"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value">
+        </el-option>
+    </el-select>
+    <el-button type="info" size="small" @click="reset">重置</el-button>
+    <el-table
       :data="tableData"
       style="width: 100%">
       <el-table-column
@@ -8,18 +26,23 @@
         align="center">
       </el-table-column>
       <el-table-column
-        prop="danwei"
-        label="单位"
+        prop="xiangmu"
+        label="项目名称"
         align="center">
       </el-table-column>
       <el-table-column
-        prop="xiangmu"
-        label="项目"
+        prop="rank"
+        label="排名"
         align="center">
       </el-table-column>
       <el-table-column
         prop="zubie"
-        label="比赛组别"
+        label="组别"
+        align="center">
+      </el-table-column>
+      <el-table-column
+        prop="danwei"
+        label="单位"
         align="center">
       </el-table-column>
       <el-table-column
@@ -27,7 +50,13 @@
         label="成绩"
         align="center">
       </el-table-column>
+      <el-table-column
+        prop="difference"
+        label="时间差"
+        align="center">
+      </el-table-column>
     </el-table>
+  </div>
 </template>
 
 <script>
@@ -37,7 +66,11 @@ import { formatDate } from '@/utils/formatDate'
 export default {
   data () {
     return {
-      tableData: []
+      compResult: [],
+      tableData: [],
+      CompOptions: [],
+      dataShow: [],
+      category: null
       // tableData: [{
       //   date: '2022-05-02',
       //   danwei: '江苏',
@@ -86,6 +119,41 @@ export default {
         this.getCompResult()
       }
     },
+    handleSelectCategoryChange (category) {
+      const tmp = this.compResult.filter(item => {
+        return item['comp_category'] === category
+      })
+      console.log(tmp)
+      this.tableData = []
+      tmp.map(item => {
+        this.tableData.push({
+          date: formatDate(item.date), // 假设要选择key1键的值
+          danwei: item.area, // 假设要选择key2键的值
+          xiangmu: item.event_type,
+          zubie: item.event_name,
+          chengji: item.event_result,
+          rank: item.rank,
+          difference: item.time_diffference
+          // 选择其他键的值...
+        })
+      })
+    },
+    reset () {
+      this.category = ''
+      this.tableData = []
+      this.compResult.map(item => {
+        this.tableData.push({
+          date: formatDate(item.date), // 假设要选择key1键的值
+          danwei: item.area, // 假设要选择key2键的值
+          xiangmu: item.event_type,
+          zubie: item.event_name,
+          chengji: item.event_result,
+          rank: item.rank,
+          difference: item.time_diffference
+          // 选择其他键的值...
+        })
+      })
+    },
     getCompResult () {
       myAxios.get('/jingji/getCompData', {
         params: {
@@ -93,13 +161,33 @@ export default {
         }
       }).then(res => {
         const compResult = res.data
+        this.compResult = compResult
+        // console.log(compResult)
+        const tempSet = new Set()
+        const temp = compResult.map(item => {
+          if (!tempSet.has(item.comp_category)) {
+            tempSet.add(item.comp_category)
+            return {
+              label: item.comp_category,
+              value: item.comp_category
+            }
+          }
+          return null
+        }).filter(item => item !== null)
+        // console.log(temp)
+        this.CompOptions.push.apply(this.CompOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
+        console.log(this.CompOptions)
+        // this.dataShow = this.dataFMS[0]// 默认显示最新的一次测试成绩
+        // console.log('moren', this.dataShow)
         compResult.map(item => {
           this.tableData.push({
             date: formatDate(item.date), // 假设要选择key1键的值
             danwei: item.area, // 假设要选择key2键的值
             xiangmu: item.event_type,
             zubie: item.event_name,
-            chengji: item.event_result
+            chengji: item.event_result,
+            rank: item.rank,
+            difference: item.time_diffference
             // 选择其他键的值...
           })
         })
