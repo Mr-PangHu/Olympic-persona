@@ -184,7 +184,7 @@ exports.getAllFatigueData = (req, res) => {
         {
           temp = transposeArray(_inputs[k])
           let exceptionDataIndex = getFatiguePredictDecision(temp) + 1
-          return_res.push({ name: 'name-' + k, sex: 'sex-' + k, date: 'time-' + k, result: '第'+exceptionDataIndex+'天出现疲劳', reason: 'reason' + labelsIndex[mostSimIndex], message: '第'+exceptionDataIndex+'天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视', input:temp, mostSim: labelsIndex[mostSimIndex], simData: transposeArray(json[labelsIndex[mostSimIndex]]),times: getTime()})
+          return_res.push({ name: 'name-' + k, sex: 'sex-' + k, date: 'time-' + k, reason: '第'+exceptionDataIndex+'天出现疲劳', message: '第'+exceptionDataIndex+'天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视', input:temp, mostSim: labelsIndex[mostSimIndex], simData: transposeArray(json[labelsIndex[mostSimIndex]]),times: getTime()})
           mostSimIndex++
         }
       }
