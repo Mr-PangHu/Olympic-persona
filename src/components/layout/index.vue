@@ -76,6 +76,23 @@
             <el-menu-item index="/worldhighlevel">
               <i class="el-icon-trophy"></i>世界高水平
             </el-menu-item>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-s-custom"></i>知识图谱模块
+              </template>
+              <el-menu-item>
+                <i class="el-icon-s-operation"></i>食物成分检索
+              </el-menu-item>
+              <el-menu-item index="/updatepwd">
+                <i class="el-icon-key"></i>知识图谱检索
+              </el-menu-item>
+              <el-menu-item index="/updatepwd">
+                <i class="el-icon-key"></i>营养监控
+              </el-menu-item>
+              <el-menu-item index="/updatepwd">
+                <i class="el-icon-key"></i>大模型问答
+              </el-menu-item>
+            </el-submenu>
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>个人中心

@@ -54,9 +54,31 @@ const router = new Router({
           component: () => import('@/components/worldhighlevel')
         },
         {
-          path: 'knowledge',
-          name: 'knowledge',
-          component: () => import('@/components/knowledge')
+          path: '/search',
+          name: 'search',
+          component: () => import('@/components/knowledge/search'),
+          children: [
+            {
+              path: '/search/searchDetail/:food_id?',
+              name: 'searchDetail',
+              component: () => import('@/components/knowledge/search/searchDetail')
+            }
+          ]
+        },
+        {
+          path: '/foodtrack',
+          name: 'foodtrack',
+          component: () => import('@/components/knowledge/weight/foodtrack')
+        },
+        {
+          path: '/display',
+          name: 'display',
+          component: () => import('@/components/knowledge/display')
+        },
+        {
+          path: '/bigModel',
+          name: 'bigModel',
+          component: () => import('@/components/knowledge/bigModel')
         }
       ]
     },
