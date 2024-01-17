@@ -21,6 +21,11 @@
       :data="tableData"
       style="width: 100%">
       <el-table-column
+        prop="comp_category"
+        label="赛事类别"
+        align="center">
+      </el-table-column>
+      <el-table-column
         prop="date"
         label="比赛日期"
         align="center">
@@ -133,7 +138,8 @@ export default {
           zubie: item.event_name,
           chengji: item.event_result,
           rank: item.rank,
-          difference: item.time_diffference
+          difference: item.time_diffference,
+          comp_category: item.comp_category
           // 选择其他键的值...
         })
       })
@@ -149,9 +155,13 @@ export default {
           zubie: item.event_name,
           chengji: item.event_result,
           rank: item.rank,
-          difference: item.time_diffference
+          difference: item.time_diffference,
+          comp_category: item.comp_category
           // 选择其他键的值...
         })
+      })
+      this.tableData.sort((a, b) => { // 升序->调换ab降序
+        return b.date.localeCompare(a.date)
       })
     },
     getCompResult () {
@@ -187,9 +197,13 @@ export default {
             zubie: item.event_name,
             chengji: item.event_result,
             rank: item.rank,
-            difference: item.time_diffference
+            difference: item.time_diffference,
+            comp_category: item.comp_category
             // 选择其他键的值...
           })
+        })
+        this.tableData.sort((a, b) => { // 升序->调换ab降序
+          return b.date.localeCompare(a.date)
         })
         console.log(this.tableData)
         // console.log(compResult)

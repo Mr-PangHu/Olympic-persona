@@ -3,10 +3,11 @@
         <div class="zhuanxiang__water">
             <div class="zhuanxiang__water-title">水上专项</div>
             <div class="zhuanxiang__water-date">
-              <el-form :inline="true" ref="zhuanxiangForm" :model="zhuanxiangForm" label-width="70px">
+              <!-- <el-form :inline="true" ref="zhuanxiangForm" :model="zhuanxiangForm" label-width="70px"> -->
+              <el-form :inline="true" label-width="70px">
                   <el-form-item label="">
                     <el-date-picker
-                      v-model="zhuanxiangForm.dateRange"
+                      v-model="dateRange"
                       type="daterange"
                       :picker-options="pickerOptions"
                       range-separator="至"
@@ -69,19 +70,26 @@ import { formatDate } from '@/utils/formatDate'
 export default {
   data () {
     return {
-      training_dates: [],
-      stroke_rates: [],
-      max_forces: [],
-      rowing_powers: [],
-      work_per_strokes: [],
-      legs_max_speeds: [],
-      average_boat_speeds: [],
-      dataGround: [],
-      pickerOptions: null,
-      zhuanxiangForm: {
-        zhuanxiangSelectValues: [],
-        dateRange: ''
+      // training_dates: [],
+      // stroke_rates: [],
+      // max_forces: [],
+      // rowing_powers: [],
+      // work_per_strokes: [],
+      // legs_max_speeds: [],
+      // average_boat_speeds: [],
+      dataWater: [], // 水上数据
+      dataWaterShow: [],
+      training_date: [],
+      dateRange: [],
+      // pickerOptions: null,
+      pickerOptions: {
+        disabledDate: this.disabledDate // 将 disabledDate 方法赋值给 pickerOptions
       },
+      // zhuanxiangForm: {
+      //   zhuanxiangSelectValues: [],
+      //   dateRange: ''
+      // },
+      dataGround: [], // 陆上数据
       groundDateOptions: [],
       dataShow: [],
       groundDate: null
@@ -138,53 +146,39 @@ export default {
       this.setFuHeChart1()
       this.setFuHeChart2()
     },
+    disabledDate (date) {
+      const startDate = this.dataWater[0]['training_date']
+      const endDate = this.dataWater[this.dataWater.length - 1]['training_date']
+
+      return formatDate(date) < startDate || formatDate(date) > endDate
+    },
     handleDateRangeChange () {
-      var startDate = this.zhuanxiangForm.dateRange[0]
-      var endDate = this.zhuanxiangForm.dateRange[1]
-
-      var timeArray = this.zhuanxiangData.date
-
-      var selectedTimes = timeArray.filter((time) => {
-        var currentDate = new Date(time)
+      var startDate = formatDate(this.dateRange[0]) // 获取选择的起始日期
+      var endDate = formatDate(this.dateRange[1]) // 获取选择的结束日期
+      // console.log('ddd', startDate)
+      // 在这里根据选择的日期范围筛选数据
+      var filteredData = this.dataWater.filter((item) => {
+        var currentDate = item.training_date
+        // console.log('gg', currentDate)
         return currentDate >= startDate && currentDate <= endDate
       })
-
-      var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
-      const copy = this.selectItemValues
-      for (var key in this.selectItemValues) {
-        this.selectItemValues[key] = sortedTimes.map((selectedTime) => {
-          var index = timeArray.indexOf(selectedTime)
-          return copy[key][index]
-        })
-      }
-      const tmp = []
-      for (var key1 in this.selectItemValues) {
-        tmp.push({
-          name: this.zhuanxiangOptions.filter(item => item.value === key1)[0].label,
-          data: this.selectItemValues[key1],
-          type: 'line',
-          // stack: 'Total',
-          markPoint: {
-            data: [
-              { type: 'max', name: 'Max' },
-              { type: 'min', name: 'Min' }
-            ]
-          },
-          showBackground: true
-        })
-      }
-      this.series = tmp
-      this.selectDate = sortedTimes.map(item => formatDate(item))
-      if (this.switchValue) this.setzhuanxiangChart1()
-      else this.setTable()
+      this.dataWaterShow = [...filteredData]
+      // console.log('dhh', this.dataWaterShow)
+      // console.log('sss', filteredData)
+      this.setWaterChart1()
+      this.setWaterChart2()
+      this.setWaterChart3()
+      this.setWaterChart4()
+      // 使用筛选后的数据进行进一步处理或更新相关变量
     },
     handleReset () {
-      this.selectDate = this.zhuanxiangData.date.map(item => formatDate(item))
-      this.zhuanxiangForm.dateRange = []
-      this.zhuanxiangForm.zhuanxiangSelectValues = []
-      this.series = []
-      if (this.switchValue) this.setzhuanxiangChart1()
-      else this.setTable()
+      this.dateRange = []
+      // this.dataWaterShow = [...this.dataWater]
+      this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 5, this.dataWater.length)
+      this.setWaterChart1()
+      this.setWaterChart2()
+      this.setWaterChart3()
+      this.setWaterChart4()
     },
     getZhuanxiangData () {
       // myAxios.get('/zhuanxiang/getAthleteData', {
@@ -232,6 +226,7 @@ export default {
         // console.log('dd', GroundData)
         const idList = []
         const trainingidList = []
+        this.training_date = []
         AthleteData.forEach(item => {
           const id = item.id
           const trainingid = item.training_id
@@ -244,7 +239,8 @@ export default {
             // this.training_dates.push(date)
             // // console.log(this.training_dates)
             if (item.id === trainingidList[i]) {
-              this.training_dates.push(formatDate(item.training_date))
+              // this.training_dates.push(formatDate(item.training_date))
+              this.training_date.push(formatDate(item.training_date))
             }
           })
         }
@@ -254,16 +250,36 @@ export default {
             // this.training_dates.push(date)
             // // console.log(this.training_dates)
             if (item.athlete_training_id === idList[j]) {
-              this.stroke_rates.push(item.stroke_rate)
-              this.max_forces.push(item.max_force)
-              this.rowing_powers.push(item.rowing_power)
-              this.work_per_strokes.push(item.work_per_stroke)
-              this.legs_max_speeds.push(item.legs_max_speed)
-              this.average_boat_speeds.push(item.average_boat_speed)
+              // this.stroke_rates.push(item.stroke_rate)
+              // this.max_forces.push(item.max_force)
+              // this.rowing_powers.push(item.rowing_power)
+              // this.work_per_strokes.push(item.work_per_stroke)
+              // this.legs_max_speeds.push(item.legs_max_speed)
+              // this.average_boat_speeds.push(item.average_boat_speed)
+              this.dataWater.push({
+                training_date: this.training_date[j], // 添加 training_date
+                stroke_rate: item.stroke_rate,
+                max_force: item.max_force,
+                rowing_power: item.rowing_power,
+                work_per_stroke: item.work_per_stroke,
+                legs_max_speed: item.legs_max_speed,
+                average_boat_speed: item.average_boat_speed
+              })
               j++
             }
           })
         }
+        // console.log('dataWater排序前:', this.dataWater)
+        this.dataWater.sort((a, b) => { // 升序->调换ab降序
+          return a.training_date.localeCompare(b.training_date)
+        })
+        this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 5, this.dataWater.length)
+        console.log('555', this.dataWaterShow)
+        // if (this.training_date.length > 0) {
+        //   this.dateRange = [new Date(this.dataWater[0]['training_date']), '']
+        // }
+        // console.log(this.dataWater[0]['stroke_rate'])
+        // console.log('dataWater排序后:', this.dataWater)
         // console.log(GroundData[0])
         const temp = this.dataGround.map(item => {
           return {
@@ -277,7 +293,7 @@ export default {
           return b.date.localeCompare(a.date)
         })
         this.dataShow = this.dataGround[0]
-        console.log('xx', this.dataShow)
+        // console.log('xx', this.dataShow)
         this.dataShow['date'] = formatDate(this.dataShow['date'])
         // console.log(this.dataShow['three_minute_heart_rate'])
         // console.log(this.dataShow)
@@ -296,13 +312,9 @@ export default {
         // console.log(this.stroke_rates)
       }).then(res => {
         this.setWaterChart1()
-      }).then(res => {
         this.setFuHeChart2()
-      }).then(res => {
         this.setWaterChart3()
-      }).then(res => {
         this.setWaterChart4()
-      }).then(res => {
         this.setFuHeChart1()
         this.setWaterChart2()
       })
@@ -338,7 +350,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.training_dates,
+          data: this.dataWaterShow.map(item => item.training_date),
           name: '训练日期',
           nameLocation: 'center',
           nameTextStyle: {
@@ -351,7 +363,7 @@ export default {
         yAxis: {
           type: 'value',
           min: 0,
-          max: Math.floor(Math.max(...this.stroke_rates)) + 5,
+          max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.stroke_rate))) + 5,
           name: '桨频（桨/min）',
           nameLocation: 'center',
           nameTextStyle: {
@@ -360,7 +372,7 @@ export default {
         },
         series: [
           {
-            data: this.stroke_rates,
+            data: this.dataWaterShow.map(item => item.stroke_rate),
             name: '桨频（桨/min）',
             type: 'bar',
             showBackground: true,
@@ -432,7 +444,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.training_dates,
+          data: this.dataWaterShow.map(item => item.training_date),
           name: '训练日期',
           nameLocation: 'center',
           nameTextStyle: {
@@ -445,7 +457,7 @@ export default {
         yAxis: {
           type: 'value',
           min: 0,
-          max: Math.floor(Math.max(...this.max_forces)) + 20,
+          max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.max_force))) + 20,
           name: '拉桨最大力量（N）',
           nameLocation: 'center',
           nameTextStyle: {
@@ -454,7 +466,7 @@ export default {
         },
         series: [
           {
-            data: this.max_forces,
+            data: this.dataWaterShow.map(item => item.max_force),
             name: '拉桨最大力量（N）',
             type: 'bar',
             showBackground: true,
@@ -526,7 +538,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.training_dates,
+          data: this.dataWaterShow.map(item => item.training_date),
           name: '训练日期',
           nameLocation: 'center',
           nameTextStyle: {
@@ -538,8 +550,8 @@ export default {
         },
         yAxis: {
           type: 'value',
-          min: Math.floor(Math.min(...this.rowing_powers)) - 10,
-          max: Math.floor(Math.max(...this.rowing_powers)) + 10,
+          min: Math.floor(Math.min(...this.dataWaterShow.map(item => item.rowing_power))) - 10,
+          max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.rowing_power))) + 10,
           name: '拉桨功率（W）',
           nameLocation: 'center',
           nameTextStyle: {
@@ -548,7 +560,7 @@ export default {
         },
         series: [
           {
-            data: this.rowing_powers,
+            data: this.dataWaterShow.map(item => item.rowing_power),
             name: '拉桨功率（W）',
             type: 'line',
             smooth: true,
@@ -621,7 +633,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.training_dates,
+          data: this.dataWaterShow.map(item => item.training_date),
           name: '训练日期',
           nameLocation: 'center',
           nameTextStyle: {
@@ -634,7 +646,7 @@ export default {
         yAxis: {
           type: 'value',
           min: 0,
-          max: Math.floor(Math.max(...this.work_per_strokes)) + 30,
+          max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.work_per_stroke))) + 30,
           name: '每桨做功（N）',
           nameLocation: 'center',
           nameTextStyle: {
@@ -643,7 +655,7 @@ export default {
         },
         series: [
           {
-            data: this.work_per_strokes,
+            data: this.dataWaterShow.map(item => item.work_per_stroke),
             name: '每桨做功（N）',
             type: 'bar',
             showBackground: true,
@@ -853,6 +865,9 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.invisible-date {
+  display: none;
+}
 .el-form-item__label {
   font-size: 20px;
   font-weight: bold;
