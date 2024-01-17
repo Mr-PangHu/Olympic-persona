@@ -9,27 +9,65 @@
     </div>
     <el-card class="box-card">
       <div>
-        <h2 align="center">测试成绩</h2>
+        <el-form :inline="true" ref="compareForm">
+          <el-form-item>
+            <el-select
+              v-model="playerNames"
+              placeholder="请选择对比运动员"
+              size="small"
+              @change="handleSelectPlayerNames"
+              filterable
+              multiple
+              collapse-tags
+            >
+              <el-option
+                v-for="item in playerNamesOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select
+              v-model="testDate"
+              placeholder="请选择测试日期"
+              size="small"
+              @change="handleSelectTestDate"
+              filterable
+            >
+              <el-option
+                v-for="item in testDateOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div>
+        <!-- <h2 align="center">测试成绩</h2> -->
         <el-table
-          :data="tableData"
-          style="width: 100%" align="center"
+          :data="mostRecentData"
+          :header-cell-style="{'text-align': 'center'}"
         >
-          <el-table-column prop="test_date" label="测试日期" width="100"></el-table-column>
-          <el-table-column prop="athlete_name" label="姓名" width="100"></el-table-column>
-          <el-table-column prop="test_rank" label="测试排名" width="100"></el-table-column>
-          <el-table-column prop="cgy500m_result" label="测功仪500m成绩" width="140"></el-table-column>
-          <el-table-column prop="cgy500m_pace" label="测功仪500m配速" width="140"></el-table-column>
-          <el-table-column prop="cgy2000m_result" label="测功仪2000m成绩" width="140"></el-table-column>
-          <el-table-column prop="cgy2000m_pace" label="测功仪2000m配速" width="140"></el-table-column>
-          <el-table-column prop="cgy5000m_result" label="测功仪5000m成绩" width="140"></el-table-column>
-          <el-table-column prop="cgy5000m_pace" label="测功仪5000m配速" width="140"></el-table-column>
-          <el-table-column prop="cgy30min20str_result" label="测功仪30分钟20桨频成绩" width="190"></el-table-column>
-          <el-table-column prop="cgy30min20str_pace" label="测功仪30分钟20桨频配速" width="190"></el-table-column>
-          <el-table-column prop="cgy10str_result" label="测功仪10桨频成绩" width="140"></el-table-column>
-          <el-table-column prop="cgy10str_pace" label="测功仪10桨频配速" width="140"></el-table-column>
-          <el-table-column prop="squat_result" label="深蹲" width="60"></el-table-column>
-          <el-table-column prop="press_result" label="卧推" width="60"></el-table-column>
-          <el-table-column prop="pull_result" label="卧拉" width="60"></el-table-column>
+          <el-table-column prop="test_date" label="测试日期" align="center" width="100"></el-table-column>
+          <el-table-column prop="athlete_name" label="姓名" align="center" width="80"></el-table-column>
+          <el-table-column prop="test_rank" label="测试排名" align="center"></el-table-column>
+          <el-table-column prop="cgy500m_result" label="测功仪500m成绩" align="center" width="105"></el-table-column>
+          <el-table-column prop="cgy500m_pace" label="测功仪500m配速" align="center" width="105"></el-table-column>
+          <el-table-column prop="cgy2000m_result" label="测功仪2000m成绩" align="center" width="115"></el-table-column>
+          <el-table-column prop="cgy2000m_pace" label="测功仪2000m配速" align="center" width="115"></el-table-column>
+          <el-table-column prop="cgy5000m_result" label="测功仪5000m成绩" align="center" width="115"></el-table-column>
+          <el-table-column prop="cgy5000m_pace" label="测功仪5000m配速" align="center" width="115"></el-table-column>
+          <el-table-column prop="cgy30min20str_result" label="测功仪30分钟20桨频成绩" align="center" width="115"></el-table-column>
+          <el-table-column prop="cgy30min20str_pace" label="测功仪30分钟20桨频配速" align="center" width="115"></el-table-column>
+          <el-table-column prop="cgy10str_result" label="测功仪10桨频成绩" align="center" width="110"></el-table-column>
+          <el-table-column prop="cgy10str_pace" label="测功仪10桨频配速" align="center" width="110"></el-table-column>
+          <el-table-column prop="squat_result" label="深蹲" align="center" width="60"></el-table-column>
+          <el-table-column prop="press_result" label="卧推" align="center" width="60"></el-table-column>
+          <el-table-column prop="pull_result" label="卧拉" align="center" width="60"></el-table-column>
         </el-table>
         <div class="compare__title">
           <div style="width: 280px; text-align: center">个人信息</div>
@@ -65,6 +103,14 @@ import * as echarts from 'echarts'
 import { getAge } from '@/utils/getAge'
 import { formatDate } from '@/utils/formatDate'
 // import { formatBySpilt } from '@/utils/formatDate'
+const NAMEMAP = {
+  cgy500m_score: '测功仪500m',
+  cgy2000m_score: '测功仪2000m',
+  cgy5000m_score: '测功仪5000m',
+  cgy30min20str_score: '测功仪30分钟/20桨频',
+  cgy10str_score: '测功仪10桨',
+  strength_score: '力量'
+}
 export default {
   data () {
     return {
@@ -74,17 +120,11 @@ export default {
       test_dates: [],
       mostRecentData: [],
       avgData: {},
-      personInfo: []
-      // athlete_names: [],
-      // test_ranks: [],
-      // cgy500m_results: [],
-      // cgy2000m_results: [],
-      // cgy5000m_results: [],
-      // cgy30min20str_results: [],
-      // cgy10str_results: [],
-      // squat_results: [],
-      // press_results: [],
-      // pull_results: []
+      personInfo: [],
+      playerNames: [],
+      playerNamesOptions: [],
+      testDate: '',
+      testDateOptions: []
     }
   },
   created () {
@@ -95,24 +135,26 @@ export default {
     // this.getTestDataByIds()
     this.getTableData()
     this.getPersonInfo()
+    this.getAllTableData()
     // this.setCompareChart1()
   },
   methods: {
+    setHeader () {
+      return 'width: 20px'
+    },
+    handleSelectPlayerNames () {
+      this.ids = this.playerNames
+      this.getTableData()
+      this.getPersonInfo()
+    },
+    handleSelectTestDate () {
+      // this.ids = this.playerNames
+      this.getTableData()
+      this.getPersonInfo()
+    },
     getAge (d) {
       return getAge(formatDate(d))
     },
-    // getTestDataByIds () {
-    //   this.data = []
-    //   const ids = this.ids
-    //   myAxios.get('/compare/getTestDataById', {
-    //     params: {
-    //       ids
-    //     }
-    //   }).then(res => {
-    //     this.data = res.data
-    //     console.log(this.data)
-    //   })
-    // },
     getPersonInfo () {
       const requests = this.ids.map(async (id) => {
         const res = await myAxios.get('/list/getPersonInfoByAthleteId', {
@@ -152,10 +194,10 @@ export default {
             mostRecentDate = item.test_date
           }
           item.test_date = item.test_date.split('T')[0]
-          this.test_dates.push(item.test_date)
         })
-        // console.log(this.tableData)
-        this.mostRecentData = this.tableData.filter(item => item.test_date === mostRecentDate.split('T')[0])
+        if (this.testDate.length === 0) this.testDate = mostRecentDate.split('T')[0]
+        this.mostRecentData = this.tableData.filter(item => item.test_date === this.testDate)
+        this.playerNames = Array.from(new Set(this.tableData.map(item => item.athlete_id)))
         let sumRes = {
           cgy500m_score: 0,
           cgy2000m_score: 0,
@@ -177,6 +219,29 @@ export default {
         })
       })
     },
+    getAllTableData () {
+      myAxios.get('/compare/getAllTableData').then(res => {
+        const allTableData = res.data
+        allTableData.forEach(item => {
+          item.test_date = item.test_date.split('T')[0]
+          this.test_dates.push(item.test_date)
+        })
+        const names = Array.from(new Set(allTableData.map(item => item.athlete_name)))
+        const athleteIds = Array.from(new Set(allTableData.map(item => item.athlete_id)))
+        this.playerNamesOptions = names.map((item, index) => {
+          return {
+            label: item,
+            value: athleteIds[index]
+          }
+        })
+        this.testDateOptions = Array.from(new Set(this.test_dates)).map(item => {
+          return {
+            label: item,
+            value: item
+          }
+        })
+      })
+    },
     setCompareChart (index, chartData) {
       var chartDom = document.getElementById('compare_show' + index)
       var myChart = echarts.init(chartDom)
@@ -186,7 +251,7 @@ export default {
       for (let key in chartData) {
         if (key === 'cgy500m_score' || key === 'cgy2000m_score' || key === 'cgy5000m_score' || key === 'cgy30min20str_score' || key === 'cgy10str_score' || key === 'strength_score') {
           tmpData.push({
-            name: key,
+            name: NAMEMAP[key],
             value: Number(chartData[key])
           })
         }
@@ -228,7 +293,7 @@ export default {
       var dataName = []
       for (let key in chartData) {
         if (key === 'cgy500m_score' || key === 'cgy2000m_score' || key === 'cgy5000m_score' || key === 'cgy30min20str_score' || key === 'cgy10str_score' || key === 'strength_score') {
-          dataName.push(key)
+          dataName.push(NAMEMAP[key])
           let dif = Number((Number(chartData[key]) - this.avgData[key]).toFixed(1))
           if (dif < 0) {
             tmpData.push({

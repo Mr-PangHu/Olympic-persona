@@ -94,7 +94,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column prop="pace" width="100">
-                  <template slot="cgy2000m_header" >
+                  <template slot="header" >
                     <div>配速</div>
                     <div>Pace</div>
                   </template>
@@ -745,7 +745,6 @@ export default {
       lastTestDate: ''
     }
   },
-  name: 'my-homepage',
   mounted () {
     this.getData()
   },

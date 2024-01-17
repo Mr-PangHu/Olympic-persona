@@ -53,6 +53,7 @@ router.get('/xuanba/getPlayerData', xuanba.getPlayerData)
 
 // router.get('/compare/getTestDataById', compare.getTestDataById)
 router.get('/compare/getTableData', compare.getTableData)
+router.get('/compare/getAllTableData', compare.getAllTableData)
 
 router.get('/quickview/getTestPersonInfo', quickview.getTestPersonInfo)
 
