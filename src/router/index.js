@@ -59,7 +59,7 @@ const router = new Router({
           component: () => import('@/components/knowledge/search'),
           children: [
             {
-              path: '/search/searchDetail/:food_id?',
+              path: '/search/searchDetail/:foodId?',
               name: 'searchDetail',
               component: () => import('@/components/knowledge/search/searchDetail')
             }

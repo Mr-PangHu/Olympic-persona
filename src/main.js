@@ -8,7 +8,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import less from 'less'
 import store from './store'
-
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(less)
