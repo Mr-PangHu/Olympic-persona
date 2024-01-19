@@ -18,6 +18,7 @@
         </el-tabs> -->
         <div class="persona_model">
           <!-- <div class="persona_model-title">画像模型</div> -->
+          <div class="xuanba__model-filter1">
           <div class="xuanba__model-filter">
             <el-select
               v-model="selectXuanbaValue"
@@ -48,6 +49,10 @@
                 :value="item.value">
               </el-option>
             </el-select>
+          </div>
+          <div>
+            <el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button>
+          </div>
           </div>
           <div class="persona_model-wrapper">
             <div class="xuanba__wrapper">
@@ -265,6 +270,9 @@ export default {
         this.id = window.sessionStorage.getItem('id')
         this.getPlayerData()
       }
+    },
+    returnView () {
+      this.$router.push('/label')
     },
     getPlayerData () {
       myAxios.get('/xuanba/getPlayerData', {
@@ -720,6 +728,11 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
+    &-filter1 {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
     &-filter {
       margin-top: 10px;
       margin-bottom: 10px;

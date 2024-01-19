@@ -11,6 +11,7 @@
         <div class="worldhighlevel__wrapper">
             <div class="worldhighlevel__model">
                 <!-- <div class="worldhighlevel__model-title">世界高水平成绩</div> -->
+                <div class="worldhighlevel__model-filter1">
                 <div class="worldhighlevel__model-filter">
                     <el-select
                         v-model="selectYear"
@@ -60,8 +61,10 @@
                         </el-option>
                     </el-select>
                 </div>
+                <div><el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button></div>
+                </div>
                 <div>
-                    <el-form :inline="true" ref="fenduanForm" :model="fenduanForm" label-width="120px">
+                    <el-form :inline="true" ref="fenduanForm" :model="fenduanForm" label-width="115px">
                         <el-form-item label="500m分段成绩">
                             <el-time-picker
                                 v-model="fenduanForm.d500mValue"
@@ -185,6 +188,9 @@ export default {
       })
       this.country.push('Me')
       this.setWorldHighLevelChart()
+    },
+    returnView () {
+      this.$router.push('/label')
     },
     getYear () {
       myAxios.get('http://127.0.0.1/cm/getYear').then(res => {
@@ -440,6 +446,12 @@ export default {
         font-size: 20px;
         font-weight: 700;
     }
+    &-filter1 {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
     &-filter {
       margin-top: 10px;
       margin-bottom: 10px;

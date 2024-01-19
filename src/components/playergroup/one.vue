@@ -6,6 +6,9 @@
       <div class="one__topper-title">
         <h1>运动员画像</h1>
       </div>
+      <div style="position:absolute; bottom:-55px; right:60px; z-index:100">
+        <el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button>
+      </div>
     </div>
     <el-card class="box-card">
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -61,6 +64,9 @@ export default {
   mounted () {
   },
   methods: {
+    returnView () {
+      this.$router.push('/label')
+    }
   }
 }
 </script>
@@ -105,6 +111,11 @@ export default {
         line-height: 75px;
       }
     }
+  }
+  &__taps {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 }
 .box-card {

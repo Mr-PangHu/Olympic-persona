@@ -2,7 +2,7 @@
   <div class="index__wrapper">
     <el-card class="box-card">
       <div class="main__wrapper">
-        <div class="main__top">
+        <div class="main__top" >
           <el-descriptions class="margin-top" title="运动员信息" :column="5" border>
             <el-descriptions-item>
               <template slot="label">
@@ -65,6 +65,7 @@
               {{lastTestDataPersonInfo.test_date}}
             </el-descriptions-item>
           </el-descriptions>
+          <!-- <el-button id="return" type="primary" @click="returnView">返回总览</el-button> -->
         </div>
         <div class="main__middle">
           <div class="main__middle-left">
@@ -873,6 +874,9 @@ export default {
       const [minutes, seconds] = timeString.split(':').map(Number)
       const totalSeconds = minutes * 60 + seconds
       return totalSeconds
+    },
+    returnView () {
+      this.$router.push('/label')
     },
     setChart () {
       var chartDom = document.getElementById('chart_show')
