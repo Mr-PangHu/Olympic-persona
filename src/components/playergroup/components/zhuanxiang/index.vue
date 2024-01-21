@@ -124,7 +124,7 @@ export default {
           // console.log(this.id)
           this.getZhuanxiangData()
         }).catch(err => {
-          console.log('获取数据失败111' + err)
+          console.log('获取数据失败' + err)
         })
       } else {
         this.id = window.sessionStorage.getItem('id')
@@ -132,7 +132,7 @@ export default {
       }
     },
     handleSelectGroundDate (groundDate) {
-      console.log(groundDate)
+      // console.log(groundDate)
       const tmp = this.dataGround.filter(item => {
         return formatDate(item['date']) === groundDate
       })
@@ -1093,12 +1093,14 @@ export default {
   &-wrapper {
       display: flex;
       flex-direction: row;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       align-items: center;
       justify-content: space-evenly;
+      width: 100%;
       &-echarts {
-          width: 500px;
-          height: 400px;
+          flex: 1;
+          width: 23vw;
+          height: 50vh;
           margin-top: 15px;
       }
   }
