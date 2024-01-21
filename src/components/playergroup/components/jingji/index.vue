@@ -128,7 +128,7 @@ export default {
       const tmp = this.compResult.filter(item => {
         return item['comp_category'] === category
       })
-      console.log(tmp)
+      // console.log(tmp)
       this.tableData = []
       tmp.map(item => {
         this.tableData.push({
@@ -186,7 +186,7 @@ export default {
         }).filter(item => item !== null)
         // console.log(temp)
         this.CompOptions.push.apply(this.CompOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
-        console.log(this.CompOptions)
+        // console.log(this.CompOptions)
         // this.dataShow = this.dataFMS[0]// 默认显示最新的一次测试成绩
         // console.log('moren', this.dataShow)
         compResult.map(item => {
@@ -205,7 +205,7 @@ export default {
         this.tableData.sort((a, b) => { // 升序->调换ab降序
           return b.date.localeCompare(a.date)
         })
-        console.log(this.tableData)
+        // console.log(this.tableData)
         // console.log(compResult)
       })
     }

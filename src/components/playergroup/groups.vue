@@ -8,7 +8,8 @@
         </div>
     </div>
     <el-card class="box-card">
-      <div>
+      <div class="compareChoose__model">
+      <div class="compareChoose__model-filter">
         <el-form :inline="true" ref="compareForm">
           <el-form-item>
             <el-select
@@ -45,6 +46,8 @@
             </el-select>
           </el-form-item>
         </el-form>
+      </div>
+      <div><el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button></div>
       </div>
       <div>
         <!-- <h2 align="center">测试成绩</h2> -->
@@ -129,7 +132,6 @@ export default {
   },
   created () {
     this.ids = this.$route.params.ids
-    // console.log(this.ids)
   },
   mounted () {
     // this.getTestDataByIds()
@@ -177,6 +179,9 @@ export default {
           console.log('报错:' + error)
         })
     },
+    returnView () {
+      this.$router.push('/label')
+    },
     getTableData () {
       this.tableData = []
       const ids = this.ids
@@ -186,6 +191,7 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
+        console.log(res.data)
         let mostRecentDate
         let tmp = Infinity
         this.tableData.forEach(item => {
@@ -509,6 +515,17 @@ export default {
 .box-card {
   margin: 0 auto;
   width: 95%;
+}
+.compareChoose {
+  &__model {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  &-filter {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 }
 .compare-wrapper {
   display: flex;

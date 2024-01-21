@@ -2,8 +2,44 @@
   <div class="index__wrapper">
     <el-card class="box-card">
       <div class="main__wrapper">
+        <div>
+          <el-form :inline="true" ref="dateForm">
+            <el-form-item>
+              <el-select
+                v-model="chooseDate1"
+                placeholder="测试日期(左侧)"
+                size="small"
+                @change="handleSelectTestDate1"
+                filterable
+              >
+                <el-option
+                  v-for="item in chooseDateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select
+                v-model="chooseDate2"
+                placeholder="测试日期(右侧)"
+                size="small"
+                @change="handleSelectTestDate2"
+                filterable
+              >
+                <el-option
+                  v-for="item in chooseDateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
         <div class="main__top" >
-          <el-descriptions class="margin-top" title="运动员信息" :column="5" border>
+          <el-descriptions class="margin-top" title="运动员信息(排名为左侧测试排名)" :column="5" border>
             <el-descriptions-item>
               <template slot="label">
                 姓名<br>Name
@@ -77,7 +113,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{testDate}}</div>
+                  <div>{{lastTestDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -116,7 +152,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{testDate}}</div>
+                  <div>{{lastTestDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -155,7 +191,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{testDate}}</div>
+                  <div>{{lastTestDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -194,7 +230,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{testDate}}</div>
+                  <div>{{lastTestDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -233,7 +269,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{testDate}}</div>
+                  <div>{{lastTestDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -277,7 +313,7 @@
             >
               <el-table-column prop="score" width="100">
                 <template #header>
-                  <div class="testDate">{{lastTestDate}}</div>
+                  <div class="testDate">{{testDate}}</div>
                   <div>得分</div>
                   <div>Score</div>
                 </template>
@@ -311,7 +347,7 @@
             >
               <el-table-column prop="score" width="100">
                 <template #header>
-                  <div class="testDate">{{lastTestDate}}</div>
+                  <div class="testDate">{{testDate}}</div>
                   <div>得分</div>
                   <div>Score</div>
                 </template>
@@ -345,7 +381,7 @@
             >
               <el-table-column prop="score" width="100">
                 <template #header>
-                  <div class="testDate">{{lastTestDate}}</div>
+                  <div class="testDate">{{testDate}}</div>
                   <div>得分</div>
                   <div>Score</div>
                 </template>
@@ -379,7 +415,7 @@
             >
               <el-table-column prop="score" width="100">
                 <template #header>
-                  <div class="testDate">{{lastTestDate}}</div>
+                  <div class="testDate">{{testDate}}</div>
                   <div>得分</div>
                   <div>Score</div>
                 </template>
@@ -413,7 +449,7 @@
             >
               <el-table-column prop="score" width="100">
                 <template #header>
-                  <div class="testDate">{{lastTestDate}}</div>
+                  <div class="testDate">{{testDate}}</div>
                   <div>得分</div>
                   <div>Score</div>
                 </template>
@@ -450,7 +486,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{testDate}}</div>
+                  <div>{{lastTestDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -542,7 +578,7 @@
             >
               <el-table-column prop="item" width="160">
                 <template #header>
-                  <div>{{lastTestDate}}</div>
+                  <div>{{testDate}}</div>
                   <div>指标</div>
                 </template>
               </el-table-column>
@@ -743,7 +779,13 @@ export default {
       lastTestDataPersonInfo: [],
       TestDataPersonInfo: [],
       testDate: '',
-      lastTestDate: ''
+      lastTestDate: '',
+      athleteId: '',
+      test_dates: [],
+      chooseDate1: [],
+      chooseDate2: [],
+      chooseDateOptions: [],
+      allData: []
     }
   },
   mounted () {
@@ -767,6 +809,8 @@ export default {
         const d = res.data[0]
         // console.log(this.athleteId)
         this.personInfo = d
+        this.athleteId = d.athlete_id
+        this.getDate(d.athlete_id)
         this.personInfo.birthday = this.personInfo.birthday.split('T')[0]
         // console.log(this.personInfo)
         myAxios.get('/quickview/getTestPersonInfo', {
@@ -774,87 +818,144 @@ export default {
             id: d.athlete_id
           }
         }).then(res => {
+          this.allData = res.data
           this.lastTestDataPersonInfo = res.data[0]
           this.TestDataPersonInfo = res.data[1]
           this.lastTestDataPersonInfo.test_date = this.lastTestDataPersonInfo.test_date.split('T')[0]
           // this.setDivContent()
           this.TestDataPersonInfo.test_date = this.TestDataPersonInfo.test_date.split('T')[0]
           // 最近一次的数据
-          this.Erg2k[0].score = this.lastTestDataPersonInfo.cgy2000m_score
-          this.Erg2k[0].result = this.lastTestDataPersonInfo.cgy2000m_result
-          this.Erg2k[0].pace = this.lastTestDataPersonInfo.cgy2000m_pace
-
-          this.Erg5k[0].score = this.lastTestDataPersonInfo.cgy5000m_score
-          this.Erg5k[0].result = this.lastTestDataPersonInfo.cgy5000m_result
-          this.Erg5k[0].pace = this.lastTestDataPersonInfo.cgy5000m_pace
-
-          this.Erg30[0].score = this.lastTestDataPersonInfo.cgy30min20str_score
-          this.Erg30[0].result = this.lastTestDataPersonInfo.cgy30min20str_result
-          this.Erg30[0].pace = this.lastTestDataPersonInfo.cgy30min20str_pace
-
-          this.Erg500m[0].score = this.lastTestDataPersonInfo.cgy500m_score
-          this.Erg500m[0].result = this.lastTestDataPersonInfo.cgy500m_result
-          this.Erg500m[0].pace = this.lastTestDataPersonInfo.cgy500m_pace
-
-          this.Erg10str[0].score = this.lastTestDataPersonInfo.cgy10str_score
-          this.Erg10str[0].result = this.lastTestDataPersonInfo.cgy10str_result
-          this.Erg10str[0].pace = this.lastTestDataPersonInfo.cgy10str_pace
-
-          this.strengthBackSquat[0].tScore = this.lastTestDataPersonInfo.strength_score
-          this.strengthBackSquat[0].score = this.lastTestDataPersonInfo.squat_score
-          this.strengthBackSquat[0].result = this.lastTestDataPersonInfo.squat_result
-
-          this.benchPull[0].score = this.lastTestDataPersonInfo.pull_score
-          this.benchPull[0].result = this.lastTestDataPersonInfo.pull_result
-
-          this.benchPress[0].score = this.lastTestDataPersonInfo.press_score
-          this.benchPress[0].result = this.lastTestDataPersonInfo.press_result
-
+          this.getLastTestDataPersonInfo()
           // 倒数第二次的数据
-          this.Erg2kTest[0].score = this.TestDataPersonInfo.cgy2000m_score
-          this.Erg2kTest[0].result = this.TestDataPersonInfo.cgy2000m_result
-          this.Erg2kTest[0].pace = this.TestDataPersonInfo.cgy2000m_pace
-          this.Erg2kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
-
-          this.Erg5kTest[0].score = this.TestDataPersonInfo.cgy5000m_score
-          this.Erg5kTest[0].result = this.TestDataPersonInfo.cgy5000m_result
-          this.Erg5kTest[0].pace = this.TestDataPersonInfo.cgy5000m_pace
-          this.Erg5kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
-
-          this.Erg30Test[0].score = this.TestDataPersonInfo.cgy30min20str_score
-          this.Erg30Test[0].result = this.TestDataPersonInfo.cgy30min20str_result
-          this.Erg30Test[0].pace = this.TestDataPersonInfo.cgy30min20str_pace
-          this.Erg30Test[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_result)) + 's'
-
-          this.Erg500mTest[0].score = this.TestDataPersonInfo.cgy500m_score
-          this.Erg500mTest[0].result = this.TestDataPersonInfo.cgy500m_result
-          this.Erg500mTest[0].pace = this.TestDataPersonInfo.cgy500m_pace
-          this.Erg500mTest[0].diff = this.TestDataPersonInfo.cgy500m_result - this.lastTestDataPersonInfo.cgy500m_result
-
-          this.Erg10strTest[0].score = this.TestDataPersonInfo.cgy10str_score
-          this.Erg10strTest[0].result = this.TestDataPersonInfo.cgy10str_result
-          this.Erg10strTest[0].pace = this.TestDataPersonInfo.cgy10str_pace
-          this.Erg10strTest[0].diff = this.TestDataPersonInfo.cgy10str_result - this.lastTestDataPersonInfo.cgy10str_result
-
-          this.strengthBackSquatTest[0].tScore = this.TestDataPersonInfo.strength_score
-          this.strengthBackSquatTest[0].score = this.TestDataPersonInfo.squat_score
-          this.strengthBackSquatTest[0].result = this.TestDataPersonInfo.squat_result
-          this.strengthBackSquatTest[0].diff = this.TestDataPersonInfo.squat_result - this.lastTestDataPersonInfo.squat_result
-
-          this.benchPullTest[0].score = this.TestDataPersonInfo.pull_score
-          this.benchPullTest[0].result = this.TestDataPersonInfo.pull_result
-          this.benchPullTest[0].diff = this.TestDataPersonInfo.pull_result - this.lastTestDataPersonInfo.pull_result
-
-          this.benchPressTest[0].score = this.TestDataPersonInfo.press_score
-          this.benchPressTest[0].result = this.TestDataPersonInfo.press_result
-          this.benchPressTest[0].diff = this.TestDataPersonInfo.press_result - this.lastTestDataPersonInfo.press_result
-          this.testDate = this.lastTestDataPersonInfo.test_date
-          this.lastTestDate = this.TestDataPersonInfo.test_date
+          this.getTestDataPersonInfo()
           this.setChart()
         })
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
+    },
+    getDate (id) {
+      console.log(id)
+      myAxios.get('/quickview/getTestPersonInfo', {
+        params: {
+          id: id
+        }
+      }).then(res => {
+        res.data.forEach(item => {
+          item.test_date = item.test_date.split('T')[0]
+          this.test_dates.push(item.test_date)
+        })
+        this.chooseDateOptions = Array.from(new Set(this.test_dates)).map(item => {
+          return {
+            label: item,
+            value: item
+          }
+        })
+      })
+    },
+    handleSelectTestDate1 () {
+      this.getChooseData1()
+    },
+    handleSelectTestDate2 () {
+      this.getChooseData2()
+    },
+    getChooseData1 () {
+      this.lastTestDataPersonInfo = []
+      myAxios.get('/quickview/getTestInfoByDate', {
+        params: {
+          id: this.athleteId,
+          test_date: this.chooseDate1
+        }
+      }).then(res => {
+        this.lastTestDataPersonInfo = res.data[0]
+        this.getLastTestDataPersonInfo()
+        this.setChart()
+      })
+    },
+    getChooseData2 () {
+      this.TestDataPersonInfo = []
+      myAxios.get('/quickview/getTestInfoByDate', {
+        params: {
+          id: this.athleteId,
+          test_date: this.chooseDate2
+        }
+      }).then(res => {
+        this.TestDataPersonInfo = res.data[0]
+        this.getTestDataPersonInfo()
+        this.setChart()
+      })
+    },
+    getLastTestDataPersonInfo () {
+      this.Erg2k[0].score = this.lastTestDataPersonInfo.cgy2000m_score
+      this.Erg2k[0].result = this.lastTestDataPersonInfo.cgy2000m_result
+      this.Erg2k[0].pace = this.lastTestDataPersonInfo.cgy2000m_pace
+
+      this.Erg5k[0].score = this.lastTestDataPersonInfo.cgy5000m_score
+      this.Erg5k[0].result = this.lastTestDataPersonInfo.cgy5000m_result
+      this.Erg5k[0].pace = this.lastTestDataPersonInfo.cgy5000m_pace
+
+      this.Erg30[0].score = this.lastTestDataPersonInfo.cgy30min20str_score
+      this.Erg30[0].result = this.lastTestDataPersonInfo.cgy30min20str_result
+      this.Erg30[0].pace = this.lastTestDataPersonInfo.cgy30min20str_pace
+
+      this.Erg500m[0].score = this.lastTestDataPersonInfo.cgy500m_score
+      this.Erg500m[0].result = this.lastTestDataPersonInfo.cgy500m_result
+      this.Erg500m[0].pace = this.lastTestDataPersonInfo.cgy500m_pace
+
+      this.Erg10str[0].score = this.lastTestDataPersonInfo.cgy10str_score
+      this.Erg10str[0].result = this.lastTestDataPersonInfo.cgy10str_result
+      this.Erg10str[0].pace = this.lastTestDataPersonInfo.cgy10str_pace
+
+      this.strengthBackSquat[0].tScore = this.lastTestDataPersonInfo.strength_score
+      this.strengthBackSquat[0].score = this.lastTestDataPersonInfo.squat_score
+      this.strengthBackSquat[0].result = this.lastTestDataPersonInfo.squat_result
+
+      this.benchPull[0].score = this.lastTestDataPersonInfo.pull_score
+      this.benchPull[0].result = this.lastTestDataPersonInfo.pull_result
+
+      this.benchPress[0].score = this.lastTestDataPersonInfo.press_score
+      this.benchPress[0].result = this.lastTestDataPersonInfo.press_result
+      this.lastTestDate = this.lastTestDataPersonInfo.test_date
+    },
+    getTestDataPersonInfo () {
+      this.Erg2kTest[0].score = this.TestDataPersonInfo.cgy2000m_score
+      this.Erg2kTest[0].result = this.TestDataPersonInfo.cgy2000m_result
+      this.Erg2kTest[0].pace = this.TestDataPersonInfo.cgy2000m_pace
+      this.Erg2kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
+
+      this.Erg5kTest[0].score = this.TestDataPersonInfo.cgy5000m_score
+      this.Erg5kTest[0].result = this.TestDataPersonInfo.cgy5000m_result
+      this.Erg5kTest[0].pace = this.TestDataPersonInfo.cgy5000m_pace
+      this.Erg5kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
+
+      this.Erg30Test[0].score = this.TestDataPersonInfo.cgy30min20str_score
+      this.Erg30Test[0].result = this.TestDataPersonInfo.cgy30min20str_result
+      this.Erg30Test[0].pace = this.TestDataPersonInfo.cgy30min20str_pace
+      this.Erg30Test[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_result)) + 's'
+
+      this.Erg500mTest[0].score = this.TestDataPersonInfo.cgy500m_score
+      this.Erg500mTest[0].result = this.TestDataPersonInfo.cgy500m_result
+      this.Erg500mTest[0].pace = this.TestDataPersonInfo.cgy500m_pace
+      this.Erg500mTest[0].diff = this.TestDataPersonInfo.cgy500m_result - this.lastTestDataPersonInfo.cgy500m_result
+
+      this.Erg10strTest[0].score = this.TestDataPersonInfo.cgy10str_score
+      this.Erg10strTest[0].result = this.TestDataPersonInfo.cgy10str_result
+      this.Erg10strTest[0].pace = this.TestDataPersonInfo.cgy10str_pace
+      this.Erg10strTest[0].diff = this.TestDataPersonInfo.cgy10str_result - this.lastTestDataPersonInfo.cgy10str_result
+
+      this.strengthBackSquatTest[0].tScore = this.TestDataPersonInfo.strength_score
+      this.strengthBackSquatTest[0].score = this.TestDataPersonInfo.squat_score
+      this.strengthBackSquatTest[0].result = this.TestDataPersonInfo.squat_result
+      this.strengthBackSquatTest[0].diff = this.TestDataPersonInfo.squat_result - this.lastTestDataPersonInfo.squat_result
+
+      this.benchPullTest[0].score = this.TestDataPersonInfo.pull_score
+      this.benchPullTest[0].result = this.TestDataPersonInfo.pull_result
+      this.benchPullTest[0].diff = this.TestDataPersonInfo.pull_result - this.lastTestDataPersonInfo.pull_result
+
+      this.benchPressTest[0].score = this.TestDataPersonInfo.press_score
+      this.benchPressTest[0].result = this.TestDataPersonInfo.press_result
+      this.benchPressTest[0].diff = this.TestDataPersonInfo.press_result - this.lastTestDataPersonInfo.press_result
+      this.testDate = this.TestDataPersonInfo.test_date
     },
     setRowStyle ({row, rowIndex}) {
       return {

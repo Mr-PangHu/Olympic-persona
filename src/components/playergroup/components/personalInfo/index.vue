@@ -164,7 +164,7 @@ export default {
     },
     displayImage (imageBinaryData) {
       // 使用Pillow库将二进制数据转换为图像的data URL
-      console.log(imageBinaryData)
+      // console.log(imageBinaryData)
       const imageBuffer = Buffer.from(imageBinaryData) // 将数组转换为 Buffer
       const base64Data = imageBuffer.toString('base64') // 将 Buffer 转换为 Base64 编码的字符串
       this.imageDataUrl = `data:image/jpg;base64,${base64Data}` // 将 Base64 编码的图像数据赋值给 imageDataUrl
@@ -178,7 +178,7 @@ export default {
     setChart () {
       var chartDom = document.getElementById('general_show')
       var myChart = echarts.init(chartDom)
-      console.log(this.chartData)
+      // console.log(this.chartData)
       var option
 
       const data = [
@@ -252,7 +252,7 @@ export default {
     setBodyChart () {
       var chartDom = document.getElementById('bodyShape_show')
       var myChart = echarts.init(chartDom)
-      console.log(this.personInfo)
+      // console.log(this.personInfo)
       var option
 
       const data = [this.personInfo.squat_reach, this.personInfo.ankle_circumference, this.personInfo.achilles_tendon_length, this.personInfo.lower_leg_length_a, this.personInfo.lower_leg_length_b, this.personInfo.calf_circumference, this.personInfo.thigh_circumference, this.personInfo.waist_circumference, this.personInfo.chest_circumference, this.personInfo.hip_width, this.personInfo.shoulder_width, this.personInfo.upper_arm_length, this.personInfo.finger_length]

@@ -159,7 +159,6 @@ export default {
   },
   methods: {
     formatLabel (item) {
-      console.log(item)
       const label = this.jinengOptions.filter(i => i.value === item)[0].label
       let danwei = ''
       if (label === '身体成分-体脂肪量' || label === '身体成分-去脂体重' || label === '身体成分-体重') danwei = 'kg'
@@ -361,7 +360,6 @@ export default {
         })
         this.jinengData = tmp
         this.selectDate = this.jinengData.date.map(item => formatDate(item))
-        console.log(this.jinengData)
       }).then(
         () => {
           const timeArray = this.jinengData.date

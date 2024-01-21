@@ -114,7 +114,7 @@ export default {
           return b.date.localeCompare(a.date)
         })
         this.dataShow = this.dataFMS[0]// 默认显示最新的一次测试成绩
-        console.log('moren', this.dataShow)
+        // console.log('moren', this.dataShow)
         this.dataShow['date'] = formatDate(this.dataShow['date'])
         // this.squat_score.push(dataFMS[0].squat_score)
         // this.hurdle_step_left.push(dataFMS[0].hurdle_step_left)
@@ -147,7 +147,7 @@ export default {
       })
       this.dataShow = tmp[0]
       this.dataShow['date'] = formatDate(this.dataShow['date'])
-      console.log('dsd', this.dataShow)
+      // console.log('dsd', this.dataShow)
       this.setFMSChart()
     },
     reset () {

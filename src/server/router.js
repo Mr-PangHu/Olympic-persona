@@ -56,5 +56,6 @@ router.get('/compare/getTableData', compare.getTableData)
 router.get('/compare/getAllTableData', compare.getAllTableData)
 
 router.get('/quickview/getTestPersonInfo', quickview.getTestPersonInfo)
+router.get('/quickview/getTestInfoByDate', quickview.getTestInfoByDate)
 
 module.exports = router
