@@ -27,6 +27,8 @@
                 <div class="zhuanxiang__water-wrapper-echarts" id="water_show2"></div>
                 <div class="zhuanxiang__water-wrapper-echarts" id="water_show3"></div>
                 <div class="zhuanxiang__water-wrapper-echarts" id="water_show4"></div>
+                <div class="zhuanxiang__water-wrapper-echarts" id="water_show5"></div>
+                <div class="zhuanxiang__water-wrapper-echarts" id="water_show6"></div>
             </div>
         </div>
         <div class="zhuanxiang__fuhe">
@@ -169,6 +171,8 @@ export default {
       this.setWaterChart2()
       this.setWaterChart3()
       this.setWaterChart4()
+      this.setWaterChart5()
+      this.setWaterChart6()
       // 使用筛选后的数据进行进一步处理或更新相关变量
     },
     handleReset () {
@@ -179,6 +183,8 @@ export default {
       this.setWaterChart2()
       this.setWaterChart3()
       this.setWaterChart4()
+      this.setWaterChart5()
+      this.setWaterChart6()
     },
     getZhuanxiangData () {
       // myAxios.get('/zhuanxiang/getAthleteData', {
@@ -315,6 +321,8 @@ export default {
         this.setFuHeChart2()
         this.setWaterChart3()
         this.setWaterChart4()
+        this.setWaterChart5()
+        this.setWaterChart6()
         this.setFuHeChart1()
         this.setWaterChart2()
       })
@@ -372,7 +380,7 @@ export default {
         },
         series: [
           {
-            data: this.dataWaterShow.map(item => item.stroke_rate),
+            data: this.dataWaterShow.map(item => Math.floor(item.stroke_rate * 1000) / 1000),
             name: '桨频（桨/min）',
             type: 'bar',
             showBackground: true,
@@ -466,7 +474,7 @@ export default {
         },
         series: [
           {
-            data: this.dataWaterShow.map(item => item.max_force),
+            data: this.dataWaterShow.map(item => Math.floor(item.max_force * 1000) / 1000),
             name: '拉桨最大力量（N）',
             type: 'bar',
             showBackground: true,
@@ -560,7 +568,7 @@ export default {
         },
         series: [
           {
-            data: this.dataWaterShow.map(item => item.rowing_power),
+            data: this.dataWaterShow.map(item => Math.floor(item.rowing_power * 1000) / 1000),
             name: '拉桨功率（W）',
             type: 'line',
             smooth: true,
@@ -655,9 +663,199 @@ export default {
         },
         series: [
           {
-            data: this.dataWaterShow.map(item => item.work_per_stroke),
+            data: this.dataWaterShow.map(item => Math.floor(item.work_per_stroke * 1000) / 1000),
             name: '每桨做功（N）',
             type: 'bar',
+            showBackground: true,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#83bff6' },
+                { offset: 0.5, color: '#188df0' },
+                { offset: 1, color: '#188df0' }
+              ])
+            },
+            emphasis: {
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#2378f7' },
+                  { offset: 0.7, color: '#2378f7' },
+                  { offset: 1, color: '#83bff6' }
+                ])
+              }
+            }
+          }
+        ]
+      }
+
+      option && myChart.setOption(option)
+      // 监听 magicType 切换事件
+      myChart.on('magicTypeChanged', function (params) {
+        // 判断切换后的类型是否为折线图
+        if (params.currentType === 'line') {
+          // 获取 x 轴配置
+          var xAxisOption = myChart.getOption().xAxis[0]
+          // 设置 boundaryGap 为 true
+          xAxisOption.boundaryGap = true
+          // 更新图表配置
+          myChart.setOption({
+            xAxis: [xAxisOption]
+          })
+        }
+      })
+    },
+    setWaterChart5 () {
+      var chartDom = document.getElementById('water_show5')
+      var myChart = echarts.init(chartDom)
+      var option
+
+      option = {
+        title: {
+          text: '蹬腿最大速度',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        toolbox: {
+          feature: {
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: this.dataWaterShow.map(item => item.training_date),
+          name: '训练日期',
+          nameLocation: 'center',
+          nameTextStyle: {
+            padding: [10, 0, 0, 400]
+          },
+          axisLabel: {
+            rotate: 20
+          }
+        },
+        yAxis: {
+          type: 'value',
+          min: 0,
+          max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.legs_max_speed))) + 1,
+          name: '蹬腿最大速度（m/s）',
+          nameLocation: 'center',
+          nameTextStyle: {
+            padding: [0, 0, 15, 0]
+          }
+        },
+        series: [
+          {
+            data: this.dataWaterShow.map(item => Math.floor(item.legs_max_speed * 1000) / 1000),
+            name: '蹬腿最大速度 m/s',
+            type: 'line',
+            smooth: true,
+            showBackground: true,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: '#83bff6' },
+                { offset: 0.5, color: '#188df0' },
+                { offset: 1, color: '#188df0' }
+              ])
+            },
+            emphasis: {
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                  { offset: 0, color: '#2378f7' },
+                  { offset: 0.7, color: '#2378f7' },
+                  { offset: 1, color: '#83bff6' }
+                ])
+              }
+            }
+          }
+        ]
+      }
+
+      option && myChart.setOption(option)
+      // 监听 magicType 切换事件
+      myChart.on('magicTypeChanged', function (params) {
+        // 判断切换后的类型是否为折线图
+        if (params.currentType === 'line') {
+          // 获取 x 轴配置
+          var xAxisOption = myChart.getOption().xAxis[0]
+          // 设置 boundaryGap 为 true
+          xAxisOption.boundaryGap = true
+          // 更新图表配置
+          myChart.setOption({
+            xAxis: [xAxisOption]
+          })
+        }
+      })
+    },
+    setWaterChart6 () {
+      var chartDom = document.getElementById('water_show6')
+      var myChart = echarts.init(chartDom)
+      var option
+
+      option = {
+        title: {
+          text: '船速',
+          left: 'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        toolbox: {
+          feature: {
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: this.dataWaterShow.map(item => item.training_date),
+          name: '训练日期',
+          nameLocation: 'center',
+          nameTextStyle: {
+            padding: [10, 0, 0, 400]
+          },
+          axisLabel: {
+            rotate: 20
+          }
+        },
+        yAxis: {
+          type: 'value',
+          min: Math.floor(Math.min(...this.dataWaterShow.map(item => item.average_boat_speed))),
+          max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.average_boat_speed))) + 1,
+          name: '船速（m/s）',
+          nameLocation: 'center',
+          nameTextStyle: {
+            padding: [0, 0, 15, 0]
+          }
+        },
+        series: [
+          {
+            data: this.dataWaterShow.map(item => Math.floor(item.average_boat_speed * 1000) / 1000),
+            name: '船速 m/s',
+            type: 'line',
+            smooth: true,
             showBackground: true,
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
