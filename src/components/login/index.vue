@@ -111,11 +111,7 @@ export default {
 
 <style lang='less' scoped>
   .bg {
-    position:fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    // position:fixed;
     background-image:url('../../assets/images/bg.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -134,7 +130,7 @@ export default {
     margin-top: -340px;
     box-shadow: 0 2px 12px 0 rgba(255,255,255,.9);;
     background: #ffffff;
-    opacity: 0.85;
+    // opacity: 0.85;
     position: absolute;
     // text-align: center;
     display: flex;
@@ -157,7 +153,7 @@ export default {
     border: 0;
     color: #fff;
     cursor: pointer;
-    background-color:#BDCEFC;
+    // background-color:#BDCEFC;
   }
   .btn2 {
     margin: 10px auto;
@@ -172,7 +168,7 @@ export default {
     border: 0;
     color: #fff;
     cursor: pointer;
-    background-color: #BDCEFC;
+    // background-color: #BDCEFC;
   }
   .reg {
     color: red;

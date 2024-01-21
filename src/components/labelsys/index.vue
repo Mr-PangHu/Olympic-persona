@@ -318,7 +318,8 @@ export default {
         const formatTmp = tmp.map(item => (
           {
             ...item,
-            birthday: formatDate(item.birthday)
+            birthday: formatDate(item.birthday),
+            weight: item.weight ? item.weight.toFixed(2) : '-'
           }))
         this.info = formatTmp
         this.changeinfo = formatTmp

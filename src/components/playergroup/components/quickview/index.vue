@@ -92,7 +92,7 @@
               <template slot="label">
                 <div>体重<br>Weight</div>
               </template>
-              {{personInfo.weight}}
+              {{personInfo.weight.toFixed(2)}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
