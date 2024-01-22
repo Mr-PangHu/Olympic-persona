@@ -75,9 +75,11 @@ exports.register = (req, res) => {
 }
 
 exports.updatePwd = (req, res) => {
-  const sql1 = 'select * from user where name = ?'
-  const sql2 = 'update user set password = ? where name = ?'
-  db.query(sql1, [req.body.params.name], (err, data) => {
+  const sql1 = 'select name from user where id = ?'
+  const sql2 = 'update user set password = ? where id = ?'
+  var password = req.body.password
+  var id = req.body.id
+  db.query(sql1, [id], (err, data) => {
     if (err) {
       return res.send({
         status: 400,
@@ -85,7 +87,7 @@ exports.updatePwd = (req, res) => {
       })
     }
     if (data.length > 0) {
-      db.query(sql2, [req.body.params.password, req.body.params.name], (err, data) => {
+      db.query(sql2, [password, id], (err, data) => {
         if (err) {
           res.send({
             status: 202,

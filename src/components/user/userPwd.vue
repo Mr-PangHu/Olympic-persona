@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import myAxios from '@/utils/request'
 export default {
   name: 'UserPwd',
   data () {
@@ -75,9 +76,13 @@ export default {
         if (!valid) {
           return false // 未通过校验拦住
         } else {
-          axios.post('http://127.0.0.1/updatePwd', {
-            params: {
-              name: window.sessionStorage.getItem('username'),
+          console.log(window.sessionStorage.getItem('id'))
+          console.log(this.pwdForm.new_pwd)
+          myAxios({
+            url: '/updatePwd',
+            method: 'post',
+            data: {
+              id: window.sessionStorage.getItem('id'),
               password: this.pwdForm.new_pwd
             }
           }).then(res => {
