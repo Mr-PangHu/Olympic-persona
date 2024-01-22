@@ -39,7 +39,7 @@
           </el-form>
         </div>
         <div class="main__top" >
-          <el-descriptions class="margin-top" title="运动员信息(排名为左侧测试排名)" :column="5" border>
+          <el-descriptions class="margin-top" title="运动员信息" :column="5" border>
             <el-descriptions-item>
               <template slot="label">
                 姓名<br>Name
@@ -869,6 +869,7 @@ export default {
       }).then(res => {
         this.lastTestDataPersonInfo = res.data[0]
         this.getLastTestDataPersonInfo()
+        this.getTestDataPersonInfo()
         this.setChart()
       })
     },
@@ -881,6 +882,7 @@ export default {
         }
       }).then(res => {
         this.TestDataPersonInfo = res.data[0]
+        this.getLastTestDataPersonInfo()
         this.getTestDataPersonInfo()
         this.setChart()
       })
