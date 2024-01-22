@@ -23,7 +23,7 @@
           </div>
           <div class="fatigueHomepredict__model-wrapper">
             <div class="fatigueHomepredict__model-wrapper-echarts">
-              <el-table :data="tableData.slice((currentPage - 1) * pageSize,currentPage * pageSize)" style="width: 100%">
+              <el-table :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}" :data="tableData.slice((currentPage - 1) * pageSize,currentPage * pageSize)" style="width: 100%">
                 <el-table-column prop="name" label="姓名">
                 </el-table-column>
                 <el-table-column prop="sex" label="性别">
