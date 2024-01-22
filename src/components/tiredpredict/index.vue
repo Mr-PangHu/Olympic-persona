@@ -182,9 +182,14 @@ export default {
       })
     },
     getEchartsData () {
+    /*
       var titles = ['dynamometer_2000m', 'dynamometer_30min', 'vo2max', 'vo2max_rel', 'p4', 'dynamometer_5000m',
         'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
         't', 'bnu', 'wbc', 'hct', 'c', 'rbc', 'fe']
+    */
+      var titles = ['测功仪2KM', '测功仪30min-SR', '最大摄氧量', '相对最大摄氧量', 'P4功率', '测功仪5KM',
+        '测功仪6KM', '握拉1RM', '硬拉1RM', '卧推1RM', '深蹲1RM', '肌酸激酶', '血红蛋白',
+        '睾酮', '血尿素', '白细胞', '血细胞比容', '皮质醇', '红细胞', '铁蛋白']
       var count = 0
       for (const item of this.allData.data.input) {
         var temp = {
@@ -328,8 +333,9 @@ export default {
         display: block;
         font-size: x-large;
         color: red;
-        margin: 20px;
-        padding-left: 30%;
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
       }
   }
 }

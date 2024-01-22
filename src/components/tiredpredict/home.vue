@@ -30,9 +30,10 @@
                 </el-table-column>
                 <el-table-column prop="date" label="时间">
                 </el-table-column>
-                <el-table-column prop="result" label="预测结果">
+                <el-table-column prop="result" label="预测结果（点击查看详细信息）">
                   <template slot-scope="scope">
-                    <span class="pointer" @click="enterDetail(scope.$index, scope.row)">疲劳</span>
+                    <span class="pointer" @click="enterDetail(scope.$index, scope.row)"
+                    style="cursor: pointer;color: blue;font-style: italic;text-decoration: underline;">疲劳</span>
                   </template>
                 </el-table-column>
                 <el-table-column prop="reason" label="预测原因">
