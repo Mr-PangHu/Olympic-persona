@@ -92,7 +92,7 @@
               <template slot="label">
                 <div>体重<br>Weight</div>
               </template>
-              {{personInfo.weight.toFixed(2)}}
+              {{personInfo.weight}}
             </el-descriptions-item>
             <el-descriptions-item>
               <template slot="label">
@@ -812,7 +812,7 @@ export default {
         this.athleteId = d.athlete_id
         this.getDate(d.athlete_id)
         this.personInfo.birthday = this.personInfo.birthday.split('T')[0]
-        // console.log(this.personInfo)
+        this.personInfo.weight = this.personInfo.weight || '-'
         myAxios.get('/quickview/getTestPersonInfo', {
           params: {
             id: d.athlete_id
@@ -835,7 +835,7 @@ export default {
       })
     },
     getDate (id) {
-      console.log(id)
+      // console.log(id)
       myAxios.get('/quickview/getTestPersonInfo', {
         params: {
           id: id

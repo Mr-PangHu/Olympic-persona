@@ -117,7 +117,7 @@ export default {
         }).then(res => {
           this.getCompResult()
         }).catch(err => {
-          console.log('获取数据失败111' + err)
+          console.log('获取数据失败' + err)
         })
       } else {
         this.id = window.sessionStorage.getItem('id')

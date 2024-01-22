@@ -280,7 +280,7 @@ export default {
           return a.training_date.localeCompare(b.training_date)
         })
         this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 5, this.dataWater.length)
-        console.log('555', this.dataWaterShow)
+        // console.log('555', this.dataWaterShow)
         // if (this.training_date.length > 0) {
         //   this.dateRange = [new Date(this.dataWater[0]['training_date']), '']
         // }

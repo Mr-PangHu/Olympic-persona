@@ -191,7 +191,7 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
-        console.log(res.data)
+        // console.log(res.data)
         let mostRecentDate
         let tmp = Infinity
         this.tableData.forEach(item => {
