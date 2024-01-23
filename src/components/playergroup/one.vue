@@ -6,7 +6,7 @@
       <div class="one__topper-title">
         <h1>运动员画像</h1>
       </div>
-      <div style="position:absolute; bottom:-55px; right:60px; z-index:100">
+      <div style="position:absolute; bottom:-43px; right:60px; z-index:100">
         <el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button>
       </div>
     </div>
@@ -72,14 +72,18 @@ export default {
 </script>
 
 <style lang='less' scoped>
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+}
 .one {
   &__wrapper {
     width: 100%;
   }
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
     &-img {
       height: 100%;
       background-image: url('../../assets/images/555.jpg');
@@ -98,7 +102,7 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
       h1 {
@@ -112,14 +116,36 @@ export default {
       }
     }
   }
-  &__taps {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
+  // &__taps {
+  //   display: flex;
+  //   flex-direction: row;
+  //   justify-content: space-between;
+  // }
 }
 .box-card {
   margin: 0 auto;
   width: 95%;
+  // max-height: 100vh;
+  height: 100%;
+  border: 0;
+  // overflow: auto;
+}
+/deep/ .el-tabs__header {
+  position: fixed !important;
+  top: 80px;
+  z-index: 1;
+  background-color: white;
+  width: 93%;
+}
+
+/deep/ .el-tabs__content {
+  position: relative;
+  top: 85px;
+  padding: 30px 0 0 0;
+}
+
+/deep/ .el-tabs__nav-wrap {
+  height: 50px;
+  line-height: 50px;
 }
 </style>

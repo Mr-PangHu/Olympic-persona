@@ -23,12 +23,16 @@
               </el-form>
             </div>
             <div class="zhuanxiang__water-wrapper">
-                <div class="zhuanxiang__water-wrapper-echarts" id="water_show1"></div>
-                <div class="zhuanxiang__water-wrapper-echarts" id="water_show2"></div>
-                <div class="zhuanxiang__water-wrapper-echarts" id="water_show3"></div>
-                <div class="zhuanxiang__water-wrapper-echarts" id="water_show4"></div>
-                <div class="zhuanxiang__water-wrapper-echarts" id="water_show5"></div>
-                <div class="zhuanxiang__water-wrapper-echarts" id="water_show6"></div>
+                <div class="zhuanxiang__water-wrapper-first">
+                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show1"></div>
+                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show2"></div>
+                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show3"></div>
+                </div>
+                <div class="zhuanxiang__water-wrapper-second">
+                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show4"></div>
+                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show5"></div>
+                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show6"></div>
+                </div>
             </div>
         </div>
         <div class="zhuanxiang__fuhe">
@@ -1071,65 +1075,77 @@ export default {
   font-weight: bold;
 }
 .zhuanxiang {
-&__wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 20px;
-  width: 100%;
-}
-&__water {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  &-title {
-      font-size: 20px;
-      font-weight: 700;
-  }
-  &-date {
+  &__wrapper {
     display: flex;
-    margin-top: 10px;  // 调整上边距
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 30px 10px;
+    width: 100%;
   }
-  &-wrapper {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: space-evenly;
-      width: 100%;
-      &-echarts {
-          flex: 1;
-          width: 23vw;
-          height: 50vh;
-          margin-top: 15px;
-      }
-  }
-}
-&__fuhe {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  &-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-top: 20px;
-  }
-  &-date {
+  &__water {
     display: flex;
-    margin-top: 10px;  // 调整上边距
-  }
-  &-wrapper {
+    flex-direction: column;
+    width: 100%;
+    &-title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+    &-date {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-evenly;
-      &-echarts {
-          margin-top: 20px;
-          width: 600px;
-          height: 500px;
-      }
+      margin-top: 10px;  // 调整上边距
+    }
+    &-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        &-first {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: space-evenly;
+        }
+        &-second {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: space-evenly;
+        }
+        &-echarts {
+            flex: 1;
+            width: 30vw;
+            height: 50vh;
+            margin-top: 15px;
+        }
+    }
   }
-}
+  &__fuhe {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    &-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 20px;
+    }
+    &-date {
+      display: flex;
+      margin-top: 10px;  // 调整上边距
+    }
+    &-wrapper {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-evenly;
+        &-echarts {
+            margin-top: 20px;
+            width: 600px;
+            height: 500px;
+        }
+    }
+  }
 }
 </style>

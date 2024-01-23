@@ -138,9 +138,9 @@ header {
 nav {
   display: flex;
   justify-content: space-around;
-  width: 50%;
+  width: 70%;
   position: relative;
-  left: 50%;
+  left: 35%;
 }
 .carousel__container {
   position: relative;
@@ -200,6 +200,7 @@ nav {
 /deep/ .el-submenu__title {
   background-color: rgba(51, 51, 51, 0) !important;
   font-weight: 700 !important;
+  font-size: 20px;
 }
 .el-menu-item:hover,
 /deep/ .el-submenu__title:hover {

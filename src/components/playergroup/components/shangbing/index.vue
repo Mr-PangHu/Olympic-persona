@@ -230,7 +230,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px;
+    padding: 30px 10px;
   }
   &__FMS {
     display: flex;

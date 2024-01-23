@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="jingji__wrapper">
     <el-select
         v-model="category"
         clearable
@@ -213,6 +213,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang='less' scoped>
+.jingji {
+  &__wrapper {
+    min-height: 300px;
+    padding: 30px 10px;
+  }
+}
 </style>

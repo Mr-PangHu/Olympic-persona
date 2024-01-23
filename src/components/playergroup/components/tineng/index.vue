@@ -405,7 +405,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px;
+    padding: 30px 10px;
     width: 100%;
   }
   &__wsy {
@@ -425,7 +425,7 @@ export default {
         justify-content: space-evenly;
         &-echarts {
             width: 1500px;
-            height: 800px;
+            height: 600px;
         }
     }
     &-table {
