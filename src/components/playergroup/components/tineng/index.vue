@@ -66,10 +66,10 @@
                 :data="tableData"
                 :header-cell-style="{'text-align': 'center'}"
               >
-                <el-table-column prop="date" label="测试日期" align="center" width="300"></el-table-column>
+                <el-table-column prop="date" label="测试日期" align="center" width="160"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center" width="140"></el-table-column>
                 <el-table-column prop="sprint_run_30m" label="30m冲刺跑/s" align="center" width="140"></el-table-column>
-                <el-table-column prop="dynamometer_30min" label="测功仪30分钟20桨频/s" align="center" width="300"></el-table-column>
+                <el-table-column prop="dynamometer_30min" label="测功仪30分钟20桨频/s" align="center" width="200"></el-table-column>
                 <el-table-column prop="dynamometer_2000m" label="测功仪2000m/s" align="center" width="200"></el-table-column>
                 <el-table-column prop="pull_up" label="引体向上/个" align="center" width="120"></el-table-column>
                 <el-table-column prop="standing_jump_both_legs" label="立定跳远/cm" align="center" width="200"></el-table-column>
@@ -905,7 +905,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px 10px;
+    padding: 20px 10px 70px 10px;
     width: 100%;
   }
   &__wsy {
