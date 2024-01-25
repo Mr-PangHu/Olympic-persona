@@ -46,7 +46,8 @@
 </template>
 
 <script>
-// import config from './neo4j.config.js'
+import config from '@/components/knowledge/display/neo4j.config.js'
+
 export default {
   name: 'knowledge',
   data () {
@@ -57,27 +58,11 @@ export default {
       viz: {}, // 定义一个viz对象,
       // 是否点击该按钮
       isClicked: true,
-      option: [
-        {
-          value: 'MATCH (n:Food) RETURN n LIMIT 25',
-          label: '检索前25个食物节点'
-        },
-        {
-          value: 'MATCH p=()-[r:`亮氨酸`]->() RETURN p LIMIT 25',
-          label: '检索含有亮氨酸的前25个关系节点'
-        },
-        {
-          value: 'MATCH p=()-[r:HasEffect]->() RETURN p LIMIT 25',
-          label: '小麦胚粉影响的前25个疾病'
-        },
-        {
-          value: 'MATCH p=()-[r:need_check]->() RETURN p LIMIT 25',
-          label: '需要做哪些检查'
-        }
-      ]
+      option: config.option
     }
   },
   mounted () {
+    console.log(config.option)
   },
   methods: {
     submit () {
@@ -92,10 +77,10 @@ export default {
       this.viz.stabilize()
     },
     draw () {
-      // this.viz = new NeoVis.default(config)
-      // this.viz.render()
-      // // 点击完搜索全图之后 才能开启搜索功能
-      // this.isClicked = false
+      this.viz = new NeoVis.default(config)
+      this.viz.render()
+      // 点击完搜索全图之后 才能开启搜索功能
+      this.isClicked = false
     }
   }
 }
