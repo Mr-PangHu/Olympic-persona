@@ -31,14 +31,22 @@ let actions = {
     }
   },
   async addMeals ({ commit }, formData) {
-    console.log('111', formData)
-    const intakeRecord = formData.dishes.map(item => {
-      return {
+    console.log('intake_record', formData)
+    // const intakeRecord = formData.dishes.map(item => {
+    //   return {
+    //     dishId: item.id,
+    //     num: item.intake_num
+    //   }
+    // })
+    const intakeRecord = []
+    formData.dishIds.items.forEach(item => {
+      const transformedItem = {
         dishId: item.id,
         num: item.intake_num
       }
+      intakeRecord.push(transformedItem)
     })
-    console.log('111', intakeRecord)
+    console.log('修改后的intakeRecord:', intakeRecord)
     let date = new Date(formData.date)
     let year = date.getFullYear()
     let month = (date.getMonth() + 1).toString().padStart(2, '0')

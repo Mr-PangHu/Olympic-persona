@@ -29,7 +29,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="餐次">
+            <el-form-item label="餐次" prop="meals">
               <el-select
                 v-model="intake_record.meals"
                 placeholder="请选择餐次："
@@ -41,11 +41,21 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-for="(item, index) in intake_record.dishIds.items" :key="index">
+          <el-form
+          :inline="true"
+          :model="intake_record.dishIds.items[index]"
+          :rules="rules"
+          ref="dishIds"
+          label-width="100px"
+          class="demo-form-inline"
+          size="small"
+          >
+          <el-row>
           <el-col :span="8">
-            <el-form-item label="食物名称">
+            <el-form-item label="食物名称" props="name">
               <el-autocomplete
-                v-model="food"
+                v-model='intake_record.dishIds.items[index].name'
                 :fetch-suggestions="querySearchAsync"
                 value-key="name"
                 placeholder="请输入内容"
@@ -53,17 +63,20 @@
               ></el-autocomplete>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="数量">
+          <el-col :span="6">
+            <el-form-item label="份数" prop="intake_num">
               <el-input
-                v-model="intake_record.dishes[0].intake_num"
+                v-model="intake_record.dishIds.items[index].intake_num"
                 placeholder="每份100g"
+                class="custom-input"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-button @click.prevent="removeDish(dish)">删除</el-button>
           </el-col>
+        </el-row>
+          </el-form>
         </el-row>
         <el-form-item>
           <el-button type="primary" @click="submitForm('formName')"
@@ -82,16 +95,11 @@ export default {
   data () {
     return {
       intake_record: {
-        dishes: [{
-          id: '',
-          name: '',
-          intake_num: ''
-        }],
         meals: '',
-        date: ''
+        date: '',
+        dishIds: { items: [{}] }
+        // food: ''
       },
-      // value: '',
-      // input: '',
       keyword: '', // 存储用户输入的关键词
       selectedResult: null, // 存储用户选择的结果
       food: '',
@@ -107,6 +115,7 @@ export default {
     // }
   },
   methods: {
+    // querySearchAsync 函数根据查询字符串对餐点进行异步搜索，并使用回调函数处理搜索结果
     querySearchAsync (queryString, cb) {
       var allMeals = this.allMeals
       var results = queryString ? allMeals.filter(this.createStateFilter(queryString)) : allMeals.slice(0, 100)
@@ -116,41 +125,45 @@ export default {
         cb(results)
       }, 3000 * Math.random())
     },
+    // createStateFilter 函数用于创建过滤函数，该过滤函数根据查询字符串对食物对象进行过滤
     createStateFilte (queryString) {
       return (food) => {
         return (food.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
       }
     },
     handleSelect (item) {
-      console.log(item)
-      this.intake_record.dishes[0].id = item.id
-      this.intake_record.dishes[0].name = item.name
+      const index = this.intake_record.dishIds.items.findIndex((food) => food.name === item.name)
+      if (index !== -1) {
+        this.intake_record.dishIds.items[index].id = item.id
+        this.intake_record.dishIds.items[index].name = item.name
+      }
+      // this.intake_record.dishes[0].id = item.id
+      // this.intake_record.dishes[0].name = item.name
     },
     // 增加餐盘
     addDish () {
-      this.intake_record.dishes.push({
-        value: '',
-        key: Date.now()
+      this.intake_record.dishIds.items.push({
+        id: '',
+        name: '',
+        intake_num: ''
       })
     },
-    removeDish (item) {
-      var index = this.intake_record.dishes.indexOf(item)
-      if (index !== -1) {
-        this.intake_record.dishes.splice(index, 1)
-      }
+    removeDish (index) {
+      this.intake_record.dishIds.items.splice(index, 1)
     },
     resetForm (formName) {
-      this.$refs[formName].resetFields()
+      this.$nextTick(() => {
+        this.$refs[formName].resetFields()
+        this.$refs.dishIds.forEach((ref) => {
+          ref.resetFields()
+        })
+      })
     },
     submitForm (formName) {
-      console.log('gyfyf', this.intake_record)
+      console.log('intake_record', this.intake_record)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // alert('submit!');
-          // this.getMeals(); //调用创建餐次记录的api方法
           this.$store.dispatch('addMeals', this.intake_record)
-        //   this.total_data.push(this.tableData[0])
-        //   this.dialogVisible = false // 隐藏表单
         } else {
           console.log('error submit!!')
           return false
@@ -163,3 +176,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .custom-input {
+    width: 200px;
+  }
+</style>
