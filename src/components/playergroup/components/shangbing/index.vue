@@ -30,15 +30,15 @@
             <div class="shangbing__FMS-wrapper">
                 <div class="shangbing__FMS-wrapper-table">
                     <el-table :data="tableData" style="width: 100%" :header-cell-style="rowClass" :span-method="arraySpanMethod">
-                        <el-table-column label="项目">
-                            <el-table-column prop="proj_1"  width="110"></el-table-column>
-                            <el-table-column prop="proj_2"  width="80"></el-table-column>
+                        <el-table-column label="项目" align="center">
+                            <el-table-column prop="proj_1"  width="110" align="center"></el-table-column>
+                            <el-table-column prop="proj_2"  width="80" align="center"></el-table-column>
                         </el-table-column>
-                        <el-table-column label="得分" >
-                            <el-table-column prop="score_1" width="80"></el-table-column>
-                            <el-table-column prop="score_2" width="80"></el-table-column>
+                        <el-table-column label="得分" align="center">
+                            <el-table-column prop="score_1" width="80" align="center"></el-table-column>
+                            <el-table-column prop="score_2" width="80" align="center"></el-table-column>
                         </el-table-column>
-                        <el-table-column prop="remark" label="备注"  width="80"></el-table-column>
+                        <el-table-column prop="remark" label="备注"  width="80" align="center"></el-table-column>
                     </el-table>
                 </div>
                 <div class="shangbing__FMS-wrapper-echarts" id="FMS_show"></div>
