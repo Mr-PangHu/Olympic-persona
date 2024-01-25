@@ -29,9 +29,9 @@
             <div class="shangbing__FMS-point" style="text-align: right;">{{this.dataFMS[0]['name']}} 综合得分：{{this.dataShow['composite_score']}}</div>
             <div class="shangbing__FMS-wrapper">
                 <div class="shangbing__FMS-wrapper-table">
-                    <el-table :data="tableData" style="width: 100%" :header-cell-style="rowClass" :span-method="arraySpanMethod">
+                    <el-table :data="tableData" class="custom-table" style="width: 100%" :header-cell-style="rowClass" :span-method="arraySpanMethod">
                         <el-table-column label="项目" align="center">
-                            <el-table-column prop="proj_1"  width="110" align="center"></el-table-column>
+                            <el-table-column prop="proj_1"  width="150" align="center"></el-table-column>
                             <el-table-column prop="proj_2"  width="80" align="center"></el-table-column>
                         </el-table-column>
                         <el-table-column label="得分" align="center">
@@ -389,7 +389,7 @@ export default {
       var valdata = [1, 2, 1, 2, 3, 3, 3]
       var myColor = ['#1089E7', '#F57474', '#56D2E3', '#F8B448', '#8B78F6', '#558484', '#32B666']
       option = {
-        backgroundColor: '#fff',
+        // backgroundColor: '#fff',
         xAxis: {
           show: false
         },
@@ -426,7 +426,7 @@ export default {
           data: valdata,
           axisLabel: {
             textStyle: {
-              fontSize: 12,
+              fontSize: 18,
               color: '#fff'
             }
           },
@@ -487,12 +487,15 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.custom-table {
+  font-size: 18px; /* 调整表格字体大小 */
+}
 .shangbing {
   &__wrapper {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px 10px;
+    padding: 10px 10px;
   }
   &__FMS {
     display: flex;
@@ -501,9 +504,10 @@ export default {
     &-title {
         font-size: 20px;
         font-weight: 700;
+        margin-top: -5px; /* 向上移动 20 像素 */
     }
     &-point {
-        margin-top: 10px;
+        margin-top: 5px;
         font-size: 16px;
         font-weight: 700;
     }
@@ -513,13 +517,16 @@ export default {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-evenly;
-        &-echarts {
-            width: 500px;
-            height: 800px;
+        &-table {
+            // width: 500px;
+            // height: 800px;
+            margin-top: -55px; /* 向上移动 20 像素 */
         }
         &-echarts {
             width: 1000px;
             height: 800px;
+            margin-top: -55px; /* 向上移动 20 像素 */
+            margin-left: 25px;
         }
     }
   }
