@@ -5,7 +5,7 @@ import KnowRequest from './KnowRequest'
 export const reqGetFirstClass = () => KnowRequest.get('/foods/firstclass')
 
 // 获取第二大类的数据
-export const reqGetSecondClass = (firstclass) => {
+export const reqGetSecondClass = firstclass => {
   return KnowRequest({
     url: `/foods/secondclass?firstclass=${firstclass}`,
     method: 'get'
@@ -13,7 +13,7 @@ export const reqGetSecondClass = (firstclass) => {
 }
 
 // 获取具体食物
-export const reqGetFoodName = (data) => {
+export const reqGetFoodName = data => {
   return KnowRequest({
     url: '/foods/getbyclass',
     method: 'get',
@@ -22,7 +22,7 @@ export const reqGetFoodName = (data) => {
 }
 
 // 根据食物id获取对应的详细信息
-export const regGetFoodDetail = (foodId) => {
+export const regGetFoodDetail = foodId => {
   return KnowRequest({
     url: `/foods/getbyid/${foodId}`,
     method: 'get'
@@ -119,10 +119,27 @@ export const reqDishesName = () => {
 //     data: intake_record
 //   })
 // }
-export const reqMeals = (intakeRecord) => {
+export const reqMeals = intakeRecord => {
   return MockRequest({
     url: '/meals',
     method: 'post',
     data: intakeRecord
+  })
+}
+
+//
+export const reqDishes = intakeRecord => {
+  return KnowRequest({
+    url: '/meals/accept',
+    method: 'post',
+    data: intakeRecord
+  })
+}
+
+export const reqGetAllMeals = data => {
+  return KnowRequest.get('/dishes/search', {
+    params: {
+      key: data
+    }
   })
 }

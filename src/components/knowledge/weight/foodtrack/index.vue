@@ -34,9 +34,6 @@
         <el-card class="box-card1">
           <div class="vertical-div">
             <el-row>
-              <!-- <el-col :span="8">
-              <span class="custom-span">一日三餐记录</span>
-            </el-col> -->
               <el-col :span="8">
                 <el-button class="custom-button" type="primary" @click="showForm">新增进餐记录</el-button>
               </el-col>
@@ -52,88 +49,13 @@
                 </ul>
               </el-col>
             </el-row>
-            <el-dialog :visible.sync="dialogVisible" title="本餐次的食物记录">
-              <el-form :model="intake_record" ref="intake_record" label-width="100px" class="demo-dynamic">
-                <el-row>
-                  <el-col :span="12">
-                    <el-form-item label="日期" prop='date' :rules="{ required: true, message: '请选择日期', trigger: 'change' }">
-                      <div class="block">
-                        <el-date-picker v-model="intake_record.date" type="date" placeholder="选择日期">
-                        </el-date-picker>
-                      </div>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="餐次">
-                      <el-select v-model="value" placeholder="请选择餐次：">
-                        <el-option v-for="item in intake_record.meals" :key="item.value" :label="item.label"
-                          :value="item.value">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-form-item v-for="dish in intake_record.dishes" label="食物名称" :key="dish.id" :prop="dish.name" :rules="{
-                  required: true, message: '食物名称不能为空', trigger: 'blur'
-                }">
-                  <el-row :gutter="4">
-                    <el-col :span="6">
-                      <el-select v-model="dishesName.name" @focus="getDishesName" placeholder="请选择">
-                        <el-option v-for="item in dishesName" :key="item.id" :label="item.name" :value="item.name">
-                        </el-option>
-                      </el-select>
-                    </el-col>
-                    <el-col :span="6">
-                      <!-- <el-input-number v-model="intake_record.dishes.intake_num" @change="handleChange" :min="1" :max="10"
-                      label="描述文字"></el-input-number> -->
-                      <el-select v-model="intake_record.dishes.intake_num" @change="handleChange" placeholder="请选择">
-                        <el-option label="100g" value="100g"></el-option>
-                        <el-option label="1小碗" value="1小碗"></el-option>
-                        <el-option label="1大碗" value="1大碗"></el-option>
-                      </el-select>
-                    </el-col>
-                    <el-col :span="6">
-                      <el-button @click.prevent="removeDish(dish)">删除</el-button>
-                    </el-col>
-                  </el-row>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="submitForm('intake_record')">提交</el-button>
-                  <el-button @click="addDish">新增食物</el-button>
-                  <el-button @click="resetForm('intake_record')">重置</el-button>
-                </el-form-item>
-              </el-form>
-            </el-dialog>
+            <Dialog/>
           </div>
           <div>
             <el-row :gutter="24">
               <el-col :span="14">
                 <span class="custom-span">一日三餐记录</span>
                 <el-table :data="total_data" style="width: 100%">
-                  <!-- <el-table-column type="expand">
-                  <template slot-scope="props">
-                    <el-form label-position="left" inline class="demo-table-expand">
-                      <el-form-item label="日期">
-                        <span>{{ props.row.intake_date }}</span>
-                      </el-form-item>
-                      <el-form-item label="餐次">
-                        <span>{{ props.row.meals_id }}</span>
-                      </el-form-item>
-                      <el-form-item label="热量（千卡）">
-                        <span>{{ props.row.intake_data.main_ingredient.热量 }}</span>
-                      </el-form-item>
-                      <el-form-item label="碳水化合物（克）">
-                        <span>{{ props.row.intake_data.main_ingredient.碳水化合物 }}</span>
-                      </el-form-item>
-                      <el-form-item label="蛋白质（克）">
-                        <span>{{ props.row.intake_data.main_ingredient.蛋白质 }}</span>
-                      </el-form-item>
-                      <el-form-item label="脂肪（克）">
-                        <span>{{ props.row.intake_data.main_ingredient.脂肪 }}</span>
-                      </el-form-item>
-                    </el-form>
-                  </template>
-                </el-table-column> -->
                   <el-table-column label="日期" prop="intake_date">
                   </el-table-column>
                   <el-table-column label="餐次" prop="meals_id">
@@ -152,7 +74,6 @@
                 <echarts></echarts>
               </el-col>
             </el-row>
-
           </div>
         </el-card>
         <!-- </div> -->
@@ -247,14 +168,15 @@
 
 <script>
 import { mapState } from 'vuex'
-import echarts from '../echarts/index.vue'
+import echarts from '@/components/knowledge/weight/echarts/index.vue'
 import minirals from '@/components/knowledge/weight/minirals/index.vue'
+import Dialog from './dialog.vue'
 export default {
 
   components: {
     echarts,
-    minirals
-
+    minirals,
+    Dialog
   },
   data () {
     return {
@@ -294,20 +216,9 @@ export default {
           name: '',
           intake_num: ''
         }],
-        meals: [{
-          value: '选项1',
-          label: '早餐'
-        }, {
-          value: '选项2',
-          label: '午餐'
-        }, {
-          value: '选项3',
-          label: '晚餐'
-        }],
+        meals: '',
         date: ''
       },
-      value: '',
-      // input: '',
       keyword: '', // 存储用户输入的关键词
       // searchResults: [], // 存储搜索结果
       selectedResult: null // 存储用户选择的结果
@@ -320,27 +231,10 @@ export default {
       return percentage === 100 ? '满' : `${percentage}%`
     },
     showForm () {
-      this.dialogVisible = true // 点击按钮时显示表单对话框
+      this.$store.state.foodtrack.dialogVisible = true // 点击按钮时显示表单对话框
     },
     handleChange (value) {
       console.log(value)
-    },
-    submitForm (formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          // alert('submit!');
-          // this.getMeals(); //调用创建餐次记录的api方法
-          this.$store.dispatch('getMeals', formName)
-          this.total_data.push(this.tableData[0])
-          this.showForm = false // 隐藏表单
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    resetForm (formName) {
-      this.$refs[formName].resetFields()
     },
     removeDish (item) {
       var index = this.intake_record.dishes.indexOf(item)
@@ -371,7 +265,8 @@ export default {
     search () {
       // 发起请求到后端进行模糊查询，并更新搜索结果
       // 这里假设使用 axios 库发送请求到后端的 /api/search 接口
-      this.$store.dispatch('search')
+      console.log(this.keyword)
+      this.$store.dispatch('search', this.keyword)
     },
     selectItem (item) {
       this.selectedResult = item

@@ -1,8 +1,7 @@
-import axios from 'axios'
+import { reqGetAllMeals } from '../utils/interface'
 // import { reqDishesVageName } from '@/utils/interface';
 
 const state = {
-  keyword: '',
   searchResults: [], // 存储搜索结果
   selectedResult: null // 存储用户选择的结果
 }
@@ -20,20 +19,8 @@ const mutations = {
 }
 
 let actions = {
-  search ({ commit, state }) {
-    axios
-      .get('/api/search', {
-        params: {
-          keyword: state.keyword
-        }
-      })
-      .then(response => {
-        const results = response.data
-        commit('SET_SEARCH_RESULTS', results)
-      })
-      .catch(error => {
-        console.error(error)
-      })
+  async search () {
+    await reqGetAllMeals()
   }
 }
 
