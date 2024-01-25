@@ -495,7 +495,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 10px 10px;
+    padding: 10px 10px 50px 10px;
   }
   &__FMS {
     display: flex;

@@ -336,9 +336,10 @@ export default {
       var myChart = echarts.init(chartDom)
       var option
       option = {
+        color: ['#003D5B'],
         title: {
-          text: '桨频',
-          left: 'center'
+          text: '桨频'
+          // left: 'center'
         },
         tooltip: {
           trigger: 'axis',
@@ -363,23 +364,31 @@ export default {
         xAxis: {
           type: 'category',
           data: this.dataWaterShow.map(item => item.training_date),
-          name: '训练日期',
+          // name: '训练日期',
           nameLocation: 'center',
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
           axisLabel: {
-            rotate: 20
+            rotate: 20,
+            textStyle: {
+              color: '#000'
+            }
           }
         },
         yAxis: {
           type: 'value',
           min: 0,
           max: Math.floor(Math.max(...this.dataWaterShow.map(item => item.stroke_rate))) + 5,
-          name: '桨频（桨/min）',
+          // name: '桨频（桨/min）',
           nameLocation: 'center',
           nameTextStyle: {
             padding: [0, 0, 10, 0]
+          },
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
           }
         },
         series: [
@@ -387,23 +396,23 @@ export default {
             data: this.dataWaterShow.map(item => Math.floor(item.stroke_rate * 1000) / 1000),
             name: '桨频（桨/min）',
             type: 'bar',
-            showBackground: true,
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
-              ])
-            },
-            emphasis: {
-              itemStyle: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: '#2378f7' },
-                  { offset: 0.7, color: '#2378f7' },
-                  { offset: 1, color: '#83bff6' }
-                ])
-              }
-            }
+            showBackground: true
+            // itemStyle: {
+            //   color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            //     { offset: 0, color: '#83bff6' },
+            //     { offset: 0.5, color: '#188df0' },
+            //     { offset: 1, color: '#188df0' }
+            //   ])
+            // },
+            // emphasis: {
+            //   itemStyle: {
+            //     color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            //       { offset: 0, color: '#2378f7' },
+            //       { offset: 0.7, color: '#2378f7' },
+            //       { offset: 1, color: '#83bff6' }
+            //     ])
+            //   }
+            // }
           }
         ]
       }
@@ -1079,13 +1088,14 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 30px 10px;
+    padding: 10px 10px 40px 10px;
     width: 100%;
   }
   &__water {
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-bottom: 30px;
     &-title {
         font-size: 20px;
         font-weight: 700;

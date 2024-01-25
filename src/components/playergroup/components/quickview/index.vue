@@ -37,7 +37,7 @@
         </el-form>
       </div>
       <div class="main__top" >
-        <el-descriptions :column="5" :colon="false">
+        <el-descriptions :column="6" :colon="false">
           <el-descriptions-item>
             <template slot="label">
               <div class="main__top-description-label">
@@ -46,6 +46,15 @@
               </div>
             </template>
             ：{{personInfo.name}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <div class="main__top-description-label">
+                <div class="main__top-description-label-first">性别</div>
+                <div>Gender</div>
+              </div>
+            </template>
+            ：{{personInfo.gender}}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -59,15 +68,6 @@
           <el-descriptions-item>
             <template slot="label">
               <div class="main__top-description-label">
-                <div class="main__top-description-label-first">级别</div>
-                <div>Class</div>
-              </div>
-            </template>
-            ：LW
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <div class="main__top-description-label">
                 <div class="main__top-description-label-first">身高</div>
                 <div>Height</div>
               </div>
@@ -77,11 +77,47 @@
           <el-descriptions-item>
             <template slot="label">
               <div class="main__top-description-label">
+                <div class="main__top-description-label-first">体重</div>
+                <div>Weight</div>
+              </div>
+            </template>
+            ：{{personInfo.weight}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <div class="main__top-description-label">
                 <div class="main__top-description-label-first">出生日期</div>
                 <div>Date of Birth</div>
               </div>
             </template>
             ：{{personInfo.birthday}}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <div class="main__top-description-label">
+                <div class="main__top-description-label-first">级别</div>
+                <div>Class</div>
+              </div>
+            </template>
+            ：LW
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <div class="main__top-description-label">
+                <div class="main__top-description-label-first">组别</div>
+                <div>Group</div>
+              </div>
+            </template>
+            ：LWx
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label">
+              <div class="main__top-description-label">
+                <div class="main__top-description-label-first">训练年限</div>
+                <div>Pro Training Years</div>
+              </div>
+            </template>
+            ：10
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -104,24 +140,6 @@
           <el-descriptions-item>
             <template slot="label">
               <div class="main__top-description-label">
-                <div class="main__top-description-label-first">组别</div>
-                <div>Group</div>
-              </div>
-            </template>
-            ：LWx
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <div class="main__top-description-label">
-                <div class="main__top-description-label-first">体重</div>
-                <div>Weight</div>
-              </div>
-            </template>
-            ：{{personInfo.weight}}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template slot="label">
-              <div class="main__top-description-label">
                 <div class="main__top-description-label-first">测试日期</div>
                 <div>Test Date</div>
               </div>
@@ -137,16 +155,17 @@
             :data="CGYTableData"
             style="width: 100%"
             key="CGYTableData"
+            :cell-style="setCellStyle"
           >
             <el-table-column label="日期" width="160" align="center">
-              <el-table-column prop="cgy_item" label="测功仪指标" width="130" align="center"></el-table-column>
+              <el-table-column prop="cgy_item" label="测功仪指标" width="160" align="center"></el-table-column>
             </el-table-column>
             <el-table-column width="120" align="center">
               <template #header>{{lastTestDataPersonInfo.test_date}}</template>
               <el-table-column prop="score" label="得分" width="80" align="center"></el-table-column>
               <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
               <el-table-column prop="pace" label="配速" width="80" align="center"></el-table-column>
-              <el-table-column prop="standard" label="标准" width="80" align="center"></el-table-column>
+              <el-table-column prop="standard" label="标准" width="110" align="center"></el-table-column>
             </el-table-column>
           </el-table>
           <el-table
@@ -154,12 +173,13 @@
             style="width: 100%"
             key="StrengthTableData"
             border
+            :cell-style="setCellStyle"
           >
-            <el-table-column prop="strength_item" label="力量指标" width="130" align="center"></el-table-column>
+            <el-table-column prop="strength_item" label="力量指标" width="160" align="center"></el-table-column>
             <el-table-column prop="Tscore" label="总分" width="80" align="center"></el-table-column>
             <el-table-column prop="score" label="得分" width="80" align="center"></el-table-column>
             <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
-            <el-table-column prop="standard" label="标准" width="80" align="center"></el-table-column>
+            <el-table-column prop="standard" label="标准" width="110" align="center"></el-table-column>
           </el-table>
           <!-- <el-table
             :data="Erg2k"
@@ -365,16 +385,17 @@
             :data="lastCGYTableData"
             style="width: 100%"
             key="lastCGYTableData"
+            :cell-style="setCellStyle"
           >
             <el-table-column label="日期" width="160" align="center">
-              <el-table-column prop="cgy_item" label="测功仪指标" width="130" align="center"></el-table-column>
+              <el-table-column prop="cgy_item" label="测功仪指标" width="160" align="center"></el-table-column>
             </el-table-column>
             <el-table-column width="120" align="center">
               <template #header>{{TestDataPersonInfo.test_date}}</template>
               <el-table-column prop="score" label="得分" width="80" align="center"></el-table-column>
               <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
               <el-table-column prop="pace" label="配速" width="80" align="center"></el-table-column>
-              <el-table-column prop="diff" label="差值" width="80" align="center"></el-table-column>
+              <el-table-column prop="diff" label="差值" width="110" align="center"></el-table-column>
             </el-table-column>
           </el-table>
           <el-table
@@ -382,12 +403,13 @@
             style="width: 100%"
             key="lastStrengthTableData"
             border
+            :cell-style="setCellStyle"
           >
-            <el-table-column prop="strength_item" label="力量指标" width="130" align="center"></el-table-column>
+            <el-table-column prop="strength_item" label="力量指标" width="160" align="center"></el-table-column>
             <el-table-column prop="Tscore" label="总分" width="80" align="center"></el-table-column>
             <el-table-column prop="score" label="得分" width="80" align="center"></el-table-column>
             <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
-            <el-table-column prop="diff" label="差值" width="80" align="center"></el-table-column>
+            <el-table-column prop="diff" label="差值" width="110" align="center"></el-table-column>
           </el-table>
           <!-- <el-table
             :data="Erg2kTest"
@@ -884,6 +906,13 @@ export default {
         this.formatStrengthTableData()
       },
       deep: true
+    },
+    TestDataPersonInfo: {
+      handler (newValue, oldValue) {
+        this.formatLastCGYTableData()
+        this.formatLastStrengthTableData()
+      },
+      deep: true
     }
   },
   methods: {
@@ -1181,8 +1210,8 @@ export default {
       }
     },
     setCellStyle ({rowIndex, columnIndex, row, column}) {
-      if ((row['score'] >= 80 && column.property === 'score') || (row['tScore'] >= 80 && column.property === 'tScore')) return 'background-color: rgba(255, 0, 0, 0.8);'
-      else if ((row['score'] < 80 && column.property === 'score') || (row['tScore'] < 80 && column.property === 'tScore')) return 'background-color: rgba(0, 255, 0, 0.8);'
+      if ((row['score'] >= 80 && column.property === 'score') || (row['TScore'] >= 80 && column.property === 'TScore')) return 'background-color: rgba(153, 204, 0, 0.3);'
+      else if ((row['score'] < 80 && column.property === 'score') || (row['TScore'] < 80 && column.property === 'TScore')) return 'background-color: rgba(255,0,0,0.5);'
     },
     // setDivContent () {
     //   var divs = document.getElementsByName('.test')
@@ -1207,12 +1236,27 @@ export default {
           value: [this.lastTestDataPersonInfo.cgy2000m_score, this.lastTestDataPersonInfo.cgy5000m_score, this.lastTestDataPersonInfo.cgy30min20str_score, this.lastTestDataPersonInfo.cgy500m_score, this.lastTestDataPersonInfo.cgy10str_score, this.lastTestDataPersonInfo.strength_score],
           name: this.lastTestDataPersonInfo.test_date,
           areaStyle: {
-            color: 'rgba(51, 204, 0, 0.8)'
+            color: 'rgba(253, 174, 73, 0.8)'
+          },
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
         },
         {
           value: [this.TestDataPersonInfo.cgy2000m_score, this.TestDataPersonInfo.cgy5000m_score, this.TestDataPersonInfo.cgy30min20str_score, this.TestDataPersonInfo.cgy500m_score, this.TestDataPersonInfo.cgy10str_score, this.TestDataPersonInfo.strength_score],
-          name: this.TestDataPersonInfo.test_date
+          name: this.TestDataPersonInfo.test_date,
+          // areaStyle: {
+          //   color: 'rgba(209, 73, 91, 0.8)'
+          // },
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
+          }
         },
         {
           value: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -1220,7 +1264,7 @@ export default {
         }
       ]
       option = {
-        color: ['#67F9D8', '#333333', '#FFE434'],
+        color: ['#EDAE49', '#D1495B', '#00798C'],
         tooltip: {
           trigger: 'item'
         },
@@ -1235,33 +1279,34 @@ export default {
         },
         radar: {
           indicator: [{
-            name: '测功仪2000m',
-            max: 120
-          }, {
-            name: '测功仪5000m',
-            max: 120
-          }, {
-            name: '测功仪30min/20',
-            max: 120
-          }, {
-            name: '测功仪500m',
-            max: 120
-          }, {
-            name: '测功仪10str',
-            max: 120
+            name: 'Erg 2k',
+            max: 140
           }, {
             name: '力量',
-            max: 120
+            max: 140
+          }, {
+            name: 'Erg 10str',
+            max: 140
+          }, {
+            name: 'Erg 30@20',
+            max: 140
+          }, {
+            name: 'Erg 500m',
+            max: 140
+          }, {
+            name: 'Erg 5k',
+            max: 140
           }],
           shape: 'circle',
           splitNumber: 5,
           axisName: {
-            color: '#428BD4'
+            color: '#000',
+            fontSize: 14
           },
           splitLine: {
             lineStyle: {
               color: [
-                'rgba(238, 197, 102, 0.1)',
+                'rgba(144, 144, 144, 0.5)',
                 'rgba(238, 197, 102, 0.2)',
                 'rgba(238, 197, 102, 0.4)',
                 'rgba(238, 197, 102, 0.6)',
@@ -1270,16 +1315,17 @@ export default {
               ].reverse()
             }
           },
-          splitArea: {
-            areaStyle: {
-              color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
-              shadowColor: 'rgba(0, 0, 0, 0.2)',
-              shadowBlur: 10
-            }
-          },
+          // splitArea: {
+          //   areaStyle: {
+          //     color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
+          //     shadowColor: 'rgba(0, 0, 0, 0.2)',
+          //     shadowBlur: 10
+          //   }
+          // },
           axisLine: {
             lineStyle: {
-              color: 'rgba(211, 253, 250, 0.8)'
+              // color: 'rgba(211, 253, 250, 0.8)'
+              color: 'rgba(144, 144, 144, 0.5)'
             }
           }
         },
@@ -1322,14 +1368,16 @@ export default {
     box-sizing: border-box;
   }
   &__top {
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     &-description {
+      color: black;
       &-label {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: flex-end;
-        width: 90px;
+        width: 130px;
+        font-weight: 700;
         &-first {
           align-self: flex-end;;
         }
@@ -1346,7 +1394,7 @@ export default {
       justify-content: space-evenly;
       padding: 10px;
       &-echarts {
-        width: 600px;
+        width: 450px;
         height: 500px;
       }
     }
@@ -1369,8 +1417,8 @@ export default {
   }
 }
 /deep/ .el-table__header th {
-  padding: 3px;
-  background: #F5F7FA;
+  //
+  color: black;
 }
 /deep/ .el-descriptions-item__content {
   align-items: center;
@@ -1379,4 +1427,15 @@ export default {
   font-size: 12px;
 }
 
+/deep/ .el-tabs__content {
+  color: black;
+}
+
+/deep/ .el-table {
+  color: black;
+}
+
+/deep/ .el-descriptions__body {
+  color: black;
+}
 </style>

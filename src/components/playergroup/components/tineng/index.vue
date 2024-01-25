@@ -1,8 +1,8 @@
 <template>
     <div class="tineng__wrapper">
         <div class="tineng__wsy">
-            <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 30px">
-              <div class="tineng__wsy-title">体能</div>
+            <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 10px">
+              <!-- <div class="tineng__wsy-title">体能</div> -->
               <!-- <el-switch
                 v-model="switchValue"
                 active-text="ECharts图"
@@ -65,6 +65,7 @@
               <el-table
                 :data="tableData"
                 :header-cell-style="{'text-align': 'center'}"
+                border
               >
                 <el-table-column prop="date" label="测试日期" align="center" width="160"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center" width="140"></el-table-column>
@@ -360,8 +361,6 @@ export default {
         }
       })
       Promise.all([getBasicTinengData, getProTinengData]).then(res => {
-        // console.log(getBasicTinengData)
-        // console.log(getProTinengData)
         const basicData = res[0].data
         const proData = res[1].data.map(item => (
           {
@@ -407,14 +406,12 @@ export default {
         const timeArray = this.tinengDataShow.date
         const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))))
         const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))))
-        // console.log(minDate, maxDate)
         this.pickerOptions = {
           disabledDate: time => {
             const currentDate = new Date(time)
             return currentDate < minDate || currentDate > maxDate
           }
         }
-        // console.log(this.pickerOptions)
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
@@ -425,8 +422,12 @@ export default {
       var option
 
       option = {
+        color: ['#003D5B', '#EDAE49'],
         title: {
-          text: '力量'
+          text: '力量',
+          textStyle: {
+            color: '#000'
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -464,23 +465,26 @@ export default {
         xAxis: {
           type: 'category',
           data: this.tinengDataShow.date,
-
-          // name: '日期',
-          // nameLocation: 'center',
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
           axisLabel: {
             show: true,
-            interval: 0,
-            rotate: 20,
+            interval: 3,
+            // rotate: 20,
             textStyle: {
-              margin: 15
+              margin: 15,
+              color: '#000'
             }
           }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '基础体能-卧推1RM',
@@ -502,6 +506,7 @@ export default {
       var option
 
       option = {
+        color: ['#003D5B'],
         title: {
           text: '30m冲刺跑'
         },
@@ -550,8 +555,8 @@ export default {
           },
           axisLabel: {
             show: true,
-            interval: 0,
-            rotate: 20,
+            interval: 3,
+            // rotate: 20,
             textStyle: {
               margin: 15
             }
@@ -577,6 +582,7 @@ export default {
       var option
 
       option = {
+        color: ['#003D5B'],
         title: {
           text: '引体向上'
         },
@@ -625,8 +631,8 @@ export default {
           },
           axisLabel: {
             show: true,
-            interval: 0,
-            rotate: 20,
+            interval: 3,
+            // rotate: 20,
             textStyle: {
               margin: 15
             }
@@ -645,14 +651,7 @@ export default {
               normal: {
                 lineStyle: {
                   type: 'solid',
-                  color: {
-                    type: 'linear',
-                    x: 0,
-                    y: 0,
-                    x2: 0,
-                    y2: 1,
-                    global: false
-                  }
+                  color: '#D1495B'
                 },
                 label: {
                   show: true,
@@ -675,6 +674,7 @@ export default {
       var option
 
       option = {
+        color: ['#003D5B'],
         title: {
           text: '立定跳远'
         },
@@ -750,6 +750,7 @@ export default {
       var option
 
       option = {
+        color: ['#003D5B'],
         title: {
           text: '测功仪30分钟20桨频'
         },
@@ -825,6 +826,7 @@ export default {
       var option
 
       option = {
+        color: ['#003D5B'],
         title: {
           text: '测功仪2000m'
         },
@@ -905,7 +907,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px 10px 70px 10px;
+    padding: 0px 10px 70px 10px;
     width: 100%;
   }
   &__wsy {
@@ -923,12 +925,14 @@ export default {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-evenly;
+        margin-bottom: 50px;
         &-first {
           display: flex;
           flex-direction: row;
           flex-wrap: nowrap;
           align-items: center;
           justify-content: space-evenly;
+          margin-bottom: 30px;
         }
         &-second {
           display: flex;
@@ -949,9 +953,18 @@ export default {
       align-items: center;
       justify-content: center;
       width: 100%;
-      margin-left: 20px;
+      // margin-left: 20px;
     }
   }
 }
 
+/deep/ .el-table {
+  color: black;
+}
+
+/deep/ .el-table__header th {
+  //
+  color: black;
+  font-size: 16px;
+}
 </style>

@@ -15,6 +15,22 @@ export function formatTime (time) {
   return totalSeconds
 }
 
+export function formatTime1 (time) {
+  // 使用正则表达式拆分字符串
+  var timeArray = time.match(/(\d+):(\d+)(?:\.(\d+))?/)
+
+  // 提取小时、分钟、秒和毫秒
+  var minutes = parseInt(timeArray[1])
+  var seconds = parseInt(timeArray[2]) // 合并毫秒到秒
+  var milliseconds = timeArray[3] ? parseInt(timeArray[3]) : 0 // 如果没有毫秒，则默认为0
+
+  seconds += milliseconds / 100
+
+  // 将时间转换为总秒数
+  var totalSeconds = minutes * 60 + seconds
+  return totalSeconds
+}
+
 //  把秒转换成00：00：00：00
 export function formatSectoTime (seconds) {
   const hours = Math.floor(seconds / 3600)

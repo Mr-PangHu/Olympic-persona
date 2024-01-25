@@ -108,9 +108,9 @@ export default {
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra",Arial,sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -136,16 +136,29 @@ export default {
   z-index: 1;
   background-color: white;
   width: 93%;
+  color: black;
+}
+
+/deep/ .el-tabs__item{
+  color: #000;
+  font-size: 16px;
 }
 
 /deep/ .el-tabs__content {
   position: relative;
   top: 85px;
-  padding: 30px 0 0 0;
+  padding: 30px 0 20px 0;
 }
 
 /deep/ .el-tabs__nav-wrap {
   height: 50px;
   line-height: 50px;
+}
+
+/deep/ .el-button {
+  background-color: rgba(0,37,79,.8);
+  border-color: rgba(0,37,79,.8);
+  font-size: 15px;
+  color: white;
 }
 </style>

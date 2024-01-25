@@ -193,7 +193,7 @@ export default {
       this.$router.push('/label')
     },
     getYear () {
-      myAxios.get('http://127.0.0.1/cm/getYear').then(res => {
+      myAxios.get('/cm/getYear').then(res => {
         const yearArr = res.data
         this.yearOptions = yearArr.map(item => (
           {
