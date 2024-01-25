@@ -1,7 +1,7 @@
 <template>
     <div class="shangbing__wrapper">
-        <div class="shangbing__FMS">
-            <div class="search-box">
+        <div class="shangbing__FMS" >
+            <div class="search-box" style="text-align: right;">
               <el-form :inline="true">
                 <el-form-item label="">
                   <el-select
@@ -17,7 +17,6 @@
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
-                      <!-- :selected="item.value === dataFMS[0]['date']"> -->
                     </el-option>
                   </el-select>
                 </el-form-item>
@@ -26,9 +25,22 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="shangbing__FMS-title">FMS测试 {{this.dataShow['date']}}</div>
-            <div class="shangbing__FMS-point">综合得分：{{this.dataShow['composite_score']}}</div>
+            <div class="shangbing__FMS-title" style="text-align: right;">FMS测试 {{this.dataShow['date']}}</div>
+            <div class="shangbing__FMS-point" style="text-align: right;">{{this.dataFMS[0]['name']}} 综合得分：{{this.dataShow['composite_score']}}</div>
             <div class="shangbing__FMS-wrapper">
+                <div class="shangbing__FMS-wrapper-table">
+                    <el-table :data="tableData" style="width: 100%" :header-cell-style="rowClass" :span-method="arraySpanMethod">
+                        <el-table-column label="项目">
+                            <el-table-column prop="proj_1"  width="110"></el-table-column>
+                            <el-table-column prop="proj_2"  width="80"></el-table-column>
+                        </el-table-column>
+                        <el-table-column label="得分" >
+                            <el-table-column prop="score_1" width="80"></el-table-column>
+                            <el-table-column prop="score_2" width="80"></el-table-column>
+                        </el-table-column>
+                        <el-table-column prop="remark" label="备注"  width="80"></el-table-column>
+                    </el-table>
+                </div>
                 <div class="shangbing__FMS-wrapper-echarts" id="FMS_show"></div>
             </div>
         </div>
@@ -61,6 +73,58 @@ export default {
       // rotary_stability_score: [],
       // composite_score: [],
       // date: [],
+      tableData_moren: [],
+      tableData: [
+        // {
+        //   proj_1: '深蹲',
+        //   proj_2: '1',
+        //   score_1: '',
+        //   score_2: '',
+        //   remark: ''
+        // },
+        // {
+        //   proj_1: '跨栏步',
+        //   proj_2: '左侧',
+        //   score_1: '1',
+        //   score_2: '1',
+        //   remark: ''
+        // },
+        // {
+        //   proj_1: '',
+        //   proj_2: '右侧',
+        //   score_1: '',
+        //   score_2: '1',
+        //   remark: ''
+        // },
+        // {
+        //   proj_1: '跨栏步',
+        //   proj_2: '左侧',
+        //   score_1: '1',
+        //   score_2: '1',
+        //   remark: ''
+        // },
+        // {
+        //   proj_1: '',
+        //   proj_2: '右侧',
+        //   score_1: '',
+        //   score_2: '1',
+        //   remark: ''
+        // },
+        // {
+        //   proj_1: '跨栏步',
+        //   proj_2: '左侧',
+        //   score_1: '1',
+        //   score_2: '1',
+        //   remark: ''
+        // },
+        // {
+        //   proj_1: '',
+        //   proj_2: '右侧',
+        //   score_1: '',
+        //   score_2: '1',
+        //   remark: ''
+        // }
+      ],
       dataFMS: [],
       trainDateOptions: [],
       dataShow: [],
@@ -72,6 +136,42 @@ export default {
     // this.setFMSChart()
   },
   methods: {
+    rowClass ({row, column, rowIndex, columnIndex}) {
+      if (rowIndex === 1) {
+        return {
+          display: 'none'
+        }
+      }
+    },
+    arraySpanMethod ({ row, column, rowIndex, columnIndex }) {
+      if (rowIndex === 0 || rowIndex === 9) {
+        if (columnIndex === 0) {
+          return [1, 2]
+        } else if (columnIndex === 1) {
+          return [1, 2]
+        } else {
+          return [1, 1]
+        }
+      }
+      if (columnIndex === 0 || columnIndex === 2) {
+        if (rowIndex % 2 === 1 && rowIndex < 9) {
+          return {
+            rowspan: 2,
+            colspan: 1
+          }
+        } else if (rowIndex === 10) {
+          return {
+            rowspan: 2,
+            colspan: 1
+          }
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0
+          }
+        }
+      }
+    },
     getPlayerId () {
       const auth = window.sessionStorage.getItem('auth')
       if (auth === '2') {
@@ -101,7 +201,10 @@ export default {
         }
       }).then(res => {
         this.dataFMS = res.data
-        // console.log(this.dataFMS)
+        console.log(this.dataFMS)
+        this.dataFMS.sort((a, b) => {
+          return b.date.localeCompare(a.date)
+        })
         const temp = this.dataFMS.map(item => {
           return {
             label: formatDate(item.date),
@@ -110,32 +213,82 @@ export default {
         })
         this.trainDateOptions.push.apply(this.trainDateOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
         // console.log(this.trainDateOptions)
-        this.dataFMS.sort((a, b) => {
-          return b.date.localeCompare(a.date)
-        })
+        this.date = this.dataShow['date']
         this.dataShow = this.dataFMS[0]// 默认显示最新的一次测试成绩
         // console.log('moren', this.dataShow)
         this.dataShow['date'] = formatDate(this.dataShow['date'])
-        // this.squat_score.push(dataFMS[0].squat_score)
-        // this.hurdle_step_left.push(dataFMS[0].hurdle_step_left)
-        // this.hurdle_step_right.push(dataFMS[0].hurdle_step_right)
-        // this.hurdle_step_score.push(dataFMS[0].hurdle_step_score)
-        // this.in_line_lunge_left.push(dataFMS[0].in_line_lunge_left)
-        // this.in_line_lunge_right.push(dataFMS[0].in_line_lunge_right)
-        // this.in_line_lunge_score.push(dataFMS[0].in_line_lunge_score)
-        // this.shoulder_flexibility_left.push(dataFMS[0].shoulder_flexibility_left)
-        // this.shoulder_flexibility_right.push(dataFMS[0].shoulder_flexibility_right)
-        // this.shoulder_flexibility_score.push(dataFMS[0].shoulder_flexibility_score)
-        // this.active_straight_leg_raise_left.push(dataFMS[0].active_straight_leg_raise_left)
-        // this.active_straight_leg_raise_right.push(dataFMS[0].active_straight_leg_raise_right)
-        // this.active_straight_leg_raise_score.push(dataFMS[0].active_straight_leg_raise_score)
-        // this.trunk_stability_pushup_score.push(dataFMS[0].trunk_stability_pushup_score)
-        // this.rotary_stability_left.push(dataFMS[0].rotary_stability_left)
-        // this.rotary_stability_right.push(dataFMS[0].rotary_stability_right)
-        // this.rotary_stability_score.push(dataFMS[0].rotary_stability_score)
-        // this.composite_score.push(dataFMS[0].composite_score)
-        // this.date.push(formatDate(dataFMS[0].date))
-        // console.log(this.composite_score)
+        this.tableData_moren = []
+        this.tableData = []
+        this.tableData.push({
+          proj_1: '深蹲',
+          proj_2: this.dataShow['squat_score']
+        })
+        this.tableData.push({
+          proj_1: '跨栏步',
+          proj_2: '左侧',
+          score_1: this.dataShow['hurdle_step_score'],
+          score_2: this.dataShow['hurdle_step_left']
+        })
+        this.tableData.push({
+          proj_1: '跨栏步',
+          proj_2: '右侧',
+          score_1: this.dataShow['hurdle_step_score'],
+          score_2: this.dataShow['hurdle_step_right']
+        })
+        this.tableData.push({
+          proj_1: '线性弓步',
+          proj_2: '左侧',
+          score_1: this.dataShow['in_line_lunge_score'],
+          score_2: this.dataShow['in_line_lunge_left']
+        })
+        this.tableData.push({
+          proj_1: '线性弓步',
+          proj_2: '右侧',
+          score_1: this.dataShow['in_line_lunge_score'],
+          score_2: this.dataShow['in_line_lunge_right']
+        })
+        this.tableData.push({
+          proj_1: '肩部灵活性',
+          proj_2: '左侧',
+          score_1: this.dataShow['shoulder_flexibility_score'],
+          score_2: this.dataShow['shoulder_flexibility_left']
+        })
+        this.tableData.push({
+          proj_1: '肩部灵活性',
+          proj_2: '右侧',
+          score_1: this.dataShow['shoulder_flexibility_score'],
+          score_2: this.dataShow['shoulder_flexibility_right']
+        })
+        this.tableData.push({
+          proj_1: '主动直腿抬高',
+          proj_2: '左侧',
+          score_1: this.dataShow['active_straight_leg_raise_score'],
+          score_2: this.dataShow['active_straight_leg_raise_left']
+        })
+        this.tableData.push({
+          proj_1: '主动直腿抬高',
+          proj_2: '右侧',
+          score_1: this.dataShow['active_straight_leg_raise_score'],
+          score_2: this.dataShow['active_straight_leg_raise_right']
+        })
+        this.tableData.push({
+          proj_1: '躯干稳定俯卧撑',
+          proj_2: this.dataShow['trunk_stability_pushup_score']
+        })
+        this.tableData.push({
+          proj_1: '旋转稳定性',
+          proj_2: '左侧',
+          score_1: this.dataShow['rotary_stability_score'],
+          score_2: this.dataShow['rotary_stability_left']
+        })
+        this.tableData.push({
+          proj_1: '旋转稳定性',
+          proj_2: '右侧',
+          score_1: this.dataShow['rotary_stability_score'],
+          score_2: this.dataShow['rotary_stability_right']
+        })
+        this.tableData_moren = this.tableData
+        console.log('biefen', this.tableData_moren)
       }).then(res => {
         this.setFMSChart()
       })
@@ -147,12 +300,83 @@ export default {
       })
       this.dataShow = tmp[0]
       this.dataShow['date'] = formatDate(this.dataShow['date'])
+      this.tableData = []
+      this.tableData.push({
+        proj_1: '深蹲',
+        proj_2: this.dataShow['squat_score']
+      })
+      this.tableData.push({
+        proj_1: '跨栏步',
+        proj_2: '左侧',
+        score_1: this.dataShow['hurdle_step_score'],
+        score_2: this.dataShow['hurdle_step_left']
+      })
+      this.tableData.push({
+        proj_1: '跨栏步',
+        proj_2: '右侧',
+        score_1: this.dataShow['hurdle_step_score'],
+        score_2: this.dataShow['hurdle_step_right']
+      })
+      this.tableData.push({
+        proj_1: '线性弓步',
+        proj_2: '左侧',
+        score_1: this.dataShow['in_line_lunge_score'],
+        score_2: this.dataShow['in_line_lunge_left']
+      })
+      this.tableData.push({
+        proj_1: '线性弓步',
+        proj_2: '右侧',
+        score_1: this.dataShow['in_line_lunge_score'],
+        score_2: this.dataShow['in_line_lunge_right']
+      })
+      this.tableData.push({
+        proj_1: '肩部灵活性',
+        proj_2: '左侧',
+        score_1: this.dataShow['shoulder_flexibility_score'],
+        score_2: this.dataShow['shoulder_flexibility_left']
+      })
+      this.tableData.push({
+        proj_1: '肩部灵活性',
+        proj_2: '右侧',
+        score_1: this.dataShow['shoulder_flexibility_score'],
+        score_2: this.dataShow['shoulder_flexibility_right']
+      })
+      this.tableData.push({
+        proj_1: '主动直腿抬高',
+        proj_2: '左侧',
+        score_1: this.dataShow['active_straight_leg_raise_score'],
+        score_2: this.dataShow['active_straight_leg_raise_left']
+      })
+      this.tableData.push({
+        proj_1: '主动直腿抬高',
+        proj_2: '右侧',
+        score_1: this.dataShow['active_straight_leg_raise_score'],
+        score_2: this.dataShow['active_straight_leg_raise_right']
+      })
+      this.tableData.push({
+        proj_1: '躯干稳定俯卧撑',
+        proj_2: this.dataShow['trunk_stability_pushup_score']
+      })
+      this.tableData.push({
+        proj_1: '旋转稳定性',
+        proj_2: '左侧',
+        score_1: this.dataShow['rotary_stability_score'],
+        score_2: this.dataShow['rotary_stability_left']
+      })
+      this.tableData.push({
+        proj_1: '旋转稳定性',
+        proj_2: '右侧',
+        score_1: this.dataShow['rotary_stability_score'],
+        score_2: this.dataShow['rotary_stability_right']
+      })
       // console.log('dsd', this.dataShow)
       this.setFMSChart()
     },
     reset () {
       this.date = ''
       this.dataShow = this.dataFMS[0]
+      this.tableData = this.tableData_moren
+      console.log('ss', this.tableData)
       this.setFMSChart()
     },
     setFMSChart () {
@@ -160,64 +384,102 @@ export default {
       var myChart = echarts.init(chartDom)
       var option
 
+      var data = [this.dataShow['squat_score'], this.dataShow['hurdle_step_left'], this.dataShow['hurdle_step_right'], this.dataShow['hurdle_step_score'], this.dataShow['in_line_lunge_left'], this.dataShow['in_line_lunge_right'], this.dataShow['in_line_lunge_score'], this.dataShow['shoulder_flexibility_left'], this.dataShow['shoulder_flexibility_right'], this.dataShow['shoulder_flexibility_score'], this.dataShow['active_straight_leg_raise_left'], this.dataShow['active_straight_leg_raise_right'], this.dataShow['active_straight_leg_raise_score'], this.dataShow['trunk_stability_pushup_score'], this.dataShow['rotary_stability_left'], this.dataShow['rotary_stability_right'], this.dataShow['rotary_stability_score']]
+      var titlename = ['深蹲得分', '跨栏步得分', '线性弓步得分', '肩部灵活性得分', '主动直腿抬高', '躯干稳定俯卧撑', '旋转稳定性得分']
+      var valdata = [1, 2, 1, 2, 3, 3, 3]
+      var myColor = ['#1089E7', '#F57474', '#56D2E3', '#F8B448', '#8B78F6', '#558484', '#32B666']
       option = {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
-        },
-        toolbox: {
-          feature: {
-            dataView: { show: true, readOnly: false },
-            magicType: { show: true, type: ['line', 'bar'] },
-            restore: { show: true },
-            saveAsImage: { show: true }
-          }
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
+        backgroundColor: '#fff',
         xAxis: {
-          type: 'category',
-          data: ['深蹲得分', '跨栏步左侧', '跨栏步右侧', '跨栏步得分', '线性弓步左侧', '线性弓步右侧', '线性弓步得分', '肩部灵活性左侧', '肩部灵活性右侧', '肩部灵活性得分', '主动直腿抬高左侧', '主动直腿抬高右侧', '主动直腿抬高得分', '躯干稳定俯卧撑得分', '旋转稳定性左侧', '旋转稳定性右侧', '旋转稳定性得分'],
+          show: false
+        },
+        yAxis: [{
+          show: true,
+          data: titlename,
+          inverse: true,
+          axisLine: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
           axisLabel: {
-            rotate: 20
-          }
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: '得分',
-            // data: [this.squat_score[0], this.hurdle_step_left[0], this.hurdle_step_right[0], this.hurdle_step_score[0], this.in_line_lunge_left[0], this.in_line_lunge_right[0], this.in_line_lunge_score[0], this.shoulder_flexibility_left[0], this.shoulder_flexibility_right[0], this.shoulder_flexibility_score[0], this.active_straight_leg_raise_left[0], this.active_straight_leg_raise_right[0], this.active_straight_leg_raise_score[0], this.trunk_stability_pushup_score[0], this.rotary_stability_left[0], this.rotary_stability_right[0], this.rotary_stability_score[0]],
-            data: [this.dataShow['squat_score'], this.dataShow['hurdle_step_left'], this.dataShow['hurdle_step_right'], this.dataShow['hurdle_step_score'], this.dataShow['in_line_lunge_left'], this.dataShow['in_line_lunge_right'], this.dataShow['in_line_lunge_score'], this.dataShow['shoulder_flexibility_left'], this.dataShow['shoulder_flexibility_right'], this.dataShow['shoulder_flexibility_score'], this.dataShow['active_straight_leg_raise_left'], this.dataShow['active_straight_leg_raise_right'], this.dataShow['active_straight_leg_raise_score'], this.dataShow['trunk_stability_pushup_score'], this.dataShow['rotary_stability_left'], this.dataShow['rotary_stability_right'], this.dataShow['rotary_stability_score']],
-            type: 'bar',
-            showBackground: true,
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
-              ])
-            },
-            emphasis: {
-              itemStyle: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: '#2378f7' },
-                  { offset: 0.7, color: '#2378f7' },
-                  { offset: 1, color: '#83bff6' }
-                ])
+            color: '#427999',
+            rich: {
+              lg: {
+                backgroundColor: '#339911',
+                color: '#fff',
+                borderRadius: 15,
+                // padding: 50,
+                align: 'center',
+                width: 50,
+                height: 15
               }
             }
           }
-        ]
+        }, {
+          show: true,
+          inverse: true,
+          data: valdata,
+          axisLabel: {
+            textStyle: {
+              fontSize: 12,
+              color: '#fff'
+            }
+          },
+          axisLine: {
+            show: false
+          },
+          splitLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          }
+        }],
+        series: [{
+          name: '条',
+          type: 'bar',
+          yAxisIndex: 0,
+          data: data,
+          barWidth: 30,
+          itemStyle: {
+            normal: {
+              barBorderRadius: 30,
+              color: function (params) {
+                var num = myColor.length
+                return myColor[params.dataIndex % num]
+              }
+            }
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'inside',
+              formatter: '{c}',
+              color: '#fff'
+            }
+          }
+        }, {
+          name: '框',
+          type: 'bar',
+          yAxisIndex: 1,
+          barGap: '-100%',
+          data: [3, 3, 3, 3, 3, 3, 3],
+          barWidth: 40,
+          itemStyle: {
+            normal: {
+              color: 'none',
+              borderColor: '#00c1de',
+              borderWidth: 3,
+              barBorderRadius: 15
+            }
+          }
+        }]
       }
-
       option && myChart.setOption(option)
     }
   }
@@ -252,8 +514,12 @@ export default {
         align-items: center;
         justify-content: space-evenly;
         &-echarts {
+            width: 500px;
+            height: 800px;
+        }
+        &-echarts {
             width: 1000px;
-            height: 400px;
+            height: 800px;
         }
     }
   }
