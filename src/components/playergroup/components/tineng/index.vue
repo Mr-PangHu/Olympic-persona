@@ -420,11 +420,14 @@ export default {
       var chartDom = document.getElementById('tineng_show1')
       var myChart = echarts.init(chartDom)
       var option
-
+      const l = this.tinengDataShow.date.length
+      const rotate = l > 6 ? 0 : 20
+      const interval = l > 6 ? 3 : 0
       option = {
         color: ['#003D5B', '#EDAE49'],
         title: {
           text: '力量',
+          left: 'center',
           textStyle: {
             color: '#000'
           }
@@ -470,8 +473,8 @@ export default {
           },
           axisLabel: {
             show: true,
-            interval: 3,
-            // rotate: 20,
+            interval: interval,
+            rotate: rotate,
             textStyle: {
               margin: 15,
               color: '#000'
@@ -504,11 +507,17 @@ export default {
       var chartDom = document.getElementById('tineng_show2')
       var myChart = echarts.init(chartDom)
       var option
-
+      const l = this.tinengDataShow.date.length
+      const rotate = l > 6 ? 0 : 20
+      const interval = l > 6 ? 3 : 0
       option = {
         color: ['#003D5B'],
         title: {
-          text: '30m冲刺跑'
+          text: '30m冲刺跑',
+          left: 'center',
+          textStyle: {
+            color: '#000'
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -555,17 +564,23 @@ export default {
           },
           axisLabel: {
             show: true,
-            interval: 3,
-            // rotate: 20,
+            interval: interval,
+            rotate: rotate,
             textStyle: {
-              margin: 15
+              margin: 15,
+              color: '#000'
             }
           }
         },
         yAxis: {
           type: 'value',
           min: Math.floor(Math.min(...this.tinengDataShow.sprint_run_30m) - 0.2),
-          max: Math.floor(Math.max(...this.tinengDataShow.sprint_run_30m) + 1)
+          max: Math.floor(Math.max(...this.tinengDataShow.sprint_run_30m) + 1),
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '基础体能-30m冲刺跑',
@@ -580,11 +595,17 @@ export default {
       var chartDom = document.getElementById('tineng_show3')
       var myChart = echarts.init(chartDom)
       var option
-
+      const l = this.tinengDataShow.date.length
+      const rotate = l > 6 ? 0 : 20
+      const interval = l > 6 ? 3 : 0
       option = {
         color: ['#003D5B'],
         title: {
-          text: '引体向上'
+          text: '引体向上',
+          left: 'center',
+          textStyle: {
+            color: '#000'
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -624,22 +645,26 @@ export default {
         xAxis: {
           type: 'category',
           data: this.tinengDataShow.date,
-          // name: '日期',
-          // nameLocation: 'center',
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
           axisLabel: {
             show: true,
-            interval: 3,
-            // rotate: 20,
+            interval: interval,
+            rotate: rotate,
             textStyle: {
-              margin: 15
+              margin: 15,
+              color: '#000'
             }
           }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '基础体能-引体向上',
@@ -672,11 +697,18 @@ export default {
       var chartDom = document.getElementById('tineng_show4')
       var myChart = echarts.init(chartDom)
       var option
+      const l = this.tinengDataShow.date.length
+      const rotate = l > 6 ? 0 : 20
+      const interval = l > 6 ? 3 : 0
 
       option = {
         color: ['#003D5B'],
         title: {
-          text: '立定跳远'
+          text: '立定跳远',
+          left: 'center',
+          textStyle: {
+            color: '#000'
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -716,24 +748,28 @@ export default {
         xAxis: {
           type: 'category',
           data: this.tinengDataShow.date,
-          // name: '日期',
-          // nameLocation: 'center',
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
           axisLabel: {
             show: true,
-            interval: 0,
-            rotate: 20,
+            interval: interval,
+            rotate: rotate,
             textStyle: {
-              margin: 15
+              margin: 15,
+              color: '#000'
             }
           }
         },
         yAxis: {
           type: 'value',
           min: Math.floor(Math.min(...this.tinengDataShow.standing_jump_both_legs) - 10),
-          max: Math.floor(Math.max(...this.tinengDataShow.standing_jump_both_legs) + 10)
+          max: Math.floor(Math.max(...this.tinengDataShow.standing_jump_both_legs) + 10),
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '基础体能-立定跳远(双腿)',
@@ -748,11 +784,18 @@ export default {
       var chartDom = document.getElementById('tineng_show5')
       var myChart = echarts.init(chartDom)
       var option
+      const l = this.tinengDataShow.date.length
+      const rotate = l > 6 ? 0 : 20
+      const interval = l > 6 ? 3 : 0
 
       option = {
         color: ['#003D5B'],
         title: {
-          text: '测功仪30分钟20桨频'
+          text: '测功仪30分钟20桨频',
+          left: 'center',
+          textStyle: {
+            color: '#000'
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -792,24 +835,28 @@ export default {
         xAxis: {
           type: 'category',
           data: this.tinengDataShow.date,
-          // name: '日期',
-          // nameLocation: 'center',
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
           axisLabel: {
             show: true,
-            interval: 0,
-            rotate: 20,
+            interval: interval,
+            rotate: rotate,
             textStyle: {
-              margin: 15
+              margin: 15,
+              color: '#000'
             }
           }
         },
         yAxis: {
           type: 'value',
           min: Math.floor(Math.min(...this.tinengDataShow.dynamometer_30min) - 10),
-          max: Math.floor(Math.max(...this.tinengDataShow.dynamometer_30min) + 10)
+          max: Math.floor(Math.max(...this.tinengDataShow.dynamometer_30min) + 10),
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '专项体能-测功仪30min-20SR',
@@ -824,11 +871,18 @@ export default {
       var chartDom = document.getElementById('tineng_show6')
       var myChart = echarts.init(chartDom)
       var option
+      const l = this.tinengDataShow.date.length
+      const rotate = l > 6 ? 0 : 20
+      const interval = l > 6 ? 3 : 0
 
       option = {
         color: ['#003D5B'],
         title: {
-          text: '测功仪2000m'
+          text: '测功仪2000m',
+          left: 'center',
+          textStyle: {
+            color: '#000'
+          }
         },
         tooltip: {
           trigger: 'axis',
@@ -869,24 +923,28 @@ export default {
         xAxis: {
           type: 'category',
           data: this.tinengDataShow.date,
-          // name: '日期',
-          // nameLocation: 'center',
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
           axisLabel: {
             show: true,
-            interval: 0,
-            rotate: 20,
+            interval: interval,
+            rotate: rotate,
             textStyle: {
-              margin: 15
+              margin: 15,
+              color: '#000'
             }
           }
         },
         yAxis: {
           type: 'value',
           min: Math.floor(Math.min(...this.tinengDataShow.dynamometer_2000m) - 10),
-          max: Math.floor(Math.max(...this.tinengDataShow.dynamometer_2000m) + 10)
+          max: Math.floor(Math.max(...this.tinengDataShow.dynamometer_2000m) + 10),
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '专项体能-测功仪2000m',

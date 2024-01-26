@@ -178,7 +178,6 @@ export default {
     setChart () {
       var chartDom = document.getElementById('general_show')
       var myChart = echarts.init(chartDom)
-      // console.log(this.chartData)
       var option
 
       const data = [
@@ -186,7 +185,7 @@ export default {
           value: [this.chartData.cgy2000m_score, this.chartData.cgy5000m_score, this.chartData.cgy30min20str_score, this.chartData.cgy500m_score, this.chartData.cgy10str_score, this.chartData.strength_score],
           name: '我',
           areaStyle: {
-            color: 'rgba(144, 144, 144, 0.5)'
+            color: 'rgba(253, 174, 73, 0.8)'
           }
         },
         {
@@ -195,6 +194,7 @@ export default {
         }
       ]
       option = {
+        color: ['#EDAE49', '#00798C'],
         tooltip: {
           trigger: 'item'
         },
@@ -204,7 +204,7 @@ export default {
           data: ['我', '标准'],
           itemGap: 20,
           textStyle: {
-            color: '#33333350',
+            color: '#000',
             fontSize: 14,
             fontWeight: 700
           }
@@ -230,7 +230,7 @@ export default {
             max: 120
           }],
           axisName: {
-            color: '#333',
+            color: '#000',
             fontWeight: '700'
           }
         },
@@ -257,6 +257,7 @@ export default {
 
       const data = [this.personInfo.squat_reach, this.personInfo.ankle_circumference, this.personInfo.achilles_tendon_length, this.personInfo.lower_leg_length_a, this.personInfo.lower_leg_length_b, this.personInfo.calf_circumference, this.personInfo.thigh_circumference, this.personInfo.waist_circumference, this.personInfo.chest_circumference, this.personInfo.hip_width, this.personInfo.shoulder_width, this.personInfo.upper_arm_length, this.personInfo.finger_length]
       option = {
+        color: ['#003D5B'],
         tooltip: {
           trigger: 'item'
         },
@@ -278,7 +279,12 @@ export default {
             '跟腱长',
             '踝围',
             '下蹲伸臂距'
-          ].reverse()
+          ].reverse(),
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [
           {
@@ -287,14 +293,6 @@ export default {
               lineStyle: {
                 width: 4
               }
-            },
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: '#83bff6' },
-                { offset: 0.5, color: '#188df0' },
-                { offset: 1, color: '#188df0' }
-              ]),
-              borderRadius: [0, 30, 30, 0]
             },
             data: data
           }
@@ -401,5 +399,9 @@ export default {
         height: 800px;
     }
   }
+}
+
+/deep/ .el-descriptions__body {
+  color: black;
 }
 </style>

@@ -212,6 +212,9 @@ export default {
       this.tableData.forEach((item) => {
         if (!this.dates.includes(item.date) && this.category.indexOf(item.comp_category) !== -1) this.dates.push(item.date)
       })
+      this.dates.sort((a, b) => {
+        return b.localeCompare(a)
+      })
       this.dates.map((d) => {
         const tmp = this.tableData.filter((i) => i.date === d)
         tmp.forEach((item) => {

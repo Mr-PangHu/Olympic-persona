@@ -1273,7 +1273,7 @@ export default {
           data: [this.lastTestDataPersonInfo.test_date, this.TestDataPersonInfo.test_date, '标准'],
           itemGap: 20,
           textStyle: {
-            color: '#666',
+            color: '#000',
             fontSize: 14
           }
         },
@@ -1301,7 +1301,8 @@ export default {
           splitNumber: 5,
           axisName: {
             color: '#000',
-            fontSize: 14
+            fontSize: 14,
+            fontWeight: 700
           },
           splitLine: {
             lineStyle: {
@@ -1349,15 +1350,6 @@ export default {
 </script>
 
 <style lang='less' scoped>
-// .box-card {
-//   margin: 0 auto;
-//   width: 100%;
-//   padding: 20px 10px;
-//   border: 0;
-//   .main {
-//     margin-left: 100px;
-//   }
-// }
 .main {
   &__wrapper {
     display: flex;
