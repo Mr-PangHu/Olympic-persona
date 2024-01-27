@@ -64,15 +64,16 @@
             <div class="tineng__wsy-table">
               <el-table
                 :data="tableData"
+                style="width: 100%"
                 :header-cell-style="{'text-align': 'center'}"
                 border
               >
                 <el-table-column prop="date" label="测试日期" align="center" width="160"></el-table-column>
-                <el-table-column prop="name" label="姓名" align="center" width="140"></el-table-column>
-                <el-table-column prop="sprint_run_30m" label="30m冲刺跑/s" align="center" width="140"></el-table-column>
+                <el-table-column prop="name" label="姓名" align="center" width="160"></el-table-column>
+                <el-table-column prop="sprint_run_30m" label="30m冲刺跑/s" align="center" width="160"></el-table-column>
                 <el-table-column prop="dynamometer_30min" label="测功仪30分钟20桨频/s" align="center" width="200"></el-table-column>
                 <el-table-column prop="dynamometer_2000m" label="测功仪2000m/s" align="center" width="200"></el-table-column>
-                <el-table-column prop="pull_up" label="引体向上/个" align="center" width="120"></el-table-column>
+                <el-table-column prop="pull_up" label="引体向上/个" align="center" width="200"></el-table-column>
                 <el-table-column prop="standing_jump_both_legs" label="立定跳远/cm" align="center" width="200"></el-table-column>
                 <el-table-column prop="deep_squat_1rm" label="深蹲/kg" align="center" width="200"></el-table-column>
                 <el-table-column prop="bench_press_1rm" label="卧推/kg" align="center" width="200"></el-table-column>
@@ -210,7 +211,10 @@ export default {
       this.selectDate = this.tinengData.date.map(item => formatDate(item))
       this.tinengForm.dateRange = []
       this.tinengForm.tinengSelectValues = []
-      this.tinengDataShow = this.tinengData
+      const dateLength = this.tinengData.date.length
+      for (var key in this.tinengData) {
+        this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
+      }
       this.setTiNengChart1()
       this.setTiNengChart2()
       this.setTiNengChart3()
@@ -241,8 +245,8 @@ export default {
         return currentDate >= startDate && currentDate <= endDate
       })
       var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
-      console.log(sortedTimes)
-      console.log(this.tinengData.date)
+      // console.log(sortedTimes)
+      // console.log(this.tinengData.date)
       var indexes = []
       sortedTimes.forEach(item => {
         // console.log(item)
@@ -394,7 +398,13 @@ export default {
           }
         })
         this.tinengData = tmp
-        this.tinengDataShow = this.tinengData
+        const dateLength = this.tinengData.date.length
+        for (var key in this.tinengData) {
+          this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
+        }
+        // this.tinengDataShow = this.tinengData
+        console.log(this.tinengData)
+        console.log(this.tinengDataShow)
         this.selectDate = this.tinengData.date.map(item => formatDate(item))
         this.setTiNengChart1()
         this.setTiNengChart2()
@@ -403,12 +413,14 @@ export default {
         this.setTiNengChart5()
         this.setTiNengChart6()
         this.setTable()
-        const timeArray = this.tinengDataShow.date
-        const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))))
-        const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))))
+        const timeArray = this.tinengData.date
+        const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))) - 8 * 60 * 60 * 1000)
+        const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))) + 16 * 60 * 60 * 1000)
+        console.log(minDate, maxDate)
         this.pickerOptions = {
           disabledDate: time => {
             const currentDate = new Date(time)
+            console.log(currentDate)
             return currentDate < minDate || currentDate > maxDate
           }
         }
@@ -1011,7 +1023,6 @@ export default {
       align-items: center;
       justify-content: center;
       width: 100%;
-      // margin-left: 20px;
     }
   }
 }
