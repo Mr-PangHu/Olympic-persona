@@ -56,7 +56,7 @@
               >
                 <el-table-column
                   v-for="column in this.columns"
-                  :label= column
+                  :label= NAMEINDEX[column]
                   :prop="column"
                   :key="column"
                   align="center"
@@ -79,6 +79,29 @@ import { formatDate } from '@/utils/formatDate'
 export default {
   data () {
     return {
+      NAMEINDEX: {
+        name: '姓名',
+        date: '日期',
+        weight: '体重',
+        fat_ratio: '体脂率',
+        body_fat_mass: '体脂肪量',
+        free_fat_mass: '去脂体重',
+        wbc: '白细胞',
+        rbc: '红细胞',
+        hb: '血红蛋白',
+        hct: '红细胞比积',
+        mcv: '平均红细胞容积',
+        vo2max: '最大摄氧量',
+        vo2max_rel: '相对最大摄氧量',
+        t: '睾酮',
+        c: '皮质醇',
+        fe: '铁',
+        bun: '血尿素',
+        ck: '肌酸激酶',
+        iga: '免疫球蛋白A',
+        igm: '免疫球蛋白M',
+        igg: '免疫球蛋白G'
+      },
       id: 0,
       tableData: [],
       pickerOptions: null,
@@ -124,24 +147,24 @@ export default {
     }
   },
   methods: {
-    formatLabel (column) {
-      // const label = this.jinengOptions.filter(i => i.value === item)[0].label
-      // let danwei = ''
-      // if (label === '身体成分-体脂肪量' || label === '身体成分-去脂体重' || label === '身体成分-体重') danwei = 'kg'
-      // if (label === '身体成分-体脂率') danwei = '%'
-      // if (label === '有氧能力-最大摄氧量') danwei = 'l/min'
-      // if (label === '有氧能力-相对最大摄氧量') danwei = 'ml/min/kg'
-      // if (label === '血常规-白细胞' || label === '血常规-红细胞') danwei = '个/L'
-      // if (label === '血常规-血红蛋白') danwei = 'g/dL'
-      // if (label === '血常规-平均红细胞容积') danwei = 'fl'
-      // if (label === '阶段测试-睾酮') danwei = 'ng/dL'
-      // if (label === '阶段测试-皮质醇') danwei = 'ug/dL'
-      // if (label === '阶段测试-铁蛋白') danwei = 'ng/ml'
-      // if (label === '阶段测试-血尿素') danwei = 'mmol/L'
-      // if (label === '阶段测试-肌酸激酶') danwei = 'U/L'
-      // if (label === '阶段测试-免疫球蛋白A' || label === '阶段测试-免疫球蛋白M' || label === '阶段测试-免疫球蛋白G') danwei = 'g/L'
-      // return label + '（' + danwei + '）'
-    },
+    // formatLabel (column) {
+    //   // const label = this.jinengOptions.filter(i => i.value === item)[0].label
+    //   // let danwei = ''
+    //   // if (label === '身体成分-体脂肪量' || label === '身体成分-去脂体重' || label === '身体成分-体重') danwei = 'kg'
+    //   // if (label === '身体成分-体脂率') danwei = '%'
+    //   // if (label === '有氧能力-最大摄氧量') danwei = 'l/min'
+    //   // if (label === '有氧能力-相对最大摄氧量') danwei = 'ml/min/kg'
+    //   // if (label === '血常规-白细胞' || label === '血常规-红细胞') danwei = '个/L'
+    //   // if (label === '血常规-血红蛋白') danwei = 'g/dL'
+    //   // if (label === '血常规-平均红细胞容积') danwei = 'fl'
+    //   // if (label === '阶段测试-睾酮') danwei = 'ng/dL'
+    //   // if (label === '阶段测试-皮质醇') danwei = 'ug/dL'
+    //   // if (label === '阶段测试-铁蛋白') danwei = 'ng/ml'
+    //   // if (label === '阶段测试-血尿素') danwei = 'mmol/L'
+    //   // if (label === '阶段测试-肌酸激酶') danwei = 'U/L'
+    //   // if (label === '阶段测试-免疫球蛋白A' || label === '阶段测试-免疫球蛋白M' || label === '阶段测试-免疫球蛋白G') danwei = 'g/L'
+    //   // return label + '（' + danwei + '）'
+    // },
     // setCellStyle ({rowIndex, columnIndex, row, column}) {
     //   const tmpMax = {}
     //   const tmpMin = {}
@@ -684,7 +707,7 @@ export default {
         align-items: center;
         justify-content: space-evenly;
         &-echarts {
-            width: 1500px;
+            width: 1200px;
             height: 800px;
         }
     }
@@ -696,6 +719,15 @@ export default {
       margin-left: 20px;
     }
   }
+}
+/deep/ .el-table {
+  color: black;
+}
+
+/deep/ .el-table__header th {
+  //
+  color: black;
+  font-size: 16px;
 }
 
 </style>
