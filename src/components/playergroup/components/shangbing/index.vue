@@ -201,7 +201,7 @@ export default {
         }
       }).then(res => {
         this.dataFMS = res.data
-        console.log(this.dataFMS)
+        // console.log(this.dataFMS)
         this.dataFMS.sort((a, b) => {
           return b.date.localeCompare(a.date)
         })

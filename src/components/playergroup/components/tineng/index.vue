@@ -175,18 +175,18 @@ export default {
     //   if (label === '专项体能-测功仪2000m' || label === '专项体能-测功仪30min-20SR') danwei = "mm'ss.00"
     //   return label + '（' + danwei + '）'
     // },
-    setCellStyle ({rowIndex, columnIndex, row, column}) {
-      const tmpMax = {}
-      const tmpMin = {}
-      for (var k in this.selectItemValues) {
-        tmpMax[k] = Math.max(...this.selectItemValues[k])
-        tmpMin[k] = Math.min(...this.selectItemValues[k])
-      }
-      for (var k1 in this.selectItemValues) {
-        if (row[k1] === tmpMax[k1] && column.property === k1) return 'font-weight: 700;'
-        else if (row[k1] === tmpMin[k1] && column.property === k1) return 'font-weight: 700; color: red'
-      }
-    },
+    // setCellStyle ({rowIndex, columnIndex, row, column}) {
+    //   const tmpMax = {}
+    //   const tmpMin = {}
+    //   for (var k in this.selectItemValues) {
+    //     tmpMax[k] = Math.max(...this.selectItemValues[k])
+    //     tmpMin[k] = Math.min(...this.selectItemValues[k])
+    //   }
+    //   for (var k1 in this.selectItemValues) {
+    //     if (row[k1] === tmpMax[k1] && column.property === k1) return 'font-weight: 700;'
+    //     else if (row[k1] === tmpMin[k1] && column.property === k1) return 'font-weight: 700; color: red'
+    //   }
+    // },
     // handleSwitchChange (v) {
     //   if (v) this.setTiNengChart1()
     //   else this.setTable()
@@ -403,8 +403,8 @@ export default {
           this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
         }
         // this.tinengDataShow = this.tinengData
-        console.log(this.tinengData)
-        console.log(this.tinengDataShow)
+        // console.log(this.tinengData)
+        // console.log(this.tinengDataShow)
         this.selectDate = this.tinengData.date.map(item => formatDate(item))
         this.setTiNengChart1()
         this.setTiNengChart2()
@@ -416,7 +416,7 @@ export default {
         const timeArray = this.tinengData.date
         const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))) - 8 * 60 * 60 * 1000)
         const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))) + 16 * 60 * 60 * 1000)
-        console.log(minDate, maxDate)
+        // console.log(minDate, maxDate)
         this.pickerOptions = {
           disabledDate: time => {
             const currentDate = new Date(time)
