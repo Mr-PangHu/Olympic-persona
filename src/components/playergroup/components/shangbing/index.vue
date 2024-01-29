@@ -1,7 +1,7 @@
 <template>
     <div class="shangbing__wrapper">
         <div class="shangbing__FMS" >
-            <div class="search-box" style="text-align: right;">
+            <div class="search-box" style="text-align: left;">
               <el-form :inline="true">
                 <el-form-item label="">
                   <el-select
@@ -25,8 +25,8 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="shangbing__FMS-title" style="text-align: right;">FMS测试 {{this.dataShow['date']}}</div>
-            <div class="shangbing__FMS-point" style="text-align: right;">{{this.dataFMS[0]['name']}} 综合得分：{{this.dataShow['composite_score']}}</div>
+            <div class="shangbing__FMS-title" style="text-align: left;">FMS测试 {{this.dataShow['date']}}</div>
+            <div class="shangbing__FMS-point" style="text-align: left;">{{this.dataFMS[0]['name']}} 综合得分：{{this.dataShow['composite_score']}}</div>
             <div class="shangbing__FMS-wrapper">
                 <div class="shangbing__FMS-wrapper-table">
                     <el-table :data="tableData" class="custom-table" style="width: 100%" :header-cell-style="rowClass" :span-method="arraySpanMethod">
@@ -488,7 +488,7 @@ export default {
 
 <style lang='less' scoped>
 .custom-table {
-  font-size: 18px; /* 调整表格字体大小 */
+  font-size: 14px; /* 调整表格字体大小 */
 }
 .shangbing {
   &__wrapper {
@@ -517,18 +517,28 @@ export default {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-evenly;
-        &-table {
-            // width: 500px;
-            // height: 800px;
-            margin-top: -55px; /* 向上移动 20 像素 */
-        }
+        margin-top: 20px;
+        // &-table {
+        //     // width: 500px;
+        //     // height: 800px;
+        //     // margin-top: -55px; /* 向上移动 20 像素 */
+        // }
         &-echarts {
             width: 1000px;
-            height: 800px;
+            height: 600px;
             margin-top: -55px; /* 向上移动 20 像素 */
             margin-left: 25px;
         }
     }
   }
+}
+
+/deep/ .el-table {
+  padding: 0 auto;
+  color: black;
+}
+
+/deep/ .el-table__header th {
+  color: black;
 }
 </style>

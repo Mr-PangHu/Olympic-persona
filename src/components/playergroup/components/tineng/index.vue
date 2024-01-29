@@ -72,11 +72,11 @@
                 <el-table-column prop="name" label="姓名" align="center" width="160"></el-table-column>
                 <el-table-column prop="sprint_run_30m" label="30m冲刺跑/s" align="center" width="160"></el-table-column>
                 <el-table-column prop="dynamometer_30min" label="测功仪30分钟20桨频/s" align="center" width="200"></el-table-column>
-                <el-table-column prop="dynamometer_2000m" label="测功仪2000m/s" align="center" width="200"></el-table-column>
-                <el-table-column prop="pull_up" label="引体向上/个" align="center" width="200"></el-table-column>
-                <el-table-column prop="standing_jump_both_legs" label="立定跳远/cm" align="center" width="200"></el-table-column>
-                <el-table-column prop="deep_squat_1rm" label="深蹲/kg" align="center" width="200"></el-table-column>
-                <el-table-column prop="bench_press_1rm" label="卧推/kg" align="center" width="200"></el-table-column>
+                <el-table-column prop="dynamometer_2000m" label="测功仪2000m/s" align="center" width="180"></el-table-column>
+                <el-table-column prop="pull_up" label="引体向上/个" align="center" width="180"></el-table-column>
+                <el-table-column prop="standing_jump_both_legs" label="立定跳远/cm" align="center" width="170"></el-table-column>
+                <el-table-column prop="deep_squat_1rm" label="深蹲/kg" align="center" width="170"></el-table-column>
+                <el-table-column prop="bench_press_1rm" label="卧推/kg" align="center" width="180"></el-table-column>
               </el-table>
               <!-- <el-table
                 :data="tableData"

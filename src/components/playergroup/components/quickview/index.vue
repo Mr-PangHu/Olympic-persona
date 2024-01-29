@@ -985,21 +985,21 @@ export default {
         score: this.TestDataPersonInfo['cgy2000m_score'],
         result: this.TestDataPersonInfo['cgy2000m_result'],
         pace: this.TestDataPersonInfo['cgy2000m_pace'],
-        diff: -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
+        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
       })
       this.lastCGYTableData.push({
         cgy_item: '测功仪5000m',
         score: this.TestDataPersonInfo['cgy5000m_score'],
         result: this.TestDataPersonInfo['cgy5000m_result'],
         pace: this.TestDataPersonInfo['cgy5000m_pace'],
-        diff: -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
+        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
       })
       this.lastCGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
         score: this.TestDataPersonInfo['cgy30min20str_score'],
         result: this.TestDataPersonInfo['cgy30min20str_result'],
         pace: this.TestDataPersonInfo['cgy30min20str_pace'],
-        diff: -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_pace) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_pace)) + 's'
+        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_pace) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_pace)) + 's'
       })
       this.lastCGYTableData.push({
         cgy_item: '测功仪500m(W)',
@@ -1219,7 +1219,8 @@ export default {
     //   divs.innerText = this.lastTestDataPersonInfo.test_date
     // },
     timeStringToSeconds (timeString) {
-      const [minutes, seconds] = timeString.split(':').map(Number)
+      const timeArr = timeString.split(':')
+      const [minutes, seconds] = timeArr.length > 1 ? timeArr.map(Number) : [0, 0]
       const totalSeconds = minutes * 60 + seconds
       return totalSeconds
     },
