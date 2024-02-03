@@ -20,7 +20,7 @@
                       placeholder="今天日期">
                     </el-date-picker>
 
-                    <el-select
+                    <!-- <el-select
                         v-model="selectEvent"
                         clearable
                         collapse-tags
@@ -35,61 +35,57 @@
                         :label="item.label"
                         :value="item.value">
                         </el-option>
-                    </el-select>
+                    </el-select> -->
                 </div>
                 <div class="markpredict__model-wrapper">
                     <div class="markpredict__model-wrapper-echarts">
+                      <!-- :header-cell-style="{'fontSize': '16px', 'color': '#FFFFFF','text-align':'center','fontFamily': 'HYQihei 50S','background-color': '#343336'}" -->
                       <el-table
+                        :header-cell-style="{'fontSize': '16px', 'text-align':'center','fontFamily': 'HYQihei 50S'}"
+                        :cell-style="{'text-align':'center','color': '#333'}"
                         :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
-                        style="width: 100% ">
+                        :default-sort="{ prop: 'id', order: 'ascending' }"
+                        style="width: 100% " @sort-change="sortChange" @filter-change='handleFilterChange' @expand-change='handleExpandChange'>
                         <el-table-column
                           prop="project"
                           label="项目名"
-                          width="100"
+                          width="150"
                           >
                         </el-table-column>
                         <el-table-column
                           prop="name"
                           label="姓名"
-                          width="80">
+                          width="100">
                         </el-table-column>
                         <el-table-column
                           prop="id"
                           label="ID"
-                          width="100">
+                          width="100"  sortable='custom'>
                         </el-table-column>
                         <el-table-column
                           prop="sex"
                           label="性别"
-                          width="50">
-                        </el-table-column>
+                          width="70"
+                        ></el-table-column>
                         <el-table-column
+                          width = "150%"
                           prop="date"
-                          label="日期"
-                          width="100">
+                          label="日期">
                         </el-table-column>
                         <el-table-column
                           prop="lastmark"
                           label="上次成绩"
                           width="100">
                         </el-table-column>
-                        <!-- <el-table-column
-                          prop="draw"
-                          label="成绩曲线"
-                          width="300">
-                          <div class = 'markpredict_show'></div>
-                        </el-table-column> -->
-                        <!-- type="expand"  -->
-                        <el-table-column label="成绩曲线">
+                        <el-table-column width = "150%" type = "expand" label="成绩曲线">
                           <template slot-scope="scope">
-                            <div :id="scope.row.id" style="width: 250px; height: 250px;"></div>
+                            <div :id="scope.row.id" style="width: 60%; height: 300%;left: 20%;" ></div>
                           </template>
                         </el-table-column>
-
                         <el-table-column
                           prop="premark"
                           label="预测成绩"
-                          width="100">
+                          width="140" sortable='custom'>
                         </el-table-column>
                         <el-table-column
                           prop="reason"
@@ -100,15 +96,13 @@
                         @size-change="handleSizeChange"
                         @current-change="handleCurrentChange"
                         :current-page="currentPage"
-                        :page-sizes="[5, 10, 15, 20]"
+                        :page-sizes="[10, 15, 20]"
                         :page-size="pageSize"
                         layout="total, sizes, prev, pager, next, jumper"
                         :total="tableData.length">
                       </el-pagination>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </el-card>
@@ -116,15 +110,17 @@
 </template>
 
 <script>
+import myAxios from '@/utils/request'
 import axios from 'axios'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/formatTime'
+import { formatDate } from '@/utils/formatDate'
 export default {
   data () {
     return {
       todaydate: new Date(),
       tableData: [],
-      pageSize: 5,
+      pageSize: 10,
       currentPage: 1,
       selectYear: '',
       yearOptions: [],
@@ -132,6 +128,7 @@ export default {
       compOptions: [],
       selectEvent: '',
       eventOptions: [],
+      pageData: [],
       selectEventName: '',
       country: [],
       cNumber: 0,
@@ -157,10 +154,25 @@ export default {
   },
   mounted () {
     this.getYear()
-    this.getMarkPredict()
-    this.getResultsByEvent()
+    // this.getTableInfo()
+    this.getPredictInfo()
+    // this.train()
   },
   methods: {
+    train () {
+      myAxios.get('/mp/getPlayersHisDataAll').then((res) => {
+        console.log(res)
+      })
+    },
+    handleExpandChange (row, rows) {
+      // 假设每行数据中有一个id属性
+      const isExpend = rows.some(r => r.id === row.id) // 判断当前行展开状态
+      if (isExpend) {
+        this.getLines(row.id)
+      } else {
+        console.log('not expend')
+      }
+    },
     handleSelectYearChange () {
       this.getCompByYear()
     },
@@ -243,63 +255,103 @@ export default {
         console.log('获取数据失败' + err)
       })
     },
-    getResultsByEvent (id, event) {
-      axios.get('http://localhost/cm/getResultsByEventPre', {
-        params: {
-          id,
-          event
+    getResultsByEvent () {
+      console.log('logloglog')
+      this.series = [1, 2, 3, 4].map((item, index) => {
+        const tmp = {
+          name: item,
+          type: 'line',
+          data: [{name: '2020-01-16', value: 270}, {name: '2020-01-17', value: 275}, {name: '2020-01-18', value: 273}, {name: '2020-01-19', value: 271, itemStyle: {color: 'blue'}}]
         }
-      }).then(res => {
-        const tmp = res.data
-        this.country = tmp.map(item => {
-          return item.country
+        return tmp
+      })
+      console.log('loglog')
+      this.setmarkpredictChart(16, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
+      this.setmarkpredictChart(17, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
+      this.setmarkpredictChart(18, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
+      this.setmarkpredictChart(19, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
+      this.setmarkpredictChart(20, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
+    },
+    getLines (id) {
+      myAxios.get('/mp/getPlayersHisData', {
+        params: {
+          id
+        }
+      }).then((result) => {
+        console.log('logloglog')
+        // console.log(result.data)
+        var hisData = []
+        for (let i = result.data.length - 1; i >= 0; --i) {
+          hisData.push(({name: result.data[i]['date'], value: result.data[i]['dynamometer_2000m']}))
+        }
+        // console.log(hisData)
+        // [{name: '2020-01-16', value: 270}, {name: '2020-01-17', value: 275}, {name: '2020-01-18', value: 273}, {name: '2020-01-19', value: 271, itemStyle: {color: 'blue'}}]
+        return hisData
+      }).then((result) => {
+        let arr = []
+        let dates = []
+        for (let i = 0; i < result.length; ++i) {
+          arr.push(this.convertToSeconds(result[i]['value']))
+          dates.push(this.convertToDate(result[i]['name']))
+        }
+        this.series = [{
+          data: arr,
+          type: 'line'
+        }]
+        return dates
+        // this.$nextTick(() => this.setmarkpredictChart(id, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series))
+      }).then((dates) => {
+        // console.log(dates)
+        // console.log(this.series)
+        this.setmarkpredictChart(id, dates, this.series)
+      }).then(() => {
+        myAxios.get('/mp/predictByID', {
+          params: {
+            id: id
+          }
+        }).then((res) => {
+          console.log('----------')
+          console.log(res.data[0])
         })
-        this.d500m = tmp.map(item => {
-          return item.d500m ? Number(formatTime(item.d500m).toFixed(2)) : 0
-        })
-        this.d1000m = tmp.map(item => {
-          return item.d1000m ? Number(formatTime(item.d1000m).toFixed(2)) : 0
-        })
-        this.d1500m = tmp.map(item => {
-          return item.d1500m ? Number(formatTime(item.d1500m).toFixed(2)) : 0
-        })
-        this.d2000m = tmp.map(item => {
-          return item.d2000m ? Number(formatTime(item.d2000m).toFixed(2)) : 0
-        })
-      }).then(
-        () => {
-          this.series = this.country.map((item, index) => {
-            const tmp = {
-              name: item,
-              type: 'line',
-              data: [this.d500m[index], this.d1000m[index], this.d1500m[index], this.d2000m[index]]
-            }
-            return tmp
-          })
-          this.cNumber = this.country.length
-          console.log(this.series)
-          this.setmarkpredictChart('markpredict_show1')
-          this.setmarkpredictChart('markpredict_show2')
-          this.setmarkpredictChart('markpredict_show3')
-          this.setmarkpredictChart('markpredict_show4')
-          this.setmarkpredictChart('markpredict_show5')
-          this.setmarkpredictChart('markpredict_show6')
-          this.setmarkpredictChart('markpredict_show7')
-          this.setmarkpredictChart('markpredict_show8')
-          this.setmarkpredictChart('markpredict_show9')
-          this.setmarkpredictChart('markpredict_show10')
-        }).catch(err => {
-        console.log('获取数据失败' + err)
       })
     },
-    setmarkpredictChart (idvar) {
-      // var chartDom = document.getElementsByName('markpredict_show')
-      // var myChart = echarts.init(chartDom)
-      // var myChart = echarts.init(document.getElementsByName('markpredict_show'))
+    sortByNum (val1, val2) {
+      return val1 - val2
+    },
+    sortChange (column) {
+      this.pageIndex = 1 // 排序后返回第一页
+      if (column.order === 'descending') {
+        this.tableData.sort((a, b) => b[column.prop] - a[column.prop])
+      } else if (column.order === 'ascending') {
+        this.tableData.sort((a, b) => a[column.prop] - b[column.prop])
+      }
+    },
+    // 筛选函数
+    filterHandler (value, row, column) {
+      const property = column['property']
+      return row[property] === value
+    },
+    // 处理筛选变化
+    handleFilterChange (filters) {
+      // 获取筛选条件
+      const filterKey = Object.keys(filters)
+      // 如果没有筛选条件，恢复原始数据
+      if (!filterKey.length) {
+        this.filterData = this.tableData
+      } else {
+        // 如果有筛选条件，根据条件过滤数据
+        this.filterData = this.tableData.filter(row => {
+          return filterKey.some(key => {
+            return filters[key].some(value => {
+              return this.filterHandler(value, row, { property: key })
+            })
+          })
+        })
+      }
+    },
+    setmarkpredictChart (idvar, dateList, valueList) {
       var myChart = echarts.init(document.getElementById(idvar))
-
       var option
-
       option = {
         title: {
           text: this.selectComp + this.selectEventName
@@ -308,18 +360,16 @@ export default {
           trigger: 'axis',
           formatter: function (params) {
             var result = params[0].name + '<br>'
-
             params.forEach(function (item) {
               result += '<span style="display:inline-block;margin-right:0px;border-radius:50%;width:0px;height:0px;left:0px;background-color:' + item.color + '"></span>' + item.seriesName + ': ' + '<span style="align-self:flex-end;font-weight:700">' + item.value + '</span>'
             })
-
             return result
           }
         },
         grid: {
-          top: '4%',
-          left: '3%',
-          right: '4%',
+          // top: '4%',
+          // left: '3%',
+          // right: '4%',
           bottom: '3%',
           containLabel: true
         },
@@ -337,113 +387,76 @@ export default {
           }
         },
         xAxis: {
-          name: '分段',
+          // name: '',
+          name: '时间',
           type: 'category',
           boundaryGap: false,
-          data: ['2022-10', '2022-11', '2022-12', '2023-01']
+          data: dateList
         },
         yAxis: {
           name: '成绩/s',
           type: 'value'
+          // min: 240
         },
-        series: this.series.slice(0, 1)
+        series: valueList
+        // series: this.series.slice(0, 1)
       }
-
+      console.log(option.series)
       option && myChart.setOption(option)
-      console.log('aaaaaaaaaaaa')
     },
-    getMarkPredict () {
-      this.tableData = [{
-        project: '世锦赛2023',
-        date: '2016-05-03',
-        id: 'markpredict_show' + 1,
-        name: '张三',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '50米跑成绩增加：7s->6.8s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-02',
-        id: 'markpredict_show' + 2,
-        name: '李四',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-04',
-        id: 'markpredict_show' + 3,
-        name: '王小虎',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-01',
-        id: 'markpredict_show' + 4,
-        name: '李老六',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-02',
-        id: 'markpredict_show' + 5,
-        name: '李四',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-04',
-        id: 'markpredict_show' + 6,
-        name: '王小虎',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-01',
-        id: 'markpredict_show' + 7,
-        name: '李老六',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-02',
-        id: 'markpredict_show' + 8,
-        name: '李四',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-04',
-        id: 'markpredict_show' + 9,
-        name: '王小虎',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }, {
-        project: '世锦赛2023',
-        date: '2016-05-01',
-        id: 'markpredict_show' + 10,
-        name: '李老六',
-        sex: '男',
-        lastmark: 273,
-        premark: 271,
-        reason: '500米测功仪成绩增加：65s->63s'
-      }]
+    getTableInfo () {
+      myAxios.get('/list/getBasicInfo').then(res => {
+        const tmp = res.data
+        console.log(tmp)
+        let needList = []
+        for (let i = 0; i < tmp.length; i++) {
+          needList.push({project: '2000m', id: tmp[i]['athlete_id'], name: tmp[i]['name'], sex: tmp[i]['gender'], lastmark: 273, premark: 271, reason: this.getReason(), date: '2020-1-19'})
+        }
+        this.tableData = needList
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getPredictInfo () {
+      myAxios.get('/mp/getPredictMark').then(res => {
+        let needList = res.data
+        this.tableData = needList.sort((a, b) => a['id'] - b['id'])
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    convertToSeconds (str) {
+      // 去除字符串尾部的 \r
+      str = str.trim()
+      // 将分和秒分别提取出来
+      const [minutes, seconds] = str.split("'")
+      // 计算总秒数
+      const totalSeconds = parseInt(minutes * 60) + parseInt(seconds)
+      return totalSeconds
+    },
+    convertToDate (str) {
+      const date = new Date(str)
+      const year = date.getFullYear()
+      const month = (date.getMonth() + 1).toString().padStart(2, '0')
+      const day = date.getDate().toString().padStart(2, '0')
+      return `${year}-${month}-${day}`
+    },
+    getBasicInfo () {
+      myAxios.get('/list/getBasicInfo').then(res => {
+        // console.log(res.data)
+        const tmp = res.data
+        const formatTmp = tmp.map(item => (
+          {
+            ...item,
+            birthday: formatDate(item.birthday)
+          }))
+        console.log(formatTmp)
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getReason () {
+      return '50米跑成绩增加：7s->6.8s'
     }
   }
 }

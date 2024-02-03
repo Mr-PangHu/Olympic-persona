@@ -144,9 +144,9 @@ header {
 nav {
   display: flex;
   justify-content: space-around;
-  width: 60%;
+  width: 70%;
   position: relative;
-  left: 40%;
+  left: 30%;
 }
 .carousel__container {
   position: relative;
