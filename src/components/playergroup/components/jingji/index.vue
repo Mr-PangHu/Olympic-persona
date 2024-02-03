@@ -258,9 +258,9 @@ export default {
         }
       })
       option = {
-        // color: ['#003D5B'],
+        color: ['#003D5B', '#EDAE49', '#D1495B'],
         title: {
-          text: '竞技表现成绩',
+          // text: '竞技表现成绩',
           textStyle: {
             color: '#000'
           }
@@ -370,6 +370,6 @@ export default {
 
 /deep/ .el-table__header th {
   color: black;
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>

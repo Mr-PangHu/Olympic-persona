@@ -25,8 +25,8 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="shangbing__FMS-title" style="text-align: left;">FMS测试 {{this.dataShow['date']}}</div>
-            <div class="shangbing__FMS-point" style="text-align: left;">{{this.dataFMS[0]['name']}} 综合得分：{{this.dataShow['composite_score']}}</div>
+            <div class="shangbing__FMS-title" style="text-align: center;">FMS测试 {{this.dataShow['date']}}</div>
+            <div class="shangbing__FMS-point" style="text-align: center;">{{this.dataFMS[0]['name']}} 综合得分：{{this.dataShow['composite_score']}}</div>
             <div class="shangbing__FMS-wrapper">
                 <div class="shangbing__FMS-wrapper-table">
                     <el-table :data="tableData" class="custom-table" style="width: 100%" :header-cell-style="rowClass" :span-method="arraySpanMethod">
@@ -376,7 +376,7 @@ export default {
       this.date = ''
       this.dataShow = this.dataFMS[0]
       this.tableData = this.tableData_moren
-      console.log('ss', this.tableData)
+      // console.log('ss', this.tableData)
       this.setFMSChart()
     },
     setFMSChart () {
@@ -387,9 +387,9 @@ export default {
       var data = [this.dataShow['squat_score'], this.dataShow['hurdle_step_left'], this.dataShow['hurdle_step_right'], this.dataShow['hurdle_step_score'], this.dataShow['in_line_lunge_left'], this.dataShow['in_line_lunge_right'], this.dataShow['in_line_lunge_score'], this.dataShow['shoulder_flexibility_left'], this.dataShow['shoulder_flexibility_right'], this.dataShow['shoulder_flexibility_score'], this.dataShow['active_straight_leg_raise_left'], this.dataShow['active_straight_leg_raise_right'], this.dataShow['active_straight_leg_raise_score'], this.dataShow['trunk_stability_pushup_score'], this.dataShow['rotary_stability_left'], this.dataShow['rotary_stability_right'], this.dataShow['rotary_stability_score']]
       var titlename = ['深蹲得分', '跨栏步得分', '线性弓步得分', '肩部灵活性得分', '主动直腿抬高', '躯干稳定俯卧撑', '旋转稳定性得分']
       var valdata = [1, 2, 1, 2, 3, 3, 3]
-      var myColor = ['#1089E7', '#F57474', '#56D2E3', '#F8B448', '#8B78F6', '#558484', '#32B666']
+      var myColor = ['#003D5B', '#003D5B', '#003D5B', '#003D5B', '#003D5B', '#003D5B', '#003D5B']
       option = {
-        // backgroundColor: '#fff',
+        // backgroundColor: '#000',
         xAxis: {
           show: false
         },
@@ -407,21 +407,24 @@ export default {
             show: false
           },
           axisLabel: {
-            color: '#427999',
-            rich: {
-              lg: {
-                backgroundColor: '#339911',
-                color: '#fff',
-                borderRadius: 15,
-                // padding: 50,
-                align: 'center',
-                width: 50,
-                height: 15
-              }
+            color: '#000',
+            textStyle: {
+              fontSize: 13
             }
+            // rich: {
+            //   lg: {
+            //     // backgroundColor: '#339911',
+            //     color: '#fff',
+            //     borderRadius: 15,
+            //     // padding: 50,
+            //     align: 'center',
+            //     width: 50,
+            //     height: 15
+            //   }
+            // }
           }
         }, {
-          show: true,
+          show: false,
           inverse: true,
           data: valdata,
           axisLabel: {
@@ -473,7 +476,7 @@ export default {
           itemStyle: {
             normal: {
               color: 'none',
-              borderColor: '#00c1de',
+              borderColor: '#003D5B',
               borderWidth: 3,
               barBorderRadius: 15
             }
@@ -488,7 +491,7 @@ export default {
 
 <style lang='less' scoped>
 .custom-table {
-  font-size: 14px; /* 调整表格字体大小 */
+  font-size: 16px; /* 调整表格字体大小 */
 }
 .shangbing {
   &__wrapper {
@@ -502,13 +505,13 @@ export default {
     flex-direction: column;
     width: 100%;
     &-title {
-        font-size: 20px;
+        font-size: 24px;
         font-weight: 700;
-        margin-top: -5px; /* 向上移动 20 像素 */
+        margin-top: -60px; /* 向上移动 20 像素 */
     }
     &-point {
         margin-top: 5px;
-        font-size: 16px;
+        font-size: 24px;
         font-weight: 700;
     }
     &-wrapper {
@@ -527,18 +530,27 @@ export default {
             width: 1000px;
             height: 600px;
             margin-top: -55px; /* 向上移动 20 像素 */
-            margin-left: 25px;
+            margin-left: 35px;
         }
     }
   }
 }
 
 /deep/ .el-table {
-  padding: 0 auto;
   color: black;
+  font-size: 14px;
 }
 
 /deep/ .el-table__header th {
   color: black;
+  font-size: 14px;
+}
+
+/deep/ .el-table thead.is-group th.el-table__cell {
+  background: none;
+}
+
+/deep/ .el-table .el-table__cell {
+  padding: 10px 0;
 }
 </style>

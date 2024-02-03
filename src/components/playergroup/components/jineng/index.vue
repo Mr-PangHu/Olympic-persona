@@ -116,7 +116,7 @@ export default {
       jinengDataTest: {},
       // series: [],
       jinengForm: {
-        jinengSelectValue: [],
+        jinengSelectValue: ['body'],
         dateRange: ''
       },
       jinengOptions: [{
@@ -260,7 +260,7 @@ export default {
         })
       }
       this.jinengDataShow = tmpDataShow
-      console.log(this.jinengDataShow)
+      // console.log(this.jinengDataShow)
       // this.setJiNengChart1()
     },
     handleJinengSelectChange () {
@@ -533,6 +533,7 @@ export default {
       var option
 
       option = {
+        color: ['#EDAE49', '#D1495B', '#00798C', '#30638E'],
         tooltip: {
           trigger: 'axis',
           formatter: function (params) {
@@ -579,10 +580,20 @@ export default {
         xAxis: {
           type: 'category',
           data: this.jinengDataShow.date,
-          name: '日期'
+          // name: '日期',
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            textStyle: {
+              color: '#000'
+            }
+          }
         },
         series: [{
           name: '体重',
@@ -706,9 +717,10 @@ export default {
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-evenly;
+        margin-bottom: 20px;
         &-echarts {
-            width: 1200px;
-            height: 800px;
+            width: 1500px;
+            height: 400px;
         }
     }
     &-table {
@@ -727,7 +739,10 @@ export default {
 /deep/ .el-table__header th {
   //
   color: black;
-  font-size: 16px;
+  font-size: 14px;
 }
 
+/deep/ .el-form-item__label {
+  color: black;
+}
 </style>

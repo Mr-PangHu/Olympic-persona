@@ -389,23 +389,41 @@ export default {
         {
           value: mostRecentTempData,
           name: '最近',
-          areaStyle: {
-            color: 'rgba(255, 228, 52, 0.6)'
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
+          // areaStyle: {
+          //   color: 'rgba(255, 228, 52, 0.6)'
+          // }
         },
         {
           value: avgTempData,
           name: '平均值',
-          areaStyle: {
-            color: 'rgba(51, 204, 0, 0.6)'
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
+          // areaStyle: {
+          //   color: 'rgba(51, 204, 0, 0.6)'
+          // }
         },
         {
           value: bestTempData,
           name: '最佳',
-          areaStyle: {
-            color: 'rgba(204, 153, 255, 0.6)'
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
+          // areaStyle: {
+          //   color: 'rgba(204, 153, 255, 0.6)'
+          // }
         },
         {
           value: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -413,7 +431,7 @@ export default {
         }
       ]
       option = {
-        color: ['#67F9D8', '#33CC00', '#CC99FF', '#FFE434'],
+        color: ['#EDAE49', '#D1495B', '#b4bd9b', '#00798C'],
         title: {
           text: '选拔模型',
           left: 'center',
@@ -439,13 +457,14 @@ export default {
           shape: 'circle',
           splitNumber: 5,
           axisName: {
-            // color: 'rgb(238, 197, 102)'
-            color: '#428BD4'
+            color: '#000',
+            fontSize: 14,
+            fontWeight: 700
           },
           splitLine: {
             lineStyle: {
               color: [
-                'rgba(238, 197, 102, 0.1)',
+                'rgba(144, 144, 144, 0.5)',
                 'rgba(238, 197, 102, 0.2)',
                 'rgba(238, 197, 102, 0.4)',
                 'rgba(238, 197, 102, 0.6)',
@@ -454,16 +473,17 @@ export default {
               ].reverse()
             }
           },
-          splitArea: {
-            areaStyle: {
-              color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
-              shadowColor: 'rgba(0, 0, 0, 0.2)',
-              shadowBlur: 10
-            }
-          },
+          // splitArea: {
+          //   areaStyle: {
+          //     color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
+          //     shadowColor: 'rgba(0, 0, 0, 0.2)',
+          //     shadowBlur: 10
+          //   }
+          // },
           axisLine: {
             lineStyle: {
-              color: 'rgba(211, 253, 250, 0.8)'
+              // color: 'rgba(211, 253, 250, 0.8)'
+              color: 'rgba(144, 144, 144, 0.5)'
             }
           }
         },
@@ -558,23 +578,41 @@ export default {
         {
           value: mostRecentTempData,
           name: '最近',
-          areaStyle: {
-            color: 'rgba(255, 228, 52, 0.6)'
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
+          // areaStyle: {
+          //   color: 'rgba(255, 228, 52, 0.6)'
+          // }
         },
         {
           value: avgTempData,
           name: '平均值',
-          areaStyle: {
-            color: 'rgba(51, 204, 0, 0.6)'
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
+          // areaStyle: {
+          //   color: 'rgba(51, 204, 0, 0.6)'
+          // }
         },
         {
           value: bestTempData,
           name: '最佳',
-          areaStyle: {
-            color: 'rgba(204, 153, 255, 0.6)'
+          lineStyle: {
+            normal: {
+              width: 3,
+              type: 'dashed'
+            }
           }
+          // areaStyle: {
+          //   color: 'rgba(204, 153, 255, 0.6)'
+          // }
         },
         {
           value: [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100],
@@ -582,13 +620,13 @@ export default {
         }
       ]
       option = {
-        color: ['#67F9D8', '#33CC00', '#CC99FF', '#FFE434'],
+        color: ['#EDAE49', '#D1495B', '#b4bd9b', '#00798C'],
         title: {
           text: '冠军模型',
           left: 'center',
           top: 10,
           textStyle: {
-            color: '#666'
+            color: '#000'
           }
         },
         tooltip: {
@@ -608,12 +646,14 @@ export default {
           shape: 'circle',
           splitNumber: 5,
           axisName: {
-            color: '#428BD4'
+            color: '#000',
+            fontSize: 14,
+            fontWeight: 700
           },
           splitLine: {
             lineStyle: {
               color: [
-                'rgba(238, 197, 102, 0.1)',
+                'rgba(144, 144, 144, 0.5)',
                 'rgba(238, 197, 102, 0.2)',
                 'rgba(238, 197, 102, 0.4)',
                 'rgba(238, 197, 102, 0.6)',
@@ -622,16 +662,17 @@ export default {
               ].reverse()
             }
           },
-          splitArea: {
-            areaStyle: {
-              color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
-              shadowColor: 'rgba(0, 0, 0, 0.2)',
-              shadowBlur: 10
-            }
-          },
+          // splitArea: {
+          //   areaStyle: {
+          //     color: ['#77EADF', '#26C3BE', '#64AFE9', '#428BD4'],
+          //     shadowColor: 'rgba(0, 0, 0, 0.2)',
+          //     shadowBlur: 10
+          //   }
+          // },
           axisLine: {
             lineStyle: {
-              color: 'rgba(211, 253, 250, 0.8)'
+              // color: 'rgba(211, 253, 250, 0.8)'
+              color: 'rgba(144, 144, 144, 0.5)'
             }
           }
         },
@@ -661,9 +702,10 @@ export default {
     width: 100%;
   }
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
     &-img {
       height: 100%;
       background-image: url('../../assets/images/666.jpg');
@@ -682,15 +724,15 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra",Arial,sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -700,6 +742,8 @@ export default {
 .box-card {
   margin: 0 auto;
   width: 95%;
+  position: relative;
+  top: 85px;
 }
 .persona_model {
   display: flex;
@@ -745,7 +789,7 @@ export default {
         justify-content: space-evenly;
         padding: 10px;
         &-echarts {
-            width: 650px;
+            width: 700px;
             height: 600px;
         }
     }
@@ -776,10 +820,17 @@ export default {
         justify-content: space-evenly;
         padding: 10px;
         &-echarts {
-            width: 650px;
+            width: 700px;
             height: 600px;
         }
     }
   }
+}
+
+/deep/ .el-button {
+  background-color: rgba(0,37,79,.8);
+  border-color: rgba(0,37,79,.8);
+  font-size: 15px;
+  color: white;
 }
 </style>

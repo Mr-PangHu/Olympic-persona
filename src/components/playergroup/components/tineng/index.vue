@@ -1034,6 +1034,6 @@ export default {
 /deep/ .el-table__header th {
   //
   color: black;
-  font-size: 16px;
+  font-size: 14px;
 }
 </style>

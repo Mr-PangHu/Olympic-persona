@@ -55,11 +55,11 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small">筛选</el-button>
-            <el-button type="info" size="small" @click="reset">重置</el-button>
+            <el-button type="primary" size="small" class="filter">筛选</el-button>
+            <el-button type="info" size="small" @click="reset" class="reset">重置</el-button>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="goToCompare()" size="small">测试成绩对比</el-button>
+            <el-button type="primary" @click="goToCompare()" size="small" class="compare">测试成绩对比</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -479,9 +479,10 @@ export default {
     width: 100%;
   }
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
     &-img {
       height: 100%;
       background-image: url('../../assets/images/444.jpg');
@@ -500,15 +501,15 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra",Arial,sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -519,6 +520,8 @@ export default {
 .box-card {
   margin: 0 auto;
   width: 95%;
+  position: relative;
+  top: 85px;
 }
 
 .operatin-button {
@@ -537,5 +540,39 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+/deep/.filter {
+    background-color: rgba(0,37,79,.8);
+    border-color: rgba(0,37,79,.8);
+    font-size: 15px;
+    color: white;
+}
+
+/deep/.reset {
+    // background-color: rgba(0,37,79,.8);
+    // border-color: rgba(0,37,79,.8);
+    font-size: 15px;
+    color: white;
+}
+
+/deep/.compare {
+    background-color: rgba(0,37,79,.8);
+    border-color: rgba(0,37,79,.8);
+    font-size: 15px;
+    color: white;
+}
+
+/deep/ .el-table__header th {
+  color: black;
+  font-size: 14px;
+}
+
+/deep/ .el-form-item__label {
+  color: black;
+}
+
+/deep/ .el-table {
+  color: black;
 }
 </style>

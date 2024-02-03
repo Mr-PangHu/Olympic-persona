@@ -311,8 +311,10 @@ export default {
       var option
 
       option = {
+        color: ['#EDAE49', '#D1495B', '#00798C', '#30638E'],
         title: {
-          text: this.selectComp + this.selectEventName
+          text: this.selectComp + this.selectEventName,
+          color: '#000'
         },
         tooltip: {
           trigger: 'axis',
@@ -353,13 +355,16 @@ export default {
           }
         },
         xAxis: {
-          name: '分段',
+          // name: '分段',
           type: 'category',
           boundaryGap: false,
-          data: ['d500m', 'd1000m', 'd1500m', 'd2000m']
+          data: ['d500m', 'd1000m', 'd1500m', 'd2000m'],
+          axisLabel: {
+            color: '#000'
+          }
         },
         yAxis: {
-          name: '成绩/s',
+          // name: '成绩/s',
           nameGap: 28,
           nameTextStyle: {
             align: 'right' // 将y轴名称左
@@ -371,7 +376,8 @@ export default {
             formatter: function (value) {
               // return formatSectoTime(value)
               return secondToMinute(value)
-            }
+            },
+            color: '#000'
           },
           inverse: true // 将y轴的值按降序排列
         },
@@ -390,9 +396,10 @@ export default {
     width: 100%;
   }
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
     &-img {
       height: 100%;
       background-image: url('../../assets/images/777.jpg');
@@ -411,15 +418,15 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra",Arial,sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -429,6 +436,8 @@ export default {
 .box-card {
   margin: 0 auto;
   width: 95%;
+  position: relative;
+  top: 85px;
 }
 
 .worldhighlevel {
@@ -436,7 +445,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 20px;
+    // padding: 20px;
   }
   &__model {
     display: flex;
@@ -463,10 +472,21 @@ export default {
         align-items: center;
         justify-content: space-evenly;
         &-echarts {
-            width: 1000px;
-            height: 1000px;
+            width: 1400px;
+            height: 600px;
         }
     }
   }
+}
+
+/deep/ .el-button {
+  background-color: rgba(0,37,79,.8);
+  border-color: rgba(0,37,79,.8);
+  font-size: 15px;
+  color: white;
+}
+
+/deep/ .el-form-item__label {
+  color: black;
 }
 </style>

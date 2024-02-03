@@ -11,7 +11,7 @@
       <div class="compareChoose__model">
       <div class="compareChoose__model-filter">
         <el-form :inline="true" ref="compareForm">
-          <el-form-item>
+          <el-form-item label="对比运动员">
             <el-select
               v-model="playerNames"
               placeholder="请选择对比运动员"
@@ -29,7 +29,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item>
+          <el-form-item label="测试日期">
             <el-select
               v-model="testDate"
               placeholder="请选择测试日期"
@@ -273,7 +273,15 @@ export default {
             data: tmpData,
             itemStyle: {
               borderColor: '#fff',
-              borderWidth: 1
+              borderWidth: 1,
+              normal: {
+                label: {
+                  textStyle: {
+                    color: '#000',
+                    fontWeight: 700
+                  }
+                }
+              }
             },
             emphasis: {
               itemStyle: {
@@ -437,9 +445,10 @@ export default {
     width: 100%;
   }
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
     &-img {
       height: 100%;
       background-image: url('../../assets/images/888.jpg');
@@ -458,15 +467,15 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra",Arial,sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -515,6 +524,8 @@ export default {
 .box-card {
   margin: 0 auto;
   width: 95%;
+  position: relative;
+  top: 85px;
 }
 .compareChoose {
   &__model {
@@ -533,5 +544,25 @@ export default {
   align-items: flex-start;
   padding: 20px;
   width: 100%;
+}
+
+/deep/ .el-table {
+  color: black;
+}
+
+/deep/ .el-table__header th {
+  color: black;
+  font-size: 14px;
+}
+
+/deep/ .el-form-item__label {
+  color: black;
+}
+
+/deep/ .el-button {
+  background-color: rgba(0,37,79,.8);
+  border-color: rgba(0,37,79,.8);
+  font-size: 15px;
+  color: white;
 }
 </style>
