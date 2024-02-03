@@ -1,4 +1,4 @@
-let db = require('../db2/index')
+let db = require('../db/index')
 
 exports.getBasicTinengData = (req, res) => { // 获取全部体能数据
   var sql = 'SELECT * FROM fitness_basic_monishuju where athlete_id = ? ORDER BY date'
