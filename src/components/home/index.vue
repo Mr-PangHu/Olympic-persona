@@ -20,6 +20,12 @@
             </el-submenu>
             <el-menu-item :index="championPath">画像模型</el-menu-item>
             <el-menu-item index="/worldhighlevel">世界高水平</el-menu-item>
+            <el-submenu index="4">
+              <template slot="title">决策辅助</template>
+              <el-menu-item index="/tiredpredict">疲劳预测</el-menu-item>
+              <el-menu-item index="/markpredict">成绩预测</el-menu-item>
+            </el-submenu>
+            <!-- <el-menu-item index="/markpredict">成绩预测</el-menu-item> -->
             <el-submenu index="3">
               <template slot="title">个人中心</template>
               <el-menu-item>基本资料</el-menu-item>
@@ -138,9 +144,9 @@ header {
 nav {
   display: flex;
   justify-content: space-around;
-  width: 70%;
+  width: 60%;
   position: relative;
-  left: 35%;
+  left: 40%;
 }
 .carousel__container {
   position: relative;
