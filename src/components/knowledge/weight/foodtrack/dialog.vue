@@ -209,7 +209,6 @@ export default {
           this.$store.dispatch('addMeals', this.intake_record)
           this.$store.dispatch('getMain')
           this.temp.push(this.$store.state.foodtrack.addMealsResults)
-
         } else {
           console.log('error submit!!')
           return false
