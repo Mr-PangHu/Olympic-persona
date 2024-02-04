@@ -1,12 +1,15 @@
-let db = require('../db/index')
+let db = require('../db2/index')
 const json = require('../data/labels.json')
 const tf = require('@tensorflow/tfjs-node')
+const { log } = require('console')
 
 let sleep = (time)=> new Promise((resolve)=>{
   setTimeout(resolve,time)
 })
-async function modelPredict(inputs) {
-  const model = await tf.loadLayersModel('file://D:/Python/project/Olympic-persona/src/server/data/model/model.json')
+async function modelPredict (inputs) {
+  let model_dir = __dirname.replace("API", "data/model/model.json")
+  model_dir = model_dir.replace("\\", "/")
+  const model = await tf.loadLayersModel('file://'+model_dir)
   sleep(3000).then(
     // 编译模型
     model.compile({

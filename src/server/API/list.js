@@ -1,4 +1,4 @@
-let db = require('../db/index')
+let db = require('../db2/index')
 
 exports.getBasicInfo = (req, res) => { // 获取用户基本数据
   var sql = 'select * from person_info'

@@ -10,7 +10,7 @@
     <el-card class="box-card">
       <div class="fatigueHomepredict__wrapper">
         <div class="fatigueHomepredict__model">
-          <div style="text-align: right; margin-bottom: 1%">
+          <div style="text-align: right; margin-bottom: 1%; margin-top: 100px;">
             今天日期
             <el-date-picker
               v-model="todaydate"
@@ -153,9 +153,10 @@ export default {
   }
 
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
 
     &-img {
       height: 100%;
@@ -185,16 +186,15 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
-
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra", Arial, sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -204,5 +204,18 @@ export default {
 
 .pointer {
   cursor: pointer;
+}
+
+/deep/ .el-table__header th {
+  color: black;
+  font-size: 14px;
+}
+
+/deep/ .el-form-item__label {
+  color: black;
+}
+
+/deep/ .el-table {
+  color: black;
 }
 </style>

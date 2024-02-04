@@ -20,11 +20,11 @@
             <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期">
             </el-date-picker>
 
-            <el-select v-model="selectEvent" clearable collapse-tags filterable placeholder="请选择项目"
+            <!-- <el-select v-model="selectEvent" clearable collapse-tags filterable placeholder="请选择项目"
               class="worldhighlevel__model-filter-selector" @change="handleSelectEventChange">
               <el-option v-for="item in eventOptions" :key="item.value" :label="item.label" :value="item.value">
               </el-option>
-            </el-select>
+            </el-select> -->
           </div>
           <div class="tiredpredict__model-wrapper">
             <div class="chart-data">
@@ -133,7 +133,7 @@ export default {
         },
         series: [
           {
-            name: 'current data',
+            name: '现在',
             type: 'line',
             data: data1,
             tiredLine: {
@@ -141,7 +141,7 @@ export default {
             }
           },
           {
-            name: 'historical data',
+            name: '历史',
             type: 'line',
             data: data2,
             tiredLine: {
@@ -251,9 +251,10 @@ export default {
   }
 
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
-    position: relative;
+    position: fixed;
+    z-index: 2;
 
     &-img {
       height: 100%;
@@ -275,16 +276,15 @@ export default {
     &-title {
       width: 100%;
       position: absolute;
-      bottom: 60px;
+      bottom: 5px;
       left: 0;
       right: 0;
-
       h1 {
         width: 80%;
         margin: 0 auto;
-        font-family: "Effra", Arial, sans-serif;
-        font-style: italic;
-        font-size: 50px;
+        // font-family: "Effra",Arial,sans-serif;
+        // font-style: italic;
+        font-size: 40px;
         color: white;
         line-height: 75px;
       }
@@ -334,8 +334,8 @@ export default {
         font-size: x-large;
         color: red;
         text-align: center;
-        margin-top: 20px;
-        margin-bottom: 20px;
+        margin-top: 100px;
+        margin-bottom: 30px;
       }
   }
 }
