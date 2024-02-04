@@ -1,5 +1,29 @@
 <template>
   <div>
+    <div>
+      <el-row :gutter="24">
+        <el-col :span="14">
+          <span class="custom-span">一日三餐记录</span>
+          <el-table :data="temp" style="width: 100%">
+            <el-table-column label="日期" prop="date">
+            </el-table-column>
+            <el-table-column label="餐次" prop="meals">
+            </el-table-column>
+            <el-table-column label="总热量（千卡）" prop="calories">
+            </el-table-column>
+            <el-table-column label="蛋白质（克）" prop="protein">
+            </el-table-column>
+            <el-table-column label="碳水化合物（克）" prop="carbohydrates">
+            </el-table-column>
+            <el-table-column label="脂肪（克）" prop="fat">
+            </el-table-column>
+          </el-table>
+        </el-col>
+        <el-col :span="10">
+          <echarts></echarts>
+        </el-col>
+      </el-row>
+    </div>
     <el-dialog :visible.sync="$store.state.foodtrack.dialogVisible" title="本餐次的食物记录">
       <el-form
         :model="intake_record"
@@ -90,8 +114,12 @@
 </template>
 
 <script>
+import echarts from '@/components/knowledge/weight/echarts/index.vue'
 export default {
   name: 'Dialog',
+  components: {
+    echarts
+  },
   data () {
     return {
       intake_record: {
@@ -103,16 +131,31 @@ export default {
       keyword: '', // 存储用户输入的关键词
       selectedResult: null, // 存储用户选择的结果
       food: '',
-      timeout: null
+      timeout: null,
+      temp:[]
     }
   },
   computed: {
+    storeTableData () {
+      // return this.$store.state.foodtrack.addMealsResults.ingredient
+      return this.$store.state.foodtrack.addMealsResults
+    },
+    // mergedTableData() {
+    //   // const temp = []
+    //   const tableData = this.storeTableData
+    //   const mergedData = {
+    //     ...tableData,  // 将storeTableData的属性复制到mergedData中
+    //     date: this.intake_record.date,  // 添加date属性
+    //     meals: this.intake_record.meals  // 添加meals属性
+    //   }
+    //   console.log('mergedData:', mergedData) 
+    //   this.temp.push(mergedData)
+    //   return this.temp
+    // },
+
     allMeals () {
       return this.$store.state.foodtrack.allMeals
     }
-    // dialogVisible () {
-    //   return this.$store.state.foodtrack.dialogVisible
-    // }
   },
   methods: {
     // querySearchAsync 函数根据查询字符串对餐点进行异步搜索，并使用回调函数处理搜索结果
@@ -164,6 +207,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.$store.dispatch('addMeals', this.intake_record)
+          this.$store.dispatch('getMain')
+          this.temp.push(this.$store.state.foodtrack.addMealsResults)
+
         } else {
           console.log('error submit!!')
           return false
@@ -173,6 +219,8 @@ export default {
   },
   mounted () {
     this.$store.dispatch('getAllMeals')
+    this.$store.dispatch('getMain')
+    console.log("temp:",this.temp)
   }
 }
 </script>
@@ -181,4 +229,9 @@ export default {
   .custom-input {
     width: 200px;
   }
+  .custom-span {
+  font-size: 16px;
+  font-weight: bold;
+  /* 修改字体大小为 16px */
+}
 </style>

@@ -4,7 +4,7 @@
       <div class="one__topper-img"></div>
       <div class="one__topper-overlay"></div>
       <div class="one__topper-title">
-        <h1>日常监控</h1>
+        <h1>日常营养监控</h1>
       </div>
     </div>
     <div class="top-section">
@@ -51,30 +51,6 @@
             </el-row>
             <Dialog/>
           </div>
-          <div>
-            <el-row :gutter="24">
-              <el-col :span="14">
-                <span class="custom-span">一日三餐记录</span>
-                <el-table :data="total_data" style="width: 100%">
-                  <el-table-column label="日期" prop="intake_date">
-                  </el-table-column>
-                  <el-table-column label="餐次" prop="meals_id">
-                  </el-table-column>
-                  <el-table-column label="总热量（千卡）" prop="intake_data.main_ingredient.热量">
-                  </el-table-column>
-                  <el-table-column label="蛋白质（克）" prop="intake_data.main_ingredient.蛋白质">
-                  </el-table-column>
-                  <el-table-column label="碳水化合物（克）" prop="intake_data.main_ingredient.碳水化合物">
-                  </el-table-column>
-                  <el-table-column label="脂肪（克）" prop="intake_data.main_ingredient.脂肪">
-                  </el-table-column>
-                </el-table>
-              </el-col>
-              <el-col :span="10">
-                <echarts></echarts>
-              </el-col>
-            </el-row>
-          </div>
         </el-card>
         <!-- </div> -->
       </div>
@@ -89,27 +65,24 @@
             <div class="dashboard">
               <div class="dashboard-item">
                 <div class="progress-wrapper">
-                  <el-progress type="circle" :percentage="25"></el-progress>
+                  <el-progress type="circle" :percentage="computedCal"></el-progress>
                 </div>
                 <div class="content-wrapper">
                   <p>卡路里（kcal）</p>
                   <div class="rate">
-                    <h6>+1.78%</h6>
                     <h3>{{ total_cal }}</h3>
                   </div>
                   <p>实际摄入量</p>
-
                 </div>
               </div>
               <div class="dashboard-item">
                 <div class="progress-wrapper">
-                  <el-progress type="circle" :percentage="100" status="success"></el-progress>
+                  <el-progress type="circle" :percentage="computedCarbs"></el-progress>
                 </div>
                 <div class="content-wrapper">
                   <p>碳水化合物（g）</p>
                   <div class="rate">
-                    <h6>+1.78%</h6>
-                    <h3>37.9</h3>
+                    <h3>{{ total_carbs }}</h3>
                   </div>
                   <p>实际摄入量</p>
                 </div>
@@ -117,28 +90,24 @@
               </div>
               <div class="dashboard-item">
                 <div class="progress-wrapper">
-                  <el-progress type="circle" :percentage="70" status="warning"></el-progress>
+                  <el-progress type="circle" :percentage="computedProtein"></el-progress>
                 </div>
                 <div class="content-wrapper">
                   <p>蛋白质（g）</p>
                   <div class="rate">
-                    <h6>-10.8%</h6>
-                    <h3>38</h3>
+                    <h3>{{ total_protein }}</h3>
                   </div>
-
                   <p>实际摄入量</p>
                 </div>
               </div>
               <div class="dashboard-item">
                 <div class="progress-wrapper">
-                  <el-progress type="circle" :percentage="50" status="exception"></el-progress>
+                  <el-progress type="circle" :percentage="computedFat"></el-progress>
                 </div>
                 <div class="content-wrapper">
-
                   <p>脂肪（g）</p>
                   <div class="rate">
-                    <h6>+1.78%</h6>
-                    <h3>10</h3>
+                    <h3>{{ total_fat }}</h3>
                   </div>
                   <p>实际摄入量</p>
                 </div>
@@ -148,17 +117,11 @@
         </el-col>
         <el-col :span="12">
           <el-card class="nutrition-card">
-
             <div class="important">
               <!-- <el-divider direction="vertical"></el-divider> -->
               <div class="custom-span">重点营养素分析</div>
             </div>
             <minirals></minirals>
-            <!-- <el-progress class="nutrition-progress" :percentage="50"></el-progress>
-            <el-progress class="nutrition-progress" :percentage="100" :format="format"></el-progress>
-            <el-progress class="nutrition-progress" :percentage="100" status="success"></el-progress>
-            <el-progress class="nutrition-progress" :percentage="100" status="warning"></el-progress>
-            <el-progress class="nutrition-progress" :percentage="50" status="exception"></el-progress> -->
           </el-card>
         </el-col>
       </el-row>
@@ -168,13 +131,10 @@
 
 <script>
 import { mapState } from 'vuex'
-import echarts from '@/components/knowledge/weight/echarts/index.vue'
 import minirals from '@/components/knowledge/weight/minirals/index.vue'
 import Dialog from './dialog.vue'
 export default {
-
   components: {
-    echarts,
     minirals,
     Dialog
   },
@@ -210,17 +170,7 @@ export default {
         }]
       },
       value1: '',
-      intake_record: {
-        dishes: [{
-          id: '',
-          name: '',
-          intake_num: ''
-        }],
-        meals: '',
-        date: ''
-      },
       keyword: '', // 存储用户输入的关键词
-      // searchResults: [], // 存储搜索结果
       selectedResult: null // 存储用户选择的结果
     }
   },
@@ -236,31 +186,11 @@ export default {
     handleChange (value) {
       console.log(value)
     },
-    removeDish (item) {
-      var index = this.intake_record.dishes.indexOf(item)
-      if (index !== -1) {
-        this.intake_record.dishes.splice(index, 1)
-      }
-    },
-    addDish () {
-      this.intake_record.dishes.push({
-        value: '',
-        key: Date.now()
-      })
-    },
     getDishesName () {
       this.$store.dispatch('getDishesName')
     },
     getMeals () {
       this.$store.dispatch('getMeals')
-    },
-    getCurrentDate () {
-      let today = new Date()
-      let year = today.getFullYear()
-      let month = ('0' + (today.getMonth() + 1)).slice(-2)
-      let day = ('0' + today.getDate()).slice(-2)
-      let formattedDate = year + '-' + month + '-' + day
-      return formattedDate
     },
     search () {
       // 发起请求到后端进行模糊查询，并更新搜索结果
@@ -270,7 +200,6 @@ export default {
     },
     selectItem (item) {
       this.selectedResult = item
-      // 执行您希望的其他操作，例如显示选中结果的详细信息等
     }
   },
   computed: {
@@ -280,15 +209,44 @@ export default {
       searchResults: (state) => state.meals_vage.searchResults
     }),
     total_cal () {
-      let date = this.getCurrentDate()
-      let newarr = this.total_data.filter(item => item.intake_date === date)
-      console.log('hivgcfcf', this.total_data)
-      console.log('hihuih', newarr)
-      let num = 0
-      newarr.forEach(element => {
-        num += parseInt(element.total_intake.main_ingredient.热量)
-      })
-      return num
+      const cal = this.$store.state.foodtrack.mainIngredient.ingredient.calories
+      return parseFloat(cal).toFixed(2);
+    },
+    computedCal () {
+      const stdCal = 4200;
+      const ratio = this.total_cal / stdCal;
+      const percentage = ratio * 100;
+      return parseFloat(percentage).toFixed(1);
+    },
+    total_fat () {
+      const fat = this.$store.state.foodtrack.mainIngredient.ingredient.fat
+      return parseFloat(fat).toFixed(2);
+    },
+    computedFat () {
+      const stdFat = 128.5;
+      const ratio = this.total_fat / stdFat;
+      const percentage = ratio * 100;
+      return parseFloat(percentage).toFixed(1);
+    },
+    total_carbs () {
+      const carbs = this.$store.state.foodtrack.mainIngredient.ingredient.carbohydrates
+      return parseFloat(carbs).toFixed(2);
+    },
+    computedCarbs () {
+      const stdCarbs = 627.5;
+      const ratio = this.total_carbs / stdCarbs;
+      const percentage = ratio * 100;
+      return parseFloat(percentage).toFixed(1);
+    },
+    total_protein () {
+      const protein = this.$store.state.foodtrack.mainIngredient.ingredient.protein
+      return parseFloat(protein).toFixed(2);
+    },
+    computedProtein () {
+      const stdProtein = 142
+      const ratio = this.total_protein / stdProtein
+      const percentage = ratio * 100
+      return parseFloat(percentage).toFixed(1)
     }
   }
 }

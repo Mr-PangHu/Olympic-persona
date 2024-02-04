@@ -4,7 +4,6 @@
   </div>
 </template>
 <script>
-
 export default {
   name: 'Mini',
   methods: {
@@ -12,55 +11,65 @@ export default {
       // 基于准备好的dom，初始化echarts实例
       let Minirals = this.$echarts.init(document.getElementById('Minirals'))
       // 配置参数
-      // const dates = ['2024-01-01', '2024-01-02', '2024-01-03', '2024-01-04', '2024-01-05', '2024-01-06']
       let config = {
-        title: {
-          // text: "近一周各种关键营养素的摄入情况",
-          // textStyle: {
-          //   fontSize: "16px" // 设置标题文本大小
-          // }
+        xAxis: {
+          type: 'category',
+          data: ['维生素B1', '维生素B2', '烟酸', '维生素C', '维生素E', '维生素A', '泛酸','生物酸']
         },
-        dataset: {
-          source: [
-            ['score', 'amount', 'product'],
-            [89.3, 58212, '纤维素'],
-            [57.1, 78254, '胡萝卜素'],
-            [74.4, 41032, '视黄醇'],
-            [50.1, 12755, '维生素B1'],
-            [89.7, 20145, '维生素B2'],
-            [68.1, 79146, '尼克酸'],
-            [19.6, 91852, '维生素C'],
-            [10.6, 101852, '维生素E'],
-            [32.7, 20112, '钾']
-          ]
-        },
-        grid: { containLabel: true },
-        xAxis: { name: 'amount' },
-        yAxis: { type: 'category' },
-        visualMap: {
-          orient: 'horizontal',
-          left: 'center',
-          min: 10,
-          max: 100,
-          text: ['High Score', 'Low Score'],
-          // Map the score column to color
-          dimension: 0,
-          inRange: {
-            color: ['#65B581', '#FFCE34', '#FD665F']
-          }
+        yAxis: {
+          type: 'value'
         },
         series: [
           {
-            type: 'bar',
-            encode: {
-              // Map the "amount" column to X axis.
-              x: 'amount',
-              // Map the "product" column to Y axis
-              y: 'product'
-            }
+            data: [
+              this.$store.state.foodtrack.mainIngredient.nutrientValues.vitaminB1,
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.vitaminB2,
+                itemStyle: {
+                  color: '#a90000'
+                }
+              },
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.niacin,
+                itemStyle: {
+                  color: '#43766C'
+                }
+              },
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.vitaminC,
+                itemStyle: {
+                  color: '#6962AD'
+                }
+              },
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.vitaminE,
+                itemStyle: {
+                  color: '#96E9C6'
+                }
+              },
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.retinol,
+                itemStyle: {
+                  color: '#B19470'
+                }
+              },
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.pantothenicAcid,
+                itemStyle: {
+                  color: '#F8FAE5'
+                }
+              },
+              {
+                value: this.$store.state.foodtrack.mainIngredient.nutrientValues.biotin,
+                itemStyle: {
+                  color: '#76453B'
+                }
+              }
+            ],
+            type: 'bar'
           }
         ]
-      }
+      };
       // 设置参数
       Minirals.setOption(config)
     }

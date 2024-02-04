@@ -119,15 +119,15 @@ export const reqDishesName = () => {
 //     data: intake_record
 //   })
 // }
-export const reqMeals = intakeRecord => {
-  return MockRequest({
-    url: '/meals',
-    method: 'post',
-    data: intakeRecord
-  })
-}
+// export const reqMeals = intakeRecord => {
+//   return MockRequest({
+//     url: '/meals',
+//     method: 'post',
+//     data: intakeRecord
+//   })
+// }
 
-//
+// 点击“提交”接收餐次信息
 export const reqDishes = intakeRecord => {
   return KnowRequest({
     url: '/meals/accept',
@@ -135,11 +135,19 @@ export const reqDishes = intakeRecord => {
     data: intakeRecord
   })
 }
-
+// 根据名称关键词查询菜品信息——返回菜品所有信息，点击“食物名称”加载出所有成品菜
 export const reqGetAllMeals = data => {
   return KnowRequest.get('/dishes/search', {
     params: {
       key: data
     }
+  })
+}
+// 点击“提交”接收餐次信息
+export const reqMain = userDate => {
+  return KnowRequest({
+    url: '/meals/ingredient',
+    method: 'post',
+    data: userDate
   })
 }
