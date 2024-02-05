@@ -1,7 +1,8 @@
 let mysql = require('mysql')
 
-let db = mysql.createConnection({
+let db = mysql.createPool({
   // 远程
+  // host: '172.20.137.141', // 数据库IP地址
   // host: '172.20.137.141', // 数据库IP地址
   // user: 'root', // 数据库登录账号
   // password: '123456', // 数据库登录密码
