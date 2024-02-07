@@ -14,7 +14,7 @@ export default {
       let config = {
         xAxis: {
           type: 'category',
-          data: ['维生素B1', '维生素B2', '烟酸', '维生素C', '维生素E', '维生素A', '泛酸','生物酸']
+          data: ['维生素B1', '维生素B2', '烟酸', '维生素C', '维生素E', '维生素A', '泛酸', '生物酸']
         },
         yAxis: {
           type: 'value'

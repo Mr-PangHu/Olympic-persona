@@ -132,7 +132,7 @@ export default {
       selectedResult: null, // 存储用户选择的结果
       food: '',
       timeout: null,
-      temp:[]
+      temp: []
     }
   },
   computed: {
@@ -148,7 +148,7 @@ export default {
     //     date: this.intake_record.date,  // 添加date属性
     //     meals: this.intake_record.meals  // 添加meals属性
     //   }
-    //   console.log('mergedData:', mergedData) 
+    //   console.log('mergedData:', mergedData)
     //   this.temp.push(mergedData)
     //   return this.temp
     // },
@@ -219,7 +219,6 @@ export default {
   mounted () {
     this.$store.dispatch('getAllMeals')
     this.$store.dispatch('getMain')
-    console.log("temp:",this.temp)
   }
 }
 </script>

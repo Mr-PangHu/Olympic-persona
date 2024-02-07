@@ -27,7 +27,7 @@
             </el-submenu>
             <!-- <el-menu-item index="/markpredict">成绩预测</el-menu-item> -->
             <!-- <el-menu-item index="/knowledge">知识图谱模块</el-menu-item> -->
-            <el-submenu index="4">
+            <el-submenu index="5">
               <template slot="title">
                 知识图谱
               </template>

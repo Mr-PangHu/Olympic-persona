@@ -9,7 +9,7 @@ const state = {
   dishesName: [],
   allMeals: [],
   dialogVisible: false,
-  addMealsResults:{},
+  addMealsResults: {},
   mainIngredient: {}
 }
 
@@ -67,15 +67,14 @@ let actions = {
       console.log('addMeals的result', result)
     }
     const mergedData = {
-      ...result.ingredient,  // 将storeTableData的属性复制到mergedData中
-      date: outputDate,  // 添加date属性
-      meals: formData.meals  // 添加meals属性
+      ...result.ingredient, // 将storeTableData的属性复制到mergedData中
+      date: outputDate, // 添加date属性
+      meals: formData.meals // 添加meals属性
     }
-    console.log('mergedData:', mergedData) 
-    commit('GETADDMEALS',mergedData)
-    
+    console.log('mergedData:', mergedData)
+    commit('GETADDMEALS', mergedData)
   },
-  //  获取全部食物
+  // 获取全部食物
   async getAllMeals ({ commit }) {
     let result = await reqGetAllMeals('')
     console.log('GetAllMealsresult', result)
