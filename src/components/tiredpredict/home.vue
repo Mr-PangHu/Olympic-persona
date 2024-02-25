@@ -57,22 +57,22 @@
   </div>
 </template>
 <script>
-import axios from "axios"
+import axios from 'axios'
 
 export default {
-  data() {
+  data () {
     return {
       todaydate: new Date(),
       tableData: [],
       pageSize: 12,
       currentPage: 1,
-      selectYear: "",
+      selectYear: '',
       yearOptions: [],
-      selectComp: "",
+      selectComp: '',
       compOptions: [],
-      selectEvent: "",
+      selectEvent: '',
       eventOptions: [],
-      selectEventName: "",
+      selectEventName: '',
       country: [],
       cNumber: 0,
       d500m: [],
@@ -82,40 +82,40 @@ export default {
       series: [],
       defaultValue: null,
       fenduanForm: {
-        d500mValue: "",
-        d1000mValue: "",
-        d1500mValue: "",
-        d2000mValue: "",
-      },
-    };
+        d500mValue: '',
+        d1000mValue: '',
+        d1500mValue: '',
+        d2000mValue: ''
+      }
+    }
   },
-  created() {
-    this.defaultValue = new Date();
-    this.defaultValue.setHours(0);
-    this.defaultValue.setMinutes(1);
-    this.defaultValue.setSeconds(0);
+  created () {
+    this.defaultValue = new Date()
+    this.defaultValue.setHours(0)
+    this.defaultValue.setMinutes(1)
+    this.defaultValue.setSeconds(0)
   },
-  async mounted() {
-    this.getYear();
-    await this.showTable();
+  async mounted () {
+    this.getYear()
+    await this.showTable()
   },
   methods: {
-    handleSizeChange(val) {
-      this.pageSize = val;
+    handleSizeChange (val) {
+      this.pageSize = val
     },
-    handleCurrentChange(val) {
-      this.currentPage = val;
+    handleCurrentChange (val) {
+      this.currentPage = val
     },
     getYear () {
-      axios.get("http://localhost/cm/getYear").then((res) => {
-        const yearArr = res.data;
+      axios.get('http://localhost/cm/getYear').then((res) => {
+        const yearArr = res.data
         this.yearOptions = yearArr.map((item) => ({
           value: item,
-          label: item,
-        }));
+          label: item
+        }))
       }).catch((err) => {
-        console.log("获取数据失败" + err);
-      });
+        console.log('获取数据失败' + err)
+      })
     },
     showTable () {
       axios.get('http://localhost/fatigue_predict/getAllFatigueData').then(res => {

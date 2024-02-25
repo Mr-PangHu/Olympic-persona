@@ -61,7 +61,7 @@ const router = new Router({
         {
           path: 'tiredpredict',
           name: 'tiredpredict',
-          component: () => import('@/components/tiredpredict/home.vue'),
+          component: () => import('@/components/tiredpredict/home.vue')
         },
         {
           path: 'tiredpredict/specialIndex',
