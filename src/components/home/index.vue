@@ -27,6 +27,17 @@
               <el-menu-item index="/markpredict">成绩预测</el-menu-item>
             </el-submenu>
             <!-- <el-menu-item index="/markpredict">成绩预测</el-menu-item> -->
+            <!-- <el-menu-item index="/knowledge">知识图谱模块</el-menu-item> -->
+            <el-submenu index="5">
+              <template slot="title">
+                知识图谱
+              </template>
+              <el-menu-item
+                v-for="item in menuData " :key="item.name"
+                :index="item.path">
+                <span slot="title">{{ item.label }}</span>
+              </el-menu-item>
+            </el-submenu>
             <el-submenu index="3">
               <template slot="title">个人中心</template>
               <el-menu-item>基本资料</el-menu-item>
@@ -76,6 +87,26 @@ export default {
           title: ' Where are they now: Kathrin Boron',
           content: 'She sits in fourth place on the all-time Olympic gold medal count for women with four Olympic golds and...'
         }
+      ],
+      menuData: [
+        {
+          path: '/display',
+          name: 'display',
+          label: '知识图谱展示',
+          icon: 'data-line'
+        },
+        {
+          path: '/search',
+          name: 'search',
+          label: '食物成分查询',
+          icon: 'search'
+        },
+        {
+          path: '/foodtrack',
+          name: 'foodtrack',
+          label: '日常营养',
+          icon: 's-home'
+        },
       ]
     }
   },

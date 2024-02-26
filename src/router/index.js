@@ -10,6 +10,12 @@ import store from '@/store'
 
 Vue.use(Router)
 
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location, resolve, reject) {
+    if ( resolve || reject ) return originalPush.call(this, location, resolve, reject)
+    return originalPush.call(this, location).catch((e)=>{})
+}
+
 const router = new Router({
   routes: [
     {
@@ -61,7 +67,7 @@ const router = new Router({
         {
           path: 'tiredpredict',
           name: 'tiredpredict',
-          component: () => import('@/components/tiredpredict/home.vue'),
+          component: () => import('@/components/tiredpredict/home.vue')
         },
         {
           path: 'tiredpredict/specialIndex',
@@ -102,7 +108,7 @@ const router = new Router({
 const whiteList = ['/login', '/register']
 
 router.beforeEach((to, from, next) => {
-  const token = store.state.token
+  const token = store.state.user.token
   if (token) {
     next() // 路由放行
   } else {

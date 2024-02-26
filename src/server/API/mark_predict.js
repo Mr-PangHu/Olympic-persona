@@ -1,4 +1,4 @@
-let db = require('../db/index')
+let db = require('../db2/index')
 const tf = require('@tensorflow/tfjs-node')
 const async = require('async');
 
