@@ -140,12 +140,6 @@ export default {
           label:'日常营养',
           icon: 's-home',
         },
-        {
-          path:"/bigModel",
-          name:"bigModel",
-          label:'问答模式',
-          icon: 'ship',
-        }, 
       ]
     }
   },

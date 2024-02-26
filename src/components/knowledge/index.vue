@@ -15,10 +15,10 @@
         <el-tab-pane label="知识图谱检索" name="second">
           <Display />
         </el-tab-pane>
-        <el-tab-pane label="营养监控" name="third">
+        <!-- <el-tab-pane label="营养监控" name="third">
           <Big-model />
-        </el-tab-pane>
-        <el-tab-pane label="大模型问答" name="four">
+        </el-tab-pane> -->
+        <el-tab-pane label="营养监控" name="third">
           <Weight />
         </el-tab-pane>
       </el-tabs>
@@ -29,14 +29,12 @@
 <script>
 import Search from './components/search'
 import Display from './components/display'
-import BigModel from './components/bigModel'
 import Weight from './components/weight'
 export default {
   components: {
     Search,
     Display,
-    Weight,
-    BigModel
+    Weight
   },
   data () {
     return {
