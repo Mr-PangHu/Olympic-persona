@@ -12,8 +12,8 @@ Vue.use(Router)
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, resolve, reject) {
-    if ( resolve || reject ) return originalPush.call(this, location, resolve, reject)
-    return originalPush.call(this, location).catch((e)=>{})
+  if (resolve || reject) return originalPush.call(this, location, resolve, reject)
+  return originalPush.call(this, location).catch((e) => { })
 }
 
 const router = new Router({

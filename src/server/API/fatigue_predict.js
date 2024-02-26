@@ -225,7 +225,7 @@ exports.getAllFatigueData = (req, res) => {
 
 exports.getAllFatigueData2 = (req, res) => {
   
-  sql = 'SELECT * FROM (SELECT a.id,a.athlete_id,e.name,e.gender,e.age,c.date,a.dynamometer_2000m,a.dynamometer_30min,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
+  sql = 'SELECT * FROM (SELECT a.athlete_id,e.name,e.gender,e.age,c.date,a.dynamometer_2000m,a.dynamometer_30min,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id AND a.date=b.date INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id and a.date=c.date INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id and a.date=d.date INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
   db.query(sql, (err, data) => {
     if (err) {
       return res.send('错误：' + err.message)
