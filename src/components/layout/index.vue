@@ -64,7 +64,7 @@
                 <i class="el-icon-data-analysis"></i>运动员画像
               </template>
               <el-menu-item :index="personaPath">
-                <i></i>个人画像
+                <i></i>食物成分检索
               </el-menu-item>
               <!-- <el-menu-item index="/player-groups">
                 <i></i>群体画像
@@ -76,6 +76,17 @@
             <el-menu-item index="/worldhighlevel">
               <i class="el-icon-trophy"></i>世界高水平
             </el-menu-item>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-data-analysis"></i>知识图谱
+              </template>
+              <el-menu-item
+                v-for="item in menuData " :key="item.name"
+                :index="item.path">
+                <i :class="`el-icon-${item.icon}`"></i>
+                <span slot="title">{{ item.label }}</span>
+              </el-menu-item>
+            </el-submenu>
             <el-submenu index="3">
               <template slot="title">
                 <i class="el-icon-s-custom"></i>个人中心
@@ -109,7 +120,27 @@ export default {
     return {
       showPersona: true,
       personaPath: '',
-      championPath: ''
+      championPath: '',
+      menuData: [
+        {
+          path:"/knowledge",
+          name:"knowledge",
+          label:'知识图谱展示',
+          icon: 'data-line',
+        },
+        {
+          path:"/search",
+          name:"search",
+          label:'食物成分查询',
+          icon: 'search',
+        },
+        {
+          path:"/foodtrack",
+          name:"foodtrack",
+          label:'日常营养',
+          icon: 's-home',
+        },
+      ]
     }
   },
   name: 'my-homepage',
@@ -153,7 +184,7 @@ export default {
         })
         .catch((err) => err)
     }
-  }
+  },
 }
 </script>
 
