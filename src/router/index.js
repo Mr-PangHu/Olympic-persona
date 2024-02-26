@@ -10,28 +10,6 @@ import store from '@/store'
 
 Vue.use(Router)
 
-// // 重写路由方法 这里是解决重复点击路由不能跳转的问题， 但是vuerouter 有个新属性:router可以直接index跳转
-// const originPush = Router.prototype.push
-// const originReplace = Router.prototype.replace
-// // 重写push|replace
-// // arg1：告诉原来push方法，往哪里跳转，需要传递哪些参数
-// Router.prototype.push = function (location, resolve, reject) {
-//   if (resolve && reject) {
-//     originPush.call(this, location, resolve, reject)
-//   } else {
-//     originPush.call(this, location, () => {}, () => {})
-//   }
-// }
-
-// Router.prototype.replace = function (location, resolve, reject) {
-//   if (resolve && reject) {
-//     // 这样的话调用原来的push方法
-//     originReplace.call(this, location, resolve, reject)
-//   } else {
-//     // 因为保存的时候 在window里面 所以要改变this指向 这里相当于 修改了一下原方法
-//     originReplace.call(this, location, () => {}, () => {})
-//   }
-// }
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, resolve, reject) {
     if ( resolve || reject ) return originalPush.call(this, location, resolve, reject)

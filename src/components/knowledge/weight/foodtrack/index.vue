@@ -259,7 +259,7 @@ export default {
   }
 
   &__topper {
-    height: 600px;
+    height: 80px;
     width: 100%;
     position: relative;
 
