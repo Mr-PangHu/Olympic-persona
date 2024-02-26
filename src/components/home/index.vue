@@ -22,7 +22,8 @@
             <el-menu-item index="/worldhighlevel">世界高水平</el-menu-item>
             <el-submenu index="4">
               <template slot="title">决策辅助</template>
-              <el-menu-item index="/tiredpredict">疲劳预测</el-menu-item>
+              <el-menu-item index="/tiredpredict">疲劳预测（demo）</el-menu-item>
+              <el-menu-item index="/tiredpredict2">疲劳预测</el-menu-item>
               <el-menu-item index="/markpredict">成绩预测</el-menu-item>
             </el-submenu>
             <!-- <el-menu-item index="/markpredict">成绩预测</el-menu-item> -->

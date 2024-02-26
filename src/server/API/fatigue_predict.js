@@ -1,5 +1,6 @@
 let db = require('../db2/index')
 const json = require('../data/labels.json')
+const json2 = require('../data/labels2.json')
 const tf = require('@tensorflow/tfjs-node')
 const { log } = require('console')
 
@@ -8,6 +9,21 @@ let sleep = (time)=> new Promise((resolve)=>{
 })
 async function modelPredict (inputs) {
   let model_dir = __dirname.replace("API", "data/model/model.json")
+  model_dir = model_dir.replace("\\", "/")
+  const model = await tf.loadLayersModel('file://'+model_dir)
+  sleep(3000).then(
+    // 编译模型
+    model.compile({
+      optimizer: 'adam',
+      loss: 'binaryCrossentropy',
+      metrics: ['accuracy']
+    }))
+  var res = model.predict(inputs).dataSync()
+  return res
+}
+
+async function modelPredict2 (inputs) {
+  let model_dir = __dirname.replace("API", "data/model2/model.json")
   model_dir = model_dir.replace("\\", "/")
   const model = await tf.loadLayersModel('file://'+model_dir)
   sleep(3000).then(
@@ -126,6 +142,17 @@ function getFatiguePredictDecision(data) {
   return exceptionIndex[10]
 }
 
+function convertTimeStringToSeconds (timeString) {
+    if (typeof timeString == "undefined") {
+        return 0
+    }
+    const parts = timeString.split("'"); // 拆分字符串为分钟和秒钟部分
+    const minutes = parseInt(parts[0], 10); // 解析分钟部分为整数
+    const seconds = parseFloat(parts[1]); // 解析秒钟部分为浮点数
+    const totalSeconds = minutes * 60 + seconds; // 计算总秒数
+    return totalSeconds;
+}
+
 exports.getAllFatigueData = (req, res) => {
   
   var sql = 'select dynamometer_2000m,dynamometer_30min,vo2max,vo2max_rel,p4,dynamometer_5000m,dynamometer_6000m,bench_pull_1rm,dead_lift_1rm,bench_press_1rm,deep_squat_1rm,ck,hb,t,bnu,wbc,hct,c,rbc,fe from fatigue_predict';
@@ -191,6 +218,94 @@ exports.getAllFatigueData = (req, res) => {
           mostSimIndex++
         }
       }
+      res.send({'res':return_res})
+    })
+  })
+}
+
+exports.getAllFatigueData2 = (req, res) => {
+  
+  sql = 'SELECT * FROM (SELECT a.id,a.athlete_id,e.name,e.gender,e.age,c.date,a.dynamometer_2000m,a.dynamometer_30min,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
+  db.query(sql, (err, data) => {
+    if (err) {
+      return res.send('错误：' + err.message)
+    }
+    // 构建10行20列的数据
+    data = JSON.parse(JSON.stringify(data))
+    
+    var _inputs = []
+    var _athleteId_time=[]
+    var index = 0
+    while (index < data.length - 10) {
+        var single = []
+        if (data[index]['athlete_id'] == data[index + 10]['athlete_id']) {
+            for (let i = index; i < index + 10; i++) {
+                var rows = [convertTimeStringToSeconds(data[i]['dynamometer_2000m']), convertTimeStringToSeconds(data[i]['dynamometer_30min']), data[i]['vo2max_rel'], data[i]['p4'],
+                convertTimeStringToSeconds(data[i]['dynamometer_5000m']), data[i]['bench_pull_1rm'], data[i]['dead_lift_1rm'], data[i]['bench_press_1rm'],
+                data[i]['deep_squat_1rm'], data[i]['ck'], data[i]['hb'], data[i]['t'], data[i]['bun'],
+                data[i]['wbc'], data[i]['hct'], data[i]['c'], data[i]['rbc'], data[i]['fe']
+                ]
+                single.push(rows)
+            }
+            _inputs.push(single)
+            _athleteId_time.push([data[index]['athlete_id'],data[index]['name'],data[index]['gender'],data[index]['date'],data[index]['age']])
+        }
+        ++index
+        while (index<data.length-10 && data[index]['athlete_id'] == data[index - 1]['athlete_id']) {
+            ++index
+        }
+    }
+    
+    model_inputs = tf.tensor3d(_inputs)
+    var model_predict_results = []
+    modelPredict2(model_inputs).then((result) => {
+      var labelsIndex = []
+      for (let j = 0; j < result.length; j = j + 2)
+      {  
+        if (result[j] < result[j + 1])
+        {  
+          let maxSim = -1
+          let maxIndex = 0
+          for (let i = 0; i < json2.length; i++)
+          {
+            let sim = cosineSimilarity(_inputs[Math.floor(j/2)], json2[i])
+            if (sim > maxSim)
+            {
+              maxIndex = i
+              maxSim = sim
+            }
+          }
+          labelsIndex.push(maxIndex)
+          model_predict_results.push(1)
+        }
+        else
+        {
+          model_predict_results.push(0)
+        }
+      }
+      // console.log(model_predict_results)
+      let mostSimIndex = 0
+      var return_res=[]
+      for (let k = 0; k < model_predict_results.length; k++)
+      {
+        if (model_predict_results[k] == 1)
+        {
+          temp = transposeArray(_inputs[k])
+          let exceptionDataIndex = getFatiguePredictDecision(temp) + 1
+          return_res.push({
+            name: _athleteId_time[k][1],
+            sex: _athleteId_time[k][2],
+            date: _athleteId_time[k][3], reason: '第' + exceptionDataIndex + '天出现疲劳',
+            message: '第' + exceptionDataIndex + '天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视',
+            input: temp,
+            mostSim: labelsIndex[mostSimIndex],
+            simData: transposeArray(json2[labelsIndex[mostSimIndex]]),
+            times: getTime()
+          })
+          mostSimIndex++
+        }
+      }
+      // console.log(return_res)
       res.send({'res':return_res})
     })
   })
