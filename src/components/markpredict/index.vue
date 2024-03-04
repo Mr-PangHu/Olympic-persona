@@ -353,6 +353,7 @@ export default {
       var myChart = echarts.init(document.getElementById(idvar))
       var option
       option = {
+        color: ['rgba(0,37,79,.8)'],
         title: {
           text: this.selectComp + this.selectEventName
         },
