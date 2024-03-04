@@ -178,7 +178,7 @@ exports.getAllFatigueData = (req, res) => {
       }
       _inputs.push(single)
     }
-    
+    console.log(_inputs);
     model_inputs = tf.tensor3d(_inputs)
     var model_predict_results = []
     modelPredict(model_inputs).then((result) => {
@@ -225,6 +225,7 @@ exports.getAllFatigueData = (req, res) => {
 
 exports.getAllFatigueData2 = (req, res) => {
   
+  // sql = 'SELECT * FROM (SELECT a.id,a.athlete_id,e.name,e.gender,e.age,c.date,a.dynamometer_2000m,a.dynamometer_30min,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
   sql = 'SELECT * FROM (SELECT a.athlete_id,e.name,e.gender,e.age,c.date,a.dynamometer_2000m,a.dynamometer_30min,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id AND a.date=b.date INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id and a.date=c.date INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id and a.date=d.date INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
   db.query(sql, (err, data) => {
     if (err) {
@@ -255,59 +256,64 @@ exports.getAllFatigueData2 = (req, res) => {
             ++index
         }
     }
-    
-    model_inputs = tf.tensor3d(_inputs)
-    var model_predict_results = []
-    modelPredict2(model_inputs).then((result) => {
-      var labelsIndex = []
-      for (let j = 0; j < result.length; j = j + 2)
-      {  
-        if (result[j] < result[j + 1])
+    // console.log(_inputs)
+    if(_inputs.length!=0){
+      model_inputs = tf.tensor3d(_inputs)
+      var model_predict_results = []
+      modelPredict2(model_inputs).then((result) => {
+        var labelsIndex = []
+        for (let j = 0; j < result.length; j = j + 2)
         {  
-          let maxSim = -1
-          let maxIndex = 0
-          for (let i = 0; i < json2.length; i++)
-          {
-            let sim = cosineSimilarity(_inputs[Math.floor(j/2)], json2[i])
-            if (sim > maxSim)
+          if (result[j] < result[j + 1])
+          {  
+            let maxSim = -1
+            let maxIndex = 0
+            for (let i = 0; i < json2.length; i++)
             {
-              maxIndex = i
-              maxSim = sim
+              let sim = cosineSimilarity(_inputs[Math.floor(j/2)], json2[i])
+              if (sim > maxSim)
+              {
+                maxIndex = i
+                maxSim = sim
+              }
             }
+            labelsIndex.push(maxIndex)
+            model_predict_results.push(1)
           }
-          labelsIndex.push(maxIndex)
-          model_predict_results.push(1)
+          else
+          {
+            model_predict_results.push(0)
+          }
         }
-        else
+        // console.log(model_predict_results)
+        let mostSimIndex = 0
+        var return_res=[]
+        for (let k = 0; k < model_predict_results.length; k++)
         {
-          model_predict_results.push(0)
+          if (model_predict_results[k] == 1)
+          {
+            temp = transposeArray(_inputs[k])
+            let exceptionDataIndex = getFatiguePredictDecision(temp) + 1
+            return_res.push({
+              name: _athleteId_time[k][1],
+              sex: _athleteId_time[k][2],
+              date: _athleteId_time[k][3], reason: '第' + exceptionDataIndex + '天出现疲劳',
+              message: '第' + exceptionDataIndex + '天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视',
+              input: temp,
+              mostSim: labelsIndex[mostSimIndex],
+              simData: transposeArray(json2[labelsIndex[mostSimIndex]]),
+              times: getTime()
+            })
+            mostSimIndex++
+          }
         }
-      }
-      // console.log(model_predict_results)
-      let mostSimIndex = 0
-      var return_res=[]
-      for (let k = 0; k < model_predict_results.length; k++)
-      {
-        if (model_predict_results[k] == 1)
-        {
-          temp = transposeArray(_inputs[k])
-          let exceptionDataIndex = getFatiguePredictDecision(temp) + 1
-          return_res.push({
-            name: _athleteId_time[k][1],
-            sex: _athleteId_time[k][2],
-            date: _athleteId_time[k][3], reason: '第' + exceptionDataIndex + '天出现疲劳',
-            message: '第' + exceptionDataIndex + '天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视',
-            input: temp,
-            mostSim: labelsIndex[mostSimIndex],
-            simData: transposeArray(json2[labelsIndex[mostSimIndex]]),
-            times: getTime()
-          })
-          mostSimIndex++
-        }
-      }
-      // console.log(return_res)
-      res.send({'res':return_res})
-    })
+        // console.log(return_res)
+        res.send({'res':return_res})
+      })
+    }
+    else {
+      res.send({'info':[{message:"数据库查询为空，请检查数据库中数据是否符合请求！"}]})
+    }
   })
 }
 

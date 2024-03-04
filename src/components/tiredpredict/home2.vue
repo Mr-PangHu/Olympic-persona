@@ -51,6 +51,9 @@
               </el-pagination>
             </div>
           </div>
+          <div class="msg">
+            {{ messages }}
+          </div>
         </div>
       </div>
     </el-card>
@@ -87,6 +90,7 @@ export default {
         d1500mValue: "",
         d2000mValue: "",
       },
+      messages: ''
     };
   },
   created() {
@@ -119,8 +123,14 @@ export default {
     },
     showTable () {
       axios.get('http://localhost/fatigue_predict/getAllFatigueData2').then(res => {
-        for (let i = 0; i < res.data.res.length; i++) {
-          this.tableData.push(res.data.res[i])
+        // console.log(res.data);
+        if (res.data.info != null) {
+          // console.log(res.data.info[0]);
+          this.messages = res.data.info[0]['message']
+        } else {
+          for (let i = 0; i < res.data.res.length; i++) {
+            this.tableData.push(res.data.res[i])
+          }
         }
       }).catch(err => {
         console.log('获取数据失败' + err)
@@ -217,5 +227,15 @@ export default {
 
 /deep/ .el-table {
   color: black;
+}
+
+.msg{
+  align-content: center;
+  display: block;
+  font-size: x-large;
+  color: red;
+  text-align: center;
+  margin-top: 100px;
+  margin-bottom: 30px;
 }
 </style>
