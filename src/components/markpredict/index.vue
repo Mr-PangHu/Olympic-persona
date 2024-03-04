@@ -10,7 +10,7 @@
     <el-card class="box-card">
         <div class="markpredict__wrapper">
             <div class="markpredict__model">
-                <div style="text-align: right; margin-bottom: 1%; margin-top: 100px">
+                <div style="text-align: left; margin-bottom: 1%; margin-top: 100px; margin-left: 5%;">
                   今天日期
                     <el-date-picker
                       v-model="todaydate"
@@ -41,10 +41,12 @@
                     <div class="markpredict__model-wrapper-echarts">
                       <!-- :header-cell-style="{'fontSize': '16px', 'color': '#FFFFFF','text-align':'center','fontFamily': 'HYQihei 50S','background-color': '#343336'}" -->
                       <el-table
-                        :header-cell-style="{'fontSize': '16px', 'text-align':'center','fontFamily': 'HYQihei 50S'}"
-                        :cell-style="{'text-align':'center','color': '#333'}"
+                        :header-cell-style="{'fontSize': '14px', 'text-align':'center','fontFamily': 'HYQihei 50S'}"
+                        :cell-style="{'text-align':'center','color': '#333','fontSize': '14px',}"
                         :data="tableData.slice((currentPage-1)*pageSize, currentPage*pageSize)"
                         :default-sort="{ prop: 'id', order: 'ascending' }"
+                        tooltip-effect="dark"
+                        border
                         style="width: 100% " @sort-change="sortChange" @filter-change='handleFilterChange' @expand-change='handleExpandChange'>
                         <el-table-column
                           prop="project"
@@ -265,7 +267,6 @@ export default {
         }
         return tmp
       })
-      console.log('loglog')
       this.setmarkpredictChart(16, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
       this.setmarkpredictChart(17, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
       this.setmarkpredictChart(18, ['2020-01-16', '2020-01-17', '2020-01-18', '2020-01-19'], this.series)
@@ -278,7 +279,6 @@ export default {
           id
         }
       }).then((result) => {
-        console.log('logloglog')
         // console.log(result.data)
         var hisData = []
         for (let i = result.data.length - 1; i >= 0; --i) {
@@ -391,11 +391,30 @@ export default {
           name: '时间',
           type: 'category',
           boundaryGap: false,
-          data: dateList
+          data: dateList,
+          color: '#000',
+          axisLabel: {
+            color: '#000'
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#000",
+            },
+          }
         },
         yAxis: {
           name: '成绩/s',
-          type: 'value'
+          type: 'value',
+          axisLabel: {
+            color: '#000'
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#000",
+            },
+          }
           // min: 240
         },
         series: valueList
