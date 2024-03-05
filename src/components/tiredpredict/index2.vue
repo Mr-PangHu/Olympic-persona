@@ -15,10 +15,10 @@
               {{ messages }}
             </div>
           </div>
-          <div style="text-align: right; margin-bottom: 1%;">
-            今天日期
-            <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期">
-            </el-date-picker>
+          <div style="text-align: left; margin-bottom: 1%; margin-left: 5%;">
+            <!-- 今天日期
+            <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期"> -->
+            <!-- </el-date-picker> -->
 
             <!-- <el-select v-model="selectEvent" clearable collapse-tags filterable placeholder="请选择项目"
               class="worldhighlevel__model-filter-selector" @change="handleSelectEventChange">
@@ -98,6 +98,7 @@ export default {
       const data2 = item.echarts.data2
       const chartDom = document.getElementById(item.title)
       const myChart = echarts.init(chartDom)
+      const yTag = item.yTag
       const option = {
         title: {
           text: item.title
@@ -121,14 +122,28 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: item.times
+          data: item.times,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#000",
+            },
+          }
         },
         yAxis: {
+          name: yTag,
           type: 'value',
           min: (Math.min.apply(null, [Math.min.apply(null, data1), Math.min.apply(null, data2)]) * 0.95).toFixed(2),
           max: (Math.max.apply(null, [Math.max.apply(null, data1), Math.max.apply(null, data2)]) * 1.05).toFixed(2),
           axisLabel: {
-            formatter: '{value}'
+            formatter: '{value}',
+            color: '#000'
+          },
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: "#000",
+            },
           }
         },
         series: [
@@ -138,7 +153,8 @@ export default {
             data: data1,
             tiredLine: {
               data: [{ type: 'average', name: 'Avg' }]
-            }
+            },
+            color: '#00798C'
           },
           {
             name: '历史',
@@ -148,7 +164,8 @@ export default {
               data: [
                 { type: 'average', name: 'Avg' }
               ]
-            }
+            },
+            color: '#EDAE49'
           }
         ]
       }
@@ -190,9 +207,11 @@ export default {
       var titles = ['测功仪2KM', '测功仪30min-SR', '相对最大摄氧量', 'P4功率', '测功仪5KM',
         '握拉1RM', '硬拉1RM', '卧推1RM', '深蹲1RM', '肌酸激酶', '血红蛋白',
         '睾酮', '血尿素', '白细胞', '血细胞比容', '皮质醇', '红细胞', '铁蛋白']
+      var yTags = ['s', 's', 'l/min/Kg', 'w', 's', 'kg', 'kg', 'kg', 'kg', 'U/L', 'g/dL', 'ng/dl', 'mmol/L', '10^9/L', '%', 'ug/dl', '10^12/L', 'ng/ml']
       var count = 0
       for (const item of this.allData.data.input) {
         var temp = {
+          yTag: yTags[count],
           id: count + 1,
           name: titles[count],
           title: titles[count],

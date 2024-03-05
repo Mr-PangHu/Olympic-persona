@@ -178,7 +178,7 @@ exports.getAllFatigueData = (req, res) => {
       }
       _inputs.push(single)
     }
-    console.log(_inputs);
+    // console.log(_inputs);
     model_inputs = tf.tensor3d(_inputs)
     var model_predict_results = []
     modelPredict(model_inputs).then((result) => {

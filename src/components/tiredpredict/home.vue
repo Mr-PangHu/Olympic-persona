@@ -10,7 +10,7 @@
     <el-card class="box-card">
       <div class="fatigueHomepredict__wrapper">
         <div class="fatigueHomepredict__model">
-          <div style="text-align: right; margin-bottom: 1%; margin-top: 100px;">
+          <div style="text-align: left; margin-bottom: 1%; margin-top: 100px; margin-left: 5%;">
             今天日期
             <el-date-picker
               v-model="todaydate"
@@ -23,7 +23,13 @@
           </div>
           <div class="fatigueHomepredict__model-wrapper">
             <div class="fatigueHomepredict__model-wrapper-echarts">
-              <el-table :header-cell-style="{'text-align':'center'}" :cell-style="{'text-align':'center'}" :data="tableData.slice((currentPage - 1) * pageSize,currentPage * pageSize)" style="width: 100%">
+              <el-table
+              :header-cell-style="{'fontSize': '14px', 'text-align':'center','fontFamily': 'HYQihei 50S'}"
+              :cell-style="{'text-align':'center','color': '#333','fontSize': '14px',}"
+              :data="tableData.slice((currentPage - 1) * pageSize,currentPage * pageSize)"
+              tooltip-effect="dark"
+              border
+              style="width: 100%">
                 <el-table-column prop="name" label="姓名">
                 </el-table-column>
                 <el-table-column prop="sex" label="性别">
