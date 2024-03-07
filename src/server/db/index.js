@@ -7,7 +7,7 @@ let mysql = require('mysql')
 //   database: 'olympic' // 要操作的数据库
 // })
 
-let db = mysql.createPool({
+let db = mysql.createConnection({
   host: '127.0.0.1', // 数据库IP地址
   user: 'root', // 数据库登录账号
   password: 'xiehou', // 数据库登录密码

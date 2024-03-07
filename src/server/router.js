@@ -38,6 +38,7 @@ router.get('/cm/getResultsByEventPre', cm.getResultsByEventPre)
 
 // router.get('/fatigue_predict/getSimilarityData', fp.getSimilarityData)
 router.get('/fatigue_predict/getAllFatigueData', fp.getAllFatigueData)
+router.get('/fatigue_predict/getAllFatigueData2', fp.getAllFatigueData2)
 
 router.get('/mp/getPlayersHisDataAll', mp.getPlayersHisDataAll)
 router.get('/mp/getPlayersHisData', mp.getPlayersHisData)

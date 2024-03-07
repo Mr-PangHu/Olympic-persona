@@ -1,5 +1,5 @@
 const tf = require('@tensorflow/tfjs-node')
-let db = require('../db/index')
+let db = require('../db2/index')
 
 exports.getYear = (req, res) => { // 获取全部年份
   var sql = 'SELECT comp_name FROM comp_perf_intl_comp'
