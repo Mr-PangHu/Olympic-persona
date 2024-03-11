@@ -25,39 +25,23 @@
       </el-row>
     </div>
     <el-dialog :visible.sync="$store.state.foodtrack.dialogVisible" title="本餐次的食物记录">
-      <el-form
-        :model="intake_record"
-        ref="formName"
-        label-width="100px"
-        class="demo-dynamic"
-      >
+      <el-form :model="intake_record" ref="formName" label-width="100px" class="demo-dynamic">
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="日期"
-              prop="date"
-              :rules="{
+            <el-form-item label="日期" prop="date" :rules="{
                 required: true,
                 message: '请选择日期',
                 trigger: 'change'
-              }"
-            >
+              }">
               <div class="block">
-                <el-date-picker
-                  v-model="intake_record.date"
-                  type="date"
-                  placeholder="选择日期"
-                >
+                <el-date-picker v-model="intake_record.date" type="date" placeholder="选择日期">
                 </el-date-picker>
               </div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="餐次" prop="meals">
-              <el-select
-                v-model="intake_record.meals"
-                placeholder="请选择餐次："
-              >
+              <el-select v-model="intake_record.meals" placeholder="请选择餐次：">
                 <el-option label="早餐" value="0"></el-option>
                 <el-option label="午餐" value="1"></el-option>
                 <el-option label="晚餐" value="2"></el-option>
@@ -66,45 +50,33 @@
           </el-col>
         </el-row>
         <el-row v-for="(item, index) in intake_record.dishIds.items" :key="index">
-          <el-form
-          :inline="true"
-          :model="intake_record.dishIds.items[index]"
-          :rules="rules"
-          ref="dishIds"
-          label-width="100px"
-          class="demo-form-inline"
-          size="small"
-          >
-          <el-row>
-          <el-col :span="8">
-            <el-form-item label="食物名称" props="name">
-              <el-autocomplete
-                v-model='intake_record.dishIds.items[index].name'
-                :fetch-suggestions="querySearchAsync"
-                value-key="name"
-                placeholder="请输入内容"
-                @select="handleSelect"
-              ></el-autocomplete>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="份数" prop="intake_num">
-              <el-input
-                v-model="intake_record.dishIds.items[index].intake_num"
-                placeholder="每份100g"
-                class="custom-input"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-button @click.prevent="removeDish(dish)">删除</el-button>
-          </el-col>
-        </el-row>
+          <el-form :inline="true" :model="intake_record.dishIds.items[index]" :rules="{
+                required: true,
+                message: '请选择餐次',
+                trigger: 'change'
+              }" ref="dishIds" label-width="100px" class="demo-form-inline" size="small">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="食物名称" props="name">
+                  <el-autocomplete v-model='intake_record.dishIds.items[index].name'
+                    :fetch-suggestions="querySearchAsync" value-key="name" placeholder="请输入内容"
+                    @select="handleSelect"></el-autocomplete>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="份数" prop="intake_num">
+                  <el-input v-model="intake_record.dishIds.items[index].intake_num" placeholder="每份100g"
+                    class="custom-input"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-button @click.prevent="removeDish(index)">删除</el-button>
+              </el-col>
+            </el-row>
           </el-form>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('formName')"
-            >提交</el-button>
+          <el-button type="primary" @click="submitForm('formName')">提交</el-button>
           <el-button @click="addDish">新增食物</el-button>
           <el-button @click="resetForm('intake_record')">重置</el-button>
         </el-form-item>
@@ -140,18 +112,6 @@ export default {
       // return this.$store.state.foodtrack.addMealsResults.ingredient
       return this.$store.state.foodtrack.addMealsResults
     },
-    // mergedTableData() {
-    //   // const temp = []
-    //   const tableData = this.storeTableData
-    //   const mergedData = {
-    //     ...tableData,  // 将storeTableData的属性复制到mergedData中
-    //     date: this.intake_record.date,  // 添加date属性
-    //     meals: this.intake_record.meals  // 添加meals属性
-    //   }
-    //   console.log('mergedData:', mergedData)
-    //   this.temp.push(mergedData)
-    //   return this.temp
-    // },
 
     allMeals () {
       return this.$store.state.foodtrack.allMeals
@@ -180,8 +140,6 @@ export default {
         this.intake_record.dishIds.items[index].id = item.id
         this.intake_record.dishIds.items[index].name = item.name
       }
-      // this.intake_record.dishes[0].id = item.id
-      // this.intake_record.dishes[0].name = item.name
     },
     // 增加餐盘
     addDish () {
@@ -225,11 +183,12 @@ export default {
 
 <style scoped>
   .custom-input {
-    width: 200px;
+    width: 100px;
   }
+
   .custom-span {
-  font-size: 16px;
-  font-weight: bold;
-  /* 修改字体大小为 16px */
-}
+    font-size: 16px;
+    font-weight: bold;
+    /* 修改字体大小为 16px */
+  }
 </style>

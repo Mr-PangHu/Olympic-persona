@@ -77,7 +77,6 @@ let actions = {
   // 获取全部食物
   async getAllMeals ({ commit }) {
     let result = await reqGetAllMeals('')
-    console.log('GetAllMealsresult', result)
     commit('GETALLMEALS', result)
   },
   //  获取主要营养素和维生素
