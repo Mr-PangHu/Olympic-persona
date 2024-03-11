@@ -10,8 +10,8 @@ Vue.use(Router)
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, resolve, reject) {
-    if ( resolve || reject ) return originalPush.call(this, location, resolve, reject)
-    return originalPush.call(this, location).catch((e)=>{})
+  if (resolve || reject) return originalPush.call(this, location, resolve, reject)
+  return originalPush.call(this, location).catch((e) => { })
 }
 
 const router = new Router({
@@ -73,27 +73,15 @@ const router = new Router({
           component: () => import('@/components/tiredpredict/index.vue')
         },
         {
-          path: '/search',
-          name: 'search',
-          component: () => import('@/components/knowledge/search'),
-          children: [
-            {
-              path: '/search/searchDetail/:foodId?',
-              name: 'searchDetail',
-              component: () => import('@/components/knowledge/search/searchDetail')
-            }
-          ]
+          path: 'tiredpredict2',
+          name: 'tiredpredict2',
+          component: () => import('@/components/tiredpredict/home2.vue'),
         },
         {
-          path: '/foodtrack',
-          name: 'foodtrack',
-          component: () => import('@/components/knowledge/weight/foodtrack')
-        },
-        {
-          path: '/display',
-          name: 'display',
-          component: () => import('@/components/knowledge/display')
-        },
+          path: 'tiredpredict2/specialIndex',
+          name: 'specialIndex2',
+          component: () => import('@/components/tiredpredict/index2.vue')
+        }
       ]
     },
     {

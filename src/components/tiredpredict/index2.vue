@@ -17,8 +17,8 @@
           </div>
           <div style="text-align: left; margin-bottom: 1%; margin-left: 5%;">
             <!-- 今天日期
-            <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期">
-            </el-date-picker> -->
+            <el-date-picker v-model="todaydate" type="date" disabled clearable="false" placeholder="今天日期"> -->
+            <!-- </el-date-picker> -->
 
             <!-- <el-select v-model="selectEvent" clearable collapse-tags filterable placeholder="请选择项目"
               class="worldhighlevel__model-filter-selector" @change="handleSelectEventChange">
@@ -100,7 +100,6 @@ export default {
       const myChart = echarts.init(chartDom)
       const yTag = item.yTag
       const option = {
-        // color: ['#EDAE49', '#D1495B', '#00798C', '#30638E'],
         title: {
           text: item.title
         },
@@ -205,10 +204,10 @@ export default {
         'dynamometer_6000m', 'bench_pull_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'deep_squat_1rm', 'ck', 'hb',
         't', 'bnu', 'wbc', 'hct', 'c', 'rbc', 'fe']
     */
-      var titles = ['测功仪2KM', '测功仪30min-SR', '最大摄氧量', '相对最大摄氧量', 'P4功率', '测功仪5KM',
-        '测功仪6KM', '握拉1RM', '硬拉1RM', '卧推1RM', '深蹲1RM', '肌酸激酶', '血红蛋白',
-        '睾酮', '血尿素', '白细胞', '红细胞比容', '皮质醇', '红细胞', '铁蛋白']
-      var yTags = ['s', 's', 'l/min', 'l/min/Kg', 'w', 's', 's', 'kg', 'kg', 'kg', 'kg', 'U/L', 'g/dL', 'ng/dl', 'mmol/L', '10^9/L', '%', 'ug/dl', '10^12/L', 'ng/ml']
+      var titles = ['测功仪2KM', '测功仪30min-SR', '相对最大摄氧量', 'P4功率', '测功仪5KM',
+        '握拉1RM', '硬拉1RM', '卧推1RM', '深蹲1RM', '肌酸激酶', '血红蛋白',
+        '睾酮', '血尿素', '白细胞', '血细胞比容', '皮质醇', '红细胞', '铁蛋白']
+      var yTags = ['s', 's', 'l/min/Kg', 'w', 's', 'kg', 'kg', 'kg', 'kg', 'U/L', 'g/dL', 'ng/dl', 'mmol/L', '10^9/L', '%', 'ug/dl', '10^12/L', 'ng/ml']
       var count = 0
       for (const item of this.allData.data.input) {
         var temp = {

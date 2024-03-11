@@ -3,8 +3,93 @@
 
 // import * as tf from '@tensorflow/tfjs'
 const tf = require('@tensorflow/tfjs-node')
-let db = require('../db/index')
-const json = require('../data/labels.json')
+let db = require('../db2/index')
+const json = require('../data/labels.json');
+const { log } = require('console');// 2,6
+// var sql = 'select dynamometer_2000m,dynamometer_30min,vo2max,vo2max_rel,p4,dynamometer_5000m,dynamometer_6000m,bench_pull_1rm,dead_lift_1rm,bench_press_1rm,deep_squat_1rm,ck,hb,t,bnu,wbc,hct,c,rbc,fe from fatigue_predict';
+// db.query(sql, (err, data) => {
+//     if (err) {
+//         return res.send('错误：' + err.message)
+//     }
+//     // 构建10行20列的数据
+//     data = JSON.parse(JSON.stringify(data))
+    
+//     var _inputs = []
+//     for (let j = 0; j < Math.floor(data.length / 10); j++) {
+//         var single = []
+//         for (let i = j * 10; i < j * 10 + 10; i++) {
+//             var rows = [data[i]['dynamometer_2000m'], data[i]['dynamometer_30min'], data[i]['vo2max'], data[i]['vo2max_rel'], data[i]['p4'],
+//             data[i]['dynamometer_5000m'], data[i]['dynamometer_6000m'], data[i]['bench_pull_1rm'], data[i]['dead_lift_1rm'], data[i]['bench_press_1rm'],
+//             data[i]['deep_squat_1rm'], data[i]['ck'], data[i]['hb'], data[i]['t'], data[i]['bnu'],
+//             data[i]['wbc'], data[i]['hct'], data[i]['c'], data[i]['rbc'], data[i]['fe']
+//             ]
+//             single.push(rows)
+//         }
+//         _inputs.push(single)
+//         console.log(single)
+//         break
+//     }
+// })
+
+function convertTimeStringToSeconds (timeString) {
+    console.log(timeString)
+    if (typeof timeString == "undefined") {
+        return 0
+    }
+    const parts = timeString.split("'"); // 拆分字符串为分钟和秒钟部分
+    const minutes = parseInt(parts[0], 10); // 解析分钟部分为整数
+    const seconds = parseFloat(parts[1]); // 解析秒钟部分为浮点数
+    const totalSeconds = minutes * 60 + seconds; // 计算总秒数
+    return totalSeconds;
+}
+
+sql = 'SELECT * FROM (SELECT a.id,a.athlete_id,e.name,e.gender,e.age,c.date,a.dynamometer_2000m,a.dynamometer_30min,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
+db.query(sql, (err, data) => {
+    if (err) {
+        return res.send('错误：' + err.message)
+    }
+    // 构建10行20列的数据
+    data = JSON.parse(JSON.stringify(data))
+    
+    var _inputs = []
+    var _athleteId_time=[]
+    var index = 0
+    while (index < data.length - 10) {
+        var single = []
+        if (data[index]['athlete_id'] == data[index + 10]['athlete_id']) {
+            for (let i = index; i < index + 10; i++) {
+                var rows = [convertTimeStringToSeconds(data[i]['dynamometer_2000m']), convertTimeStringToSeconds(data[i]['dynamometer_30min']), data[i]['vo2max_rel'], data[i]['p4'],
+                convertTimeStringToSeconds(data[i]['dynamometer_5000m']), data[i]['bench_pull_1rm'], data[i]['dead_lift_1rm'], data[i]['bench_press_1rm'],
+                data[i]['deep_squat_1rm'], data[i]['ck'], data[i]['hb'], data[i]['t'], data[i]['bun'],
+                data[i]['wbc'], data[i]['hct'], data[i]['c'], data[i]['rbc'], data[i]['fe']
+                ]
+                single.push(rows)
+            }
+            _inputs.push(single)
+            _athleteId_time.push([data[index]['athlete_id'],data[index]['name'],data[index]['gender'],data[index]['date'],data[index]['age']])
+        }
+        ++index
+        while (index<data.length-10 && data[index]['athlete_id'] == data[index - 1]['athlete_id']) {
+            ++index
+        }
+    }
+    console.log(_inputs)
+    console.log(_athleteId_time)
+    // for (let j = 0; j < Math.floor(data.length / 10); j++) {
+    //     var single = []
+    //     for (let i = j * 10; i < j * 10 + 10; i++) {
+    //         var rows = [convertTimeStringToSeconds(data[i]['dynamometer_2000m']), convertTimeStringToSeconds(data[i]['dynamometer_30min']), data[i]['vo2max_rel'], data[i]['p4'],
+    //         convertTimeStringToSeconds(data[i]['dynamometer_5000m']), data[i]['bench_pull_1rm'], data[i]['dead_lift_1rm'], data[i]['bench_press_1rm'],
+    //         data[i]['deep_squat_1rm'], data[i]['ck'], data[i]['hb'], data[i]['t'], data[i]['bnu'],
+    //         data[i]['wbc'], data[i]['hct'], data[i]['c'], data[i]['rbc'], data[i]['fe']
+    //         ]
+    //         single.push(rows)
+    //     }
+    //     _inputs.push(single)
+    //     console.log(single)
+    //     break
+    // }
+})
 // const mysql = require('mysql')
 // let conn = mysql.createConnection({
 //   host: '127.0.0.1',
