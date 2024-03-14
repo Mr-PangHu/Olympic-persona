@@ -81,6 +81,28 @@ const router = new Router({
           path: 'tiredpredict2/specialIndex',
           name: 'specialIndex2',
           component: () => import('@/components/tiredpredict/index2.vue')
+        },
+        {
+          path: '/search',
+          name: 'search',
+          component: () => import('@/components/knowledge/search'),
+          children: [
+            {
+              path: '/search/searchDetail/:foodId?',
+              name: 'searchDetail',
+              component: () => import('@/components/knowledge/search/searchDetail')
+            }
+          ]
+        },
+        {
+          path: '/foodtrack',
+          name: 'foodtrack',
+          component: () => import('@/components/knowledge/weight/foodtrack')
+        },
+        {
+          path: '/display',
+          name: 'display',
+          component: () => import('@/components/knowledge/display')
         }
       ]
     },

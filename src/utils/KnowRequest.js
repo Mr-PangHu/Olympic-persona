@@ -8,7 +8,8 @@ import axios from 'axios'
 const requests = axios.create({
   // 配置对象
   // 基础路径，发请求的时候，路径当中会出现api
-  baseURL: 'http://112.64.134.154:30031/api/',
+//   baseURL: 'http://112.64.134.154:30031/api/',
+  baseURL: 'http://172.20.137.141:8080/api',
   timeout: 5000
 })
 
