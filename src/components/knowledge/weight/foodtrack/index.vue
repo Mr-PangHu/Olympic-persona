@@ -122,156 +122,156 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import minirals from '@/components/knowledge/weight/minirals/index.vue'
-  import Dialog from './dialog.vue'
-  export default {
-    components: {
-      minirals,
-      Dialog
-    },
-    data () {
-      return {
-        activeName: 'qv',
-        total_data: [],
-        dialogVisible: false, // 控制对话框的显示和隐藏
-        // num: 1,
-        pickerOptions: {
-          disabledDate (time) {
-            return time.getTime() > Date.now()
-          },
-          shortcuts: [{
-            text: '今天',
-            onClick (picker) {
-              picker.$emit('pick', new Date())
-            }
-          }, {
-            text: '昨天',
-            onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24)
-              picker.$emit('pick', date)
-            }
-          }, {
-            text: '一周前',
-            onClick (picker) {
-              const date = new Date()
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', date)
-            }
-          }]
+import { mapState } from 'vuex'
+import minirals from '@/components/knowledge/weight/minirals/index.vue'
+import Dialog from './dialog.vue'
+export default {
+  components: {
+    minirals,
+    Dialog
+  },
+  data () {
+    return {
+      activeName: 'qv',
+      total_data: [],
+      dialogVisible: false, // 控制对话框的显示和隐藏
+      // num: 1,
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() > Date.now()
         },
-        value1: '',
-        keyword: '', // 存储用户输入的关键词
-        selectedResult: null // 存储用户选择的结果
-      }
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            picker.$emit('pick', new Date())
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '一周前',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
+      value1: '',
+      keyword: '', // 存储用户输入的关键词
+      selectedResult: null // 存储用户选择的结果
+    }
+  },
+  mounted () {
+  },
+  methods: {
+    format (percentage) {
+      return percentage === 100 ? '满' : `${percentage}%`
     },
-    mounted () {
+    showForm () {
+      this.$store.state.foodtrack.dialogVisible = true // 点击按钮时显示表单对话框
     },
-    methods: {
-      format (percentage) {
-        return percentage === 100 ? '满' : `${percentage}%`
-      },
-      showForm () {
-        this.$store.state.foodtrack.dialogVisible = true // 点击按钮时显示表单对话框
-      },
-      handleChange (value) {
-        console.log(value)
-      },
-      getDishesName () {
-        this.$store.dispatch('getDishesName')
-      },
-      getMeals () {
-        this.$store.dispatch('getMeals')
-      },
-      search () {
-        // 发起请求到后端进行模糊查询，并更新搜索结果
-        // 这里假设使用 axios 库发送请求到后端的 /api/search 接口
-        console.log(this.keyword)
-        this.$store.dispatch('search', this.keyword)
-      },
-      selectItem (item) {
-        this.selectedResult = item
-      }
+    handleChange (value) {
+      console.log(value)
     },
-    computed: {
-      ...mapState({
-        dishesName: (state) => state.foodtrack.dishesName,
-        tableData: (state) => state.meals.meals || [],
-        searchResults: (state) => state.mealsVage.searchResults || [],
-      }),
-      total_cal () {
-        // const cal = this.$store.state.foodtrack.mainIngredient.ingredient.calories
-        // return parseFloat(cal).toFixed(2);
-        const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
-        let cal = 0;
-        if (ingredient && ingredient.calories) {
-          cal = parseFloat(ingredient.calories).toFixed(2);
-        }
-        return cal;
-      },
-      computedCal () {
-        const stdCal = 4200;
-        const ratio = this.total_cal / stdCal;
-        const percentage = ratio * 100;
-        return parseFloat(percentage).toFixed(1);
-      },
-      total_fat () {
-        // const fat = this.$store.state.foodtrack.mainIngredient.ingredient.fat
-        // return parseFloat(fat).toFixed(2);
-        const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
-        let fat = 0;
-
-        if (ingredient && ingredient.fat) {
-          fat = parseFloat(ingredient.fat).toFixed(2);
-        }
-
-        return fat;
-      },
-      computedFat () {
-        const stdFat = 128.5;
-        const ratio = this.total_fat / stdFat;
-        const percentage = ratio * 100;
-        return parseFloat(percentage).toFixed(1);
-      },
-      total_carbs () {
-        // const carbs = this.$store.state.foodtrack.mainIngredient.ingredient.carbohydrates
-        // return parseFloat(carbs).toFixed(2);
-        const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
-        let carbs = 0;
-
-        if (ingredient && ingredient.carbohydrates !== undefined) {
-          carbs = parseFloat(ingredient.carbohydrates).toFixed(2);
-        }
-
-        return carbs;
-      },
-      computedCarbs () {
-        const stdCarbs = 627.5;
-        const ratio = this.total_carbs / stdCarbs;
-        const percentage = ratio * 100;
-        return parseFloat(percentage).toFixed(1);
-      },
-      total_protein () {
-        // const protein = this.$store.state.foodtrack.mainIngredient.ingredient.protein
-        // return parseFloat(protein).toFixed(2);
-        const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
-        let carbs = 0;
-
-        if (ingredient && ingredient.carbohydrates) {
-          carbs = parseFloat(ingredient.carbohydrates).toFixed(2);
-        }
-
-        return carbs;
-      },
-      computedProtein () {
-        const stdProtein = 142
-        const ratio = this.total_protein / stdProtein
-        const percentage = ratio * 100
-        return parseFloat(percentage).toFixed(1)
+    getDishesName () {
+      this.$store.dispatch('getDishesName')
+    },
+    getMeals () {
+      this.$store.dispatch('getMeals')
+    },
+    search () {
+      // 发起请求到后端进行模糊查询，并更新搜索结果
+      // 这里假设使用 axios 库发送请求到后端的 /api/search 接口
+      console.log(this.keyword)
+      this.$store.dispatch('search', this.keyword)
+    },
+    selectItem (item) {
+      this.selectedResult = item
+    }
+  },
+  computed: {
+    ...mapState({
+      dishesName: (state) => state.foodtrack.dishesName,
+      tableData: (state) => state.meals.meals || [],
+      searchResults: (state) => state.mealsVage.searchResults || [],
+    }),
+    total_cal () {
+      // const cal = this.$store.state.foodtrack.mainIngredient.ingredient.calories
+      // return parseFloat(cal).toFixed(2);
+      const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
+      let cal = 0;
+      if (ingredient && ingredient.calories) {
+        cal = parseFloat(ingredient.calories).toFixed(2);
       }
+      return cal;
+    },
+    computedCal () {
+      const stdCal = 4200;
+      const ratio = this.total_cal / stdCal;
+      const percentage = ratio * 100;
+      return parseFloat(percentage).toFixed(1);
+    },
+    total_fat () {
+      // const fat = this.$store.state.foodtrack.mainIngredient.ingredient.fat
+      // return parseFloat(fat).toFixed(2);
+      const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
+      let fat = 0;
+
+      if (ingredient && ingredient.fat) {
+        fat = parseFloat(ingredient.fat).toFixed(2);
+      }
+
+      return fat;
+    },
+    computedFat () {
+      const stdFat = 128.5;
+      const ratio = this.total_fat / stdFat;
+      const percentage = ratio * 100;
+      return parseFloat(percentage).toFixed(1);
+    },
+    total_carbs () {
+      // const carbs = this.$store.state.foodtrack.mainIngredient.ingredient.carbohydrates
+      // return parseFloat(carbs).toFixed(2);
+      const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
+      let carbs = 0;
+
+      if (ingredient && ingredient.carbohydrates !== undefined) {
+        carbs = parseFloat(ingredient.carbohydrates).toFixed(2);
+      }
+
+      return carbs;
+    },
+    computedCarbs () {
+      const stdCarbs = 627.5;
+      const ratio = this.total_carbs / stdCarbs;
+      const percentage = ratio * 100;
+      return parseFloat(percentage).toFixed(1);
+    },
+    total_protein () {
+      // const protein = this.$store.state.foodtrack.mainIngredient.ingredient.protein
+      // return parseFloat(protein).toFixed(2);
+      const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
+      let carbs = 0;
+
+      if (ingredient && ingredient.carbohydrates) {
+        carbs = parseFloat(ingredient.carbohydrates).toFixed(2);
+      }
+
+      return carbs;
+    },
+    computedProtein () {
+      const stdProtein = 142
+      const ratio = this.total_protein / stdProtein
+      const percentage = ratio * 100
+      return parseFloat(percentage).toFixed(1)
     }
   }
+}
 </script>
 
 <style lang='less' scoped>

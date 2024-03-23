@@ -1,7 +1,8 @@
 export default {
   containerId: 'viz',
   neo4j: {
-    serverUrl: 'bolt://172.20.137.140:7687',
+    // serverUrl: 'bolt://172.20.137.140:7687',
+    serverUrl: 'bolt://112.64.134.154:30042',
     serverUser: 'neo4j',
     serverPassword: '123456'
   },

@@ -25,92 +25,92 @@
 </template>
 
 <script>
-  import myAxios from '@/utils/request'
-  export default {
-    data () {
-      var samePwd = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'))
-        } else if (value !== this.form.password) {
-          // 如果验证失败，则调用 回调函数时，指定一个 Error 对象。
-          callback(new Error('两次输入的密码不一致!'))
-        } else {
-          // 如果验证成功，则直接调用 callback 回调函数即可。
-          callback()
-        }
-      }
-      return {
-        form: {
-          username: '',
-          password: '',
-          repassword: ''
-        },
-        isnull: false,
-        regRules: {
-          username: [
-            { required: true, message: '请输入账号', trigger: 'blur' },
-            {
-              pattern: /^[a-zA-Z0-9]{1,10}$/,
-              message: '用户名必须是1-10位的大小写字母数字',
-              trigger: 'blur'
-            }],
-          password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            {
-              pattern: /^\S{6,15}$/,
-              message: '密码必须是6-15位的非空字符',
-              trigger: 'blur'
-            }],
-          repassword: [{ required: true, validator: samePwd, trigger: 'blur' }]
-        }
-      }
-    },
-
-    methods: {
-      register (formName) {
-        this.$refs[formName].validate((valid) => {
-          if (!valid) {
-            return false
-          } else {
-            myAxios({
-              url: '/register',
-              method: 'post',
-              data: {
-                name: this.form.username,
-                password: this.form.password
-              }
-            }).then(res => {
-              // console.log(res.data.message);
-              if (res.data.status === 200) {
-                this.$alert('是否返回登录页面', '注册成功', {
-                  confirmButtonText: '确定',
-                  callback: action => {
-                    this.$router.push('/login')
-                  }
-                })
-              } else if (res.data.status === 202) {
-                this.$alert('用户名已存在', '注册失败', {
-                  confirmButtonText: '确定',
-                  callback: action => {
-                    this.form.username = ''
-                    this.form.password = ''
-                    this.form.repassword = ''
-                  }
-                })
-              } else {
-                console.log(res.message)
-              }
-            }).catch(err => {
-              console.log('操作失败' + err)
-            })
-          }
-        })
-      },
-      returnLogin () {
-        this.$router.push('/login')
+import myAxios from '@/utils/request'
+export default {
+  data () {
+    var samePwd = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.form.password) {
+        // 如果验证失败，则调用 回调函数时，指定一个 Error 对象。
+        callback(new Error('两次输入的密码不一致!'))
+      } else {
+        // 如果验证成功，则直接调用 callback 回调函数即可。
+        callback()
       }
     }
+    return {
+      form: {
+        username: '',
+        password: '',
+        repassword: ''
+      },
+      isnull: false,
+      regRules: {
+        username: [
+          { required: true, message: '请输入账号', trigger: 'blur' },
+          {
+            pattern: /^[a-zA-Z0-9]{1,10}$/,
+            message: '用户名必须是1-10位的大小写字母数字',
+            trigger: 'blur'
+          }],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          {
+            pattern: /^\S{6,15}$/,
+            message: '密码必须是6-15位的非空字符',
+            trigger: 'blur'
+          }],
+        repassword: [{ required: true, validator: samePwd, trigger: 'blur' }]
+      }
+    }
+  },
+
+  methods: {
+    register (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (!valid) {
+          return false
+        } else {
+          myAxios({
+            url: '/register',
+            method: 'post',
+            data: {
+              name: this.form.username,
+              password: this.form.password
+            }
+          }).then(res => {
+            // console.log(res.data.message);
+            if (res.data.status === 200) {
+              this.$alert('是否返回登录页面', '注册成功', {
+                confirmButtonText: '确定',
+                callback: action => {
+                  this.$router.push('/login')
+                }
+              })
+            } else if (res.data.status === 202) {
+              this.$alert('用户名已存在', '注册失败', {
+                confirmButtonText: '确定',
+                callback: action => {
+                  this.form.username = ''
+                  this.form.password = ''
+                  this.form.repassword = ''
+                }
+              })
+            } else {
+              console.log(res.message)
+            }
+          }).catch(err => {
+            console.log('操作失败' + err)
+          })
+        }
+      })
+    },
+    returnLogin () {
+      this.$router.push('/login')
+    }
   }
+}
 </script>
 
 <style scoped>
