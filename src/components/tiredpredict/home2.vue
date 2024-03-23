@@ -66,7 +66,8 @@
   </div>
 </template>
 <script>
-import axios from "axios"
+// import axios from "axios"
+import myAxios from '@/utils/request'
 
 export default {
   data() {
@@ -117,7 +118,7 @@ export default {
       this.currentPage = val;
     },
     getYear () {
-      axios.get("http://localhost/cm/getYear").then((res) => {
+      myAxios.get("/cm/getYear").then((res) => {
         const yearArr = res.data;
         this.yearOptions = yearArr.map((item) => ({
           value: item,
@@ -128,7 +129,7 @@ export default {
       });
     },
     showTable () {
-      axios.get('http://localhost/fatigue_predict/getAllFatigueData2').then(res => {
+      myAxios.get('/fatigue_predict/getAllFatigueData2').then(res => {
         // console.log(res.data);
         if (res.data.info != null) {
           // console.log(res.data.info[0]);

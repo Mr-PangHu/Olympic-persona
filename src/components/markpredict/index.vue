@@ -113,7 +113,7 @@
 
 <script>
 import myAxios from '@/utils/request'
-import axios from 'axios'
+// import axios from 'axios'
 import * as echarts from 'echarts'
 import { formatTime } from '@/utils/formatTime'
 import { formatDate } from '@/utils/formatDate'
@@ -211,7 +211,7 @@ export default {
       this.setmarkpredictChart()
     },
     getYear () {
-      axios.get('http://localhost/cm/getYear').then(res => {
+      myAxios.get('/cm/getYear').then(res => {
         const yearArr = res.data
         this.yearOptions = yearArr.map(item => (
           {
@@ -224,7 +224,7 @@ export default {
       })
     },
     getCompByYear () {
-      axios.get('http://localhost/cm/getCompByYear', {
+      myAxios.get('/cm/getCompByYear', {
         params: {
           year: this.selectYear
         }
@@ -241,7 +241,7 @@ export default {
       })
     },
     getEventById () {
-      axios.get('http://localhost/cm/getEventById', {
+      myAxios.get('/cm/getEventById', {
         params: {
           comp: this.selectComp
         }

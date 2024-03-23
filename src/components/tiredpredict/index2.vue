@@ -40,7 +40,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import myAxios from '@/utils/request'
 import * as echarts from 'echarts'
 export default {
   data () {
@@ -186,7 +187,7 @@ export default {
       this.currentPage = val
     },
     getYear () {
-      axios.get('http://localhost/cm/getYear').then(res => {
+      myAxios.get('http://localhost/cm/getYear').then(res => {
         const yearArr = res.data
         this.yearOptions = yearArr.map(item => (
           {
