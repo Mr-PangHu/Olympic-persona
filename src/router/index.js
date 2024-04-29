@@ -53,6 +53,11 @@ const router = new Router({
           component: () => import('@/components/user/userPwd')
         },
         {
+          path: 'info',
+          name: 'UserInfo',
+          component: () => import('@/components/user/userInfo')
+        },
+        {
           path: 'worldhighlevel',
           name: 'worldhighlevel',
           component: () => import('@/components/worldhighlevel')

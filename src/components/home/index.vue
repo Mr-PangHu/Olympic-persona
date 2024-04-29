@@ -38,11 +38,12 @@
                 <span slot="title">{{ item.label }}</span>
               </el-menu-item>
             </el-submenu>
-            <el-submenu index="3">
+            <el-menu-item index="/info">个人中心</el-menu-item>
+            <!-- <el-submenu index="3">
               <template slot="title">个人中心</template>
-              <el-menu-item>基本资料</el-menu-item>
+              <el-menu-item index="/info">基本资料</el-menu-item>
               <el-menu-item index="/updatepwd">重置密码</el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
             <el-menu-item @click="logoutFn">切换账号</el-menu-item>
         </el-menu>
       </nav>
