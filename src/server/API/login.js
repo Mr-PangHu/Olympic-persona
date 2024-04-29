@@ -1,5 +1,32 @@
 let db = require('../db2/index')
 
+function getCurrentDateTimeForDatabase() {
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth()是0-based
+  var day = date.getDate().toString().padStart(2, '0');
+  var hours = date.getHours().toString().padStart(2, '0');
+  var minutes = date.getMinutes().toString().padStart(2, '0');
+  var seconds = date.getSeconds().toString().padStart(2, '0');
+
+  // 格式化为 YYYY-MM-DD HH:MM:SS
+  var dateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return dateTimeString;
+}
+function getCurrentDateTimeForDatabase1() {
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth()是0-based
+  var day = date.getDate().toString().padStart(2, '0');
+  var hours = (date.getHours() + 1).toString().padStart(2, '0');
+  var minutes = date.getMinutes().toString().padStart(2, '0');
+  var seconds = date.getSeconds().toString().padStart(2, '0');
+
+  // 格式化为 YYYY-MM-DD HH:MM:SS
+  var dateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return dateTimeString;
+}
+
 exports.login = (req, res) => {
   var name = req.body.name
   var password = req.body.password
@@ -20,6 +47,16 @@ exports.login = (req, res) => {
     } else {
       if (data[0].password === password) {
         if (data[0].auth === Number(auth)) {
+          var loginTime = getCurrentDateTimeForDatabase();
+          var outTime = getCurrentDateTimeForDatabase1();
+          var logSql = 'INSERT INTO user_log (name, login_time,out_time) VALUES (?, ?, ?)';
+          console.log(loginTime, outTime);
+          db.query(logSql, [name, loginTime, outTime], (logErr, logData) => {
+            if (logErr) {
+              console.error('Error logging login time:', logErr);
+              // You can choose whether to continue or send an error response
+            }
+          });
           res.send({
             status: 200,
             message: '登录成功',
@@ -40,6 +77,54 @@ exports.login = (req, res) => {
       }
     }
   })
+}
+
+exports.updateLoginoutTime = (req, res) => {
+  var name = req.body.params.name
+  const sql1 = 'select id from user_log where name = ? order by id desc'
+  db.query(sql1, [name], (err, result) => {
+    console.log("defe")
+    if (err) {
+      console.log("2222222")
+      return res.send({
+        status: 400,
+        message: err
+      });
+    }
+    console.log("1111")
+    console.log(result)
+    if (result.length === 0) {
+      console.log("33333333")
+      return res.send({
+        status: 404,
+        message: '未找到与该用户名相关的登录记录'
+      });
+    }
+    console.log("edugue")
+    const logId = result[0].id;
+    console.log(logId)
+    console.log("__oooq")
+    // 获取当前时间
+    const currentTime = getCurrentDateTimeForDatabase();
+
+    console.log(currentTime)
+    // SQL 更新语句2
+    const sql2 = 'update user_log set out_time = ? where id = ?'
+    db.query(sql2, [currentTime, logId], (updateErr, updateResult) => {
+      if (updateErr) {
+        return res.send({
+          status: 500,
+          message: '更新登出时间时出错',
+          error: updateErr
+        });
+      }
+
+      res.send({
+        status: 200,
+        message: '成功更新登出时间'
+      });
+    });
+  });
 }
 
 exports.register = (req, res) => {

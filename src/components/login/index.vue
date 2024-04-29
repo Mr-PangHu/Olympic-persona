@@ -77,6 +77,7 @@ export default {
               this.$store.commit('SET_TOKEN', res.data.token)
               this.$store.commit('SET_AUTH', res.data.data.auth)
               this.$store.commit('SET_ID', res.data.data.id)
+              this.$store.commit('SET_NAME', res.data.data.name)
               this.$store.subscribe((mutation, state) => {
                 createPersistedState()(this.$store)
               })

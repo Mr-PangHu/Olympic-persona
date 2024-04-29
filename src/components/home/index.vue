@@ -136,6 +136,19 @@ export default {
         console.log(err)
       })
     },
+    getCurrentDateTimeForDatabase() {
+      var date = new Date();
+      var year = date.getFullYear();
+      var month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth()是0-based
+      var day = date.getDate().toString().padStart(2, '0');
+      var hours = date.getHours().toString().padStart(2, '0');
+      var minutes = date.getMinutes().toString().padStart(2, '0');
+      var seconds = date.getSeconds().toString().padStart(2, '0');
+
+      // 格式化为 YYYY-MM-DD HH:MM:SS
+      var dateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return dateTimeString;
+    },
     logoutFn () {
       // 询问用户是否退出登录
       this.$confirm('您确认退出登录吗？', '提示', {
@@ -146,9 +159,24 @@ export default {
         .then(() => {
           // TODO：执行退出登录的操作
           // 1. 清空 token
-          this.$store.commit('LOGOUT')
-          // 2. 跳转到登录页面
-          this.$router.push('/login')
+          const name = window.sessionStorage.getItem('name')
+          console.log(name)
+          console.log("---------------")
+          myAxios.post('/updateLoginoutTime', {
+            params: {
+              name
+            }
+          }).then(res => {
+            this.$store.commit('LOGOUT')
+            // 2. 跳转到登录页面
+            this.$router.push('/login')
+          }).catch(err => {
+            console.log("*************")
+            console.log(err)
+          })
+          // this.$store.commit('LOGOUT')
+          // // 2. 跳转到登录页面
+          // this.$router.push('/login')
         })
         .catch((err) => err)
     }
