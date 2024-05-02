@@ -113,77 +113,129 @@ const NameMap = {
   dynamometer_6000m: '陆上赛艇6000米',
   dynamometer_30min: '陆上赛艇30分/20'
 }
-const Province = {
-  [NameMap['vo2max_rel']]: 44,
-  [NameMap['p4']]: 290,
-  [NameMap['deep_squat_1rm']]: 70,
-  [NameMap['dead_lift_1rm']]: 80,
-  [NameMap['bench_press_1rm']]: 50,
-  [NameMap['bench_pull_1rm']]: 50,
-  [NameMap['fat_ratio']]: 18,
+const MAN_PROVINCE = {
+  [NameMap['vo2max_rel']]: 60,
+  [NameMap['p4']]: 390,
+  [NameMap['deep_squat_1rm']]: 130,
+  [NameMap['dead_lift_1rm']]: 140,
+  [NameMap['bench_press_1rm']]: 95,
+  [NameMap['bench_pull_1rm']]: 95,
+  [NameMap['fat_ratio']]: 12,
   [NameMap['incline_brace']]: 150,
-  [NameMap['dynamometer_2000m']]: 435,
-  [NameMap['dynamometer_5000m']]: 1135,
+  [NameMap['dynamometer_2000m']]: 362,
+  [NameMap['dynamometer_5000m']]: 950,
   [NameMap['dynamometer_6000m']]: -1,
   // [NameMap['dynamometer_30min']]: '7650/117'
-  [NameMap['dynamometer_30min']]: 117
+  [NameMap['dynamometer_30min']]: 101
 }
-const Country = {
-  [NameMap['vo2max_rel']]: 46,
-  [NameMap['p4']]: 320,
-  [NameMap['deep_squat_1rm']]: 80,
-  [NameMap['dead_lift_1rm']]: 90,
-  [NameMap['bench_press_1rm']]: 60,
-  [NameMap['bench_pull_1rm']]: 60,
-  [NameMap['fat_ratio']]: 17,
-  [NameMap['incline_brace']]: 160,
-  [NameMap['dynamometer_2000m']]: 425,
-  [NameMap['dynamometer_5000m']]: 1122,
-  [NameMap['dynamometer_6000m']]: -1,
-  // [NameMap['dynamometer_30min']]: '7725/116'
-  [NameMap['dynamometer_30min']]: 116
-}
-const WorldChampionShip = {
-  [NameMap['vo2max_rel']]: 50,
-  [NameMap['p4']]: 350,
-  [NameMap['deep_squat_1rm']]: 90,
-  [NameMap['dead_lift_1rm']]: 100,
-  [NameMap['bench_press_1rm']]: 70,
-  [NameMap['bench_pull_1rm']]: 70,
-  [NameMap['fat_ratio']]: 16,
-  [NameMap['incline_brace']]: 170,
-  [NameMap['dynamometer_2000m']]: 417,
-  [NameMap['dynamometer_5000m']]: 1108,
-  [NameMap['dynamometer_6000m']]: -1,
-  // [NameMap['dynamometer_30min']]: '7800/115'
-  [NameMap['dynamometer_30min']]: 115
-}
-const XuanbaTemplateMap = {
-  '省市': Province,
-  '国家队': Country,
-  '世锦赛': WorldChampionShip
-}
-const OlympicGolden = {
-  [NameMap['vo2max_rel']]: 54,
-  [NameMap['p4']]: 370,
+const WOMAN_PROVINCE = {
+  [NameMap['vo2max_rel']]: 48,
+  [NameMap['p4']]: 290,
   [NameMap['deep_squat_1rm']]: 100,
   [NameMap['dead_lift_1rm']]: 110,
+  [NameMap['bench_press_1rm']]: 70,
+  [NameMap['bench_pull_1rm']]: 70,
+  [NameMap['fat_ratio']]: 20,
+  [NameMap['incline_brace']]: 150,
+  [NameMap['dynamometer_2000m']]: 412,
+  [NameMap['dynamometer_5000m']]: 1076,
+  [NameMap['dynamometer_6000m']]: -1,
+  // [NameMap['dynamometer_30min']]: '7650/117'
+  [NameMap['dynamometer_30min']]: 113
+}
+const MAN_COUNTRY = {
+  [NameMap['vo2max_rel']]: 64,
+  [NameMap['p4']]: 410,
+  [NameMap['deep_squat_1rm']]: 140,
+  [NameMap['dead_lift_1rm']]: 155,
+  [NameMap['bench_press_1rm']]: 105,
+  [NameMap['bench_pull_1rm']]: 105,
+  [NameMap['fat_ratio']]: 11,
+  [NameMap['incline_brace']]: 160,
+  [NameMap['dynamometer_2000m']]: 350,
+  [NameMap['dynamometer_5000m']]: 932,
+  [NameMap['dynamometer_6000m']]: -1,
+  // [NameMap['dynamometer_30min']]: '7725/116'
+  [NameMap['dynamometer_30min']]: 100
+}
+const WOMAN_COUNTRY = {
+  [NameMap['vo2max_rel']]: 52,
+  [NameMap['p4']]: 320,
+  [NameMap['deep_squat_1rm']]: 110,
+  [NameMap['dead_lift_1rm']]: 120,
   [NameMap['bench_press_1rm']]: 80,
   [NameMap['bench_pull_1rm']]: 80,
-  [NameMap['fat_ratio']]: 15,
+  [NameMap['fat_ratio']]: 19,
+  [NameMap['incline_brace']]: 160,
+  [NameMap['dynamometer_2000m']]: 406,
+  [NameMap['dynamometer_5000m']]: 1059,
+  [NameMap['dynamometer_6000m']]: -1,
+  // [NameMap['dynamometer_30min']]: '7725/116'
+  [NameMap['dynamometer_30min']]: 112
+}
+const MAN_WORLDCHAMPIONSHIP = {
+  [NameMap['vo2max_rel']]: 68,
+  [NameMap['p4']]: 440,
+  [NameMap['deep_squat_1rm']]: 155,
+  [NameMap['dead_lift_1rm']]: 170,
+  [NameMap['bench_press_1rm']]: 115,
+  [NameMap['bench_pull_1rm']]: 115,
+  [NameMap['fat_ratio']]: 10,
+  [NameMap['incline_brace']]: 170,
+  [NameMap['dynamometer_2000m']]: 341,
+  [NameMap['dynamometer_5000m']]: 918,
+  [NameMap['dynamometer_6000m']]: -1,
+  // [NameMap['dynamometer_30min']]: '7800/115'
+  [NameMap['dynamometer_30min']]: 99
+}
+const WOMAN_WORLDCHAMPIONSHIP = {
+  [NameMap['vo2max_rel']]: 56,
+  [NameMap['p4']]: 350,
+  [NameMap['deep_squat_1rm']]: 120,
+  [NameMap['dead_lift_1rm']]: 130,
+  [NameMap['bench_press_1rm']]: 90,
+  [NameMap['bench_pull_1rm']]: 90,
+  [NameMap['fat_ratio']]: 18,
+  [NameMap['incline_brace']]: 170,
+  [NameMap['dynamometer_2000m']]: 392,
+  [NameMap['dynamometer_5000m']]: 1041,
+  [NameMap['dynamometer_6000m']]: -1,
+  // [NameMap['dynamometer_30min']]: '7800/115'
+  [NameMap['dynamometer_30min']]: 111
+}
+const MAN_OLYMPICGOLDEN = {
+  [NameMap['vo2max_rel']]: 70,
+  [NameMap['p4']]: 470,
+  [NameMap['deep_squat_1rm']]: 170,
+  [NameMap['dead_lift_1rm']]: 185,
+  [NameMap['bench_press_1rm']]: 125,
+  [NameMap['bench_pull_1rm']]: 125,
+  [NameMap['fat_ratio']]: 9,
   [NameMap['incline_brace']]: 180,
-  [NameMap['dynamometer_2000m']]: 413,
-  [NameMap['dynamometer_5000m']]: 1095,
-  [NameMap['dynamometer_6000m']]: 1316,
+  [NameMap['dynamometer_2000m']]: 335,
+  [NameMap['dynamometer_5000m']]: 894,
+  [NameMap['dynamometer_6000m']]: 1083,
   [NameMap['dynamometer_30min']]: -1
 }
-const OlympicTemplateMap = {
-  '奥运金牌': OlympicGolden
+const WOMAN_OLYMPICGOLDEN = {
+  [NameMap['vo2max_rel']]: 60,
+  [NameMap['p4']]: 370,
+  [NameMap['deep_squat_1rm']]: 130,
+  [NameMap['dead_lift_1rm']]: 140,
+  [NameMap['bench_press_1rm']]: 100,
+  [NameMap['bench_pull_1rm']]: 100,
+  [NameMap['fat_ratio']]: 17,
+  [NameMap['incline_brace']]: 180,
+  [NameMap['dynamometer_2000m']]: 382,
+  [NameMap['dynamometer_5000m']]: 1018,
+  [NameMap['dynamometer_6000m']]: 1217,
+  [NameMap['dynamometer_30min']]: -1
 }
 export default {
   data () {
     return {
       id: null,
+      isMan: true,
       playerData: {},
       // testData: [40, 280, 60, 60, 40, 40, 19, 160, 450, 1250, 0, '7550/120'],
       options: [{
@@ -235,7 +287,13 @@ export default {
       }],
       selectXuanbaValue: ['vo2max_rel', 'deep_squat_1rm', 'bench_press_1rm', 'bench_pull_1rm', 'dynamometer_2000m'],
       templateSelect: '省市',
-      xuanbaindicator: []
+      xuanbaindicator: [],
+      Province: {},
+      Country: {},
+      WorldChampionShip: {},
+      OlympicGolden: {},
+      XuanbaTemplateMap: {},
+      OlympicTemplateMap: {}
       // selectChampionValue: [],
       // championindicator: []
     }
@@ -262,6 +320,8 @@ export default {
           const athleteId = res.data[0].athlete_id
           this.id = athleteId
         }).then(res => {
+          this.getPlayerGender()
+        }).then(res => {
           this.getPlayerData()
         }).catch(err => {
           console.log('获取数据失败' + err)
@@ -270,6 +330,33 @@ export default {
         this.id = window.sessionStorage.getItem('id')
         this.getPlayerData()
       }
+    },
+    getPlayerGender () {
+      myAxios.get('/list/getPersonInfoByAthleteId', {
+        params: {
+          id: this.id
+        }
+      }).then(res => {
+        const gender = res.data[0].gender
+        this.isMan = gender === '男'
+        console.log(this.isMan)
+        this.Province = this.isMan ? MAN_PROVINCE : WOMAN_PROVINCE
+        this.Country = this.isMan ? MAN_COUNTRY : WOMAN_COUNTRY
+        this.WorldChampionShip = this.isMan ? MAN_WORLDCHAMPIONSHIP : WOMAN_WORLDCHAMPIONSHIP
+        this.OlympicGolden = this.isMan ? MAN_OLYMPICGOLDEN : WOMAN_OLYMPICGOLDEN
+        console.log(this.Province)
+        this.XuanbaTemplateMap = {
+          '省市': this.Province,
+          '国家队': this.Country,
+          '世锦赛': this.WorldChampionShip
+        }
+        this.OlympicTemplateMap = {
+          '奥运金牌': this.OlympicGolden
+        }
+        console.log(this.XuanbaTemplateMap)
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
     },
     returnView () {
       this.$router.push('/label')
@@ -302,9 +389,9 @@ export default {
     // 成绩转化为分数，0表示数值越低分数越高，1相反
     convert (v, t, flag = 0) {
       if (flag === 0) {
-        return Number((1 + (v - t) / t).toFixed(2) * 100)
+        return Number(parseInt((1 + (v - t) / t).toFixed(2) * 100))
       }
-      return Number((1 - (v - t) / t).toFixed(2) * 100)
+      return Number(parseInt((1 - (v - t) / t).toFixed(2) * 100))
     },
     renderIndicator () {
       this.xuanbaindicator = this.selectXuanbaValue.map(item => {
@@ -359,7 +446,7 @@ export default {
         if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
         return Math.max(...newArr)
       })
-      const template = XuanbaTemplateMap[this.templateSelect]
+      const template = this.XuanbaTemplateMap[this.templateSelect]
       const mostRecentTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
@@ -548,7 +635,7 @@ export default {
         if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
         return Math.max(...newArr)
       })
-      const template = OlympicTemplateMap['奥运金牌']
+      const template = this.OlympicTemplateMap['奥运金牌']
       const mostRecentTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
