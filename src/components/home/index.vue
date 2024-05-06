@@ -14,11 +14,11 @@
               <template slot="title">运动员信息</template>
               <el-menu-item index="/label">基础信息</el-menu-item>
             </el-submenu>
-            <el-submenu index="2">
+            <el-submenu index="2" v-if="showPersona">
               <template slot="title">运动员画像</template>
               <el-menu-item :index="personaPath">个人画像</el-menu-item>
             </el-submenu>
-            <el-menu-item :index="championPath">画像模型</el-menu-item>
+            <el-menu-item :index="championPath" v-if="showChampion">画像模型</el-menu-item>
             <el-menu-item index="/worldhighlevel">世界高水平</el-menu-item>
             <el-submenu index="4">
               <template slot="title">决策辅助</template>
@@ -49,7 +49,7 @@
       </nav>
     </header>
     <div class="carousel__container" v-if="isHomePage">
-      <el-carousel height="100vh" interval="5000">
+      <el-carousel height="100vh" interval=5000>
         <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
           <img :src="require(`@/assets/images/${item.src}`)" alt="Slide" />
           <div class="item__info">
@@ -70,6 +70,8 @@ import myAxios from '@/utils/request'
 export default {
   data () {
     return {
+      showPersona: true,
+      showChampion: true,
       personaPath: '',
       championPath: '',
       carouselItems: [
@@ -121,6 +123,13 @@ export default {
     this.getPersonaPath()
   },
   methods: {
+    getShowPersona () {
+      const auth = window.sessionStorage.getItem('auth')
+      if (auth === '2') {
+        this.showPersona = false
+        this.showChampion = false
+      }
+    },
     getPersonaPath () {
       if (!this.showPersona) return
       const athleteId = window.sessionStorage.getItem('id')
@@ -197,17 +206,16 @@ header {
   background-color: rgba(51, 51, 51, 0.3);
   padding: 10px;
   color: white;
-  text-align: center;
+  text-align: right;
   position: fixed;
   z-index: 5;
 }
 
 nav {
   display: flex;
-  justify-content: space-around;
-  width: 70%;
+  justify-content: flex-end;
   position: relative;
-  left: 30%;
+  padding-right: 30px;
 }
 .carousel__container {
   position: relative;

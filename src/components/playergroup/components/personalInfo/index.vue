@@ -389,7 +389,7 @@ export default {
     &-img {
         width: 600px;
         height: 600px;
-        /* background-image: url('../../../../assets/images/人体@2x.svg'); */
+        background-image: url('../../../../assets/images/body.svg');
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
