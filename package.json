@@ -19,6 +19,7 @@
     "echarts": "^5.4.0",
     "element-ui": "^2.15.12",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "neovis.js": "^2.0.2",

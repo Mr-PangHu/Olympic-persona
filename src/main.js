@@ -10,6 +10,7 @@ import less from 'less'
 import store from './store'
 import Vuex from 'vuex'
 import * as echarts from 'echarts'
+import myAxios from '@/utils/request'
 Vue.prototype.$echarts = echarts
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -25,5 +26,31 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  created() {
+    // Vue实例创建时添加全局事件监听
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+  },
+  beforeDestroy() {
+    // Vue实例销毁前移除全局事件监听
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+  },
+  methods: {
+    handleBeforeUnload(event) {
+      const name = window.sessionStorage.getItem('name')
+      // 调用你的接口
+      myAxios.post('/updateLoginoutTime', {
+        params: {
+          name
+        }
+      }).then(res => {
+        this.$store.commit('LOGOUT')
+        // 2. 跳转到登录页面
+        // this.$router.push('/login')
+      }).catch(err => {
+        // console.log("*************")
+        console.log(err)
+      })
+    }
+  }
 })

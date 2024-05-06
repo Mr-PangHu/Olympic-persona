@@ -1,4 +1,5 @@
 let db = require('../db2/index')
+const jwt = require('jsonwebtoken');
 
 function getCurrentDateTimeForDatabase() {
   var date = new Date();
@@ -57,11 +58,12 @@ exports.login = (req, res) => {
               // You can choose whether to continue or send an error response
             }
           });
+          const token = jwt.sign({ name, auth }, 'ecust2023', { expiresIn: '1m' });
           res.send({
             status: 200,
             message: '登录成功',
             data: data[0],
-            token: 'wzb12138'
+            token: token
           })
         } else {
           res.send({
@@ -83,16 +85,16 @@ exports.updateLoginoutTime = (req, res) => {
   var name = req.body.params.name
   const sql1 = 'select id from user_log where name = ? order by id desc'
   db.query(sql1, [name], (err, result) => {
-    console.log("defe")
+    // console.log("defe")
     if (err) {
-      console.log("2222222")
+      // console.log("2222222")
       return res.send({
         status: 400,
         message: err
       });
     }
-    console.log("1111")
-    console.log(result)
+    // console.log("1111")
+    // console.log(result)
     if (result.length === 0) {
       console.log("33333333")
       return res.send({
@@ -100,10 +102,10 @@ exports.updateLoginoutTime = (req, res) => {
         message: '未找到与该用户名相关的登录记录'
       });
     }
-    console.log("edugue")
+    // console.log("edugue")
     const logId = result[0].id;
-    console.log(logId)
-    console.log("__oooq")
+    // console.log(logId)
+    // console.log("__oooq")
     // 获取当前时间
     const currentTime = getCurrentDateTimeForDatabase();
 
