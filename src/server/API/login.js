@@ -19,7 +19,7 @@ function getCurrentDateTimeForDatabase1() {
   var year = date.getFullYear();
   var month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth()是0-based
   var day = date.getDate().toString().padStart(2, '0');
-  var hours = (date.getHours() + 1).toString().padStart(2, '0');
+  var hours = (date.getHours() + 3).toString().padStart(2, '0');
   var minutes = date.getMinutes().toString().padStart(2, '0');
   var seconds = date.getSeconds().toString().padStart(2, '0');
 
@@ -58,7 +58,7 @@ exports.login = (req, res) => {
               // You can choose whether to continue or send an error response
             }
           });
-          const token = jwt.sign({ name, auth }, 'ecust2023', { expiresIn: '1m' });
+          const token = jwt.sign({ name, auth }, 'ecust2023', { expiresIn: '3h' });
           res.send({
             status: 200,
             message: '登录成功',
@@ -96,7 +96,7 @@ exports.updateLoginoutTime = (req, res) => {
     // console.log("1111")
     // console.log(result)
     if (result.length === 0) {
-      console.log("33333333")
+      // console.log("33333333")
       return res.send({
         status: 404,
         message: '未找到与该用户名相关的登录记录'

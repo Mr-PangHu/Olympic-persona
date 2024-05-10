@@ -31,6 +31,9 @@ new Vue({
     // Vue实例创建时添加全局事件监听
     window.addEventListener('beforeunload', this.handleBeforeUnload);
   },
+  mounted () {
+    setInterval(this.handleBeforeUnload, 10800000);
+  },
   beforeDestroy() {
     // Vue实例销毁前移除全局事件监听
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
