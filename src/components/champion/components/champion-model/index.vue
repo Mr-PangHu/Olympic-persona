@@ -30,7 +30,7 @@
 
 <script>
 import * as echarts from 'echarts'
-import axios from 'axios'
+import myAxios from '@/utils/request'
 const EINDEX = ['vo2max_rel', 'p4', 'deep_squat_1rm', 'dead_lift_1rm', 'bench_press_1rm', 'bench_pull_1rm', 'fat_ratio', 'incline_brace', 'dynamometer_2000m', 'dynamometer_5000m', 'dynamometer_6000m', 'dynamometer_30min']
 // const ETEMPLATE = ['省市', '国家队', '世锦赛', '奥运金牌']
 const NameMap = {
@@ -123,7 +123,7 @@ export default {
   // },
   methods: {
     getPlayerData () {
-      axios.get('http://127.0.0.1/xuanba/getPlayerData', {
+      myAxios.get('/xuanba/getPlayerData', {
         params: {
           id: this.id
         }

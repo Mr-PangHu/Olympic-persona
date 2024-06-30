@@ -56,7 +56,7 @@
           :header-cell-style="{'text-align': 'center'}"
         >
           <el-table-column prop="test_date" label="测试日期" align="center" width="100"></el-table-column>
-          <el-table-column prop="athlete_name" label="姓名" align="center" width="80"></el-table-column>
+          <el-table-column prop="name" label="姓名" align="center" width="80"></el-table-column>
           <el-table-column prop="test_rank" label="测试排名" align="center"></el-table-column>
           <el-table-column prop="cgy500m_result" label="测功仪500m成绩" align="center" width="105"></el-table-column>
           <el-table-column prop="cgy500m_pace" label="测功仪500m配速" align="center" width="105"></el-table-column>
@@ -68,9 +68,9 @@
           <el-table-column prop="cgy30min20str_pace" label="测功仪30分钟20桨频配速" align="center" width="115"></el-table-column>
           <el-table-column prop="cgy10str_result" label="测功仪10桨频成绩" align="center" width="110"></el-table-column>
           <el-table-column prop="cgy10str_pace" label="测功仪10桨频配速" align="center" width="110"></el-table-column>
-          <el-table-column prop="squat_result" label="深蹲" align="center" width="60"></el-table-column>
-          <el-table-column prop="press_result" label="卧推" align="center" width="60"></el-table-column>
-          <el-table-column prop="pull_result" label="卧拉" align="center" width="60"></el-table-column>
+          <el-table-column prop="deep_squat_1rm" label="深蹲" align="center" width="60"></el-table-column>
+          <el-table-column prop="bench_press_1rm" label="卧推" align="center" width="60"></el-table-column>
+          <el-table-column prop="bench_pull_1rm" label="卧拉" align="center" width="60"></el-table-column>
         </el-table>
         <div class="compare__title">
           <div style="width: 280px; text-align: center">个人信息</div>
@@ -84,7 +84,7 @@
                 <el-avatar :size="130" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
               </div>
               <div class="compare__main-echarts-info-right">
-                <div style="font-size: 20px">{{item.athlete_name}}</div>
+                <div style="font-size: 20px">{{item.name}}</div>
                 <div style="margin: 20px 0; color: rgba(144,144,144,0.8)">{{personInfo[index].sports_level || '一级运动员'}}</div>
                 <div style="color: rgba(144,144,144,0.8)">{{getAge(personInfo[index].birthday)}}岁</div>
               </div>
@@ -191,7 +191,7 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
-        // console.log(res.data)
+        console.log(res.data)
         let mostRecentDate
         let tmp = Infinity
         this.tableData.forEach(item => {

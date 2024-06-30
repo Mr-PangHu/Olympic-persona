@@ -960,21 +960,21 @@ export default {
         strength_item: '深蹲(kg)',
         Tscore: this.lastTestDataPersonInfo['strength_score'],
         score: this.lastTestDataPersonInfo['squat_score'],
-        result: this.lastTestDataPersonInfo['squat_result'],
+        result: this.lastTestDataPersonInfo['deep_squat_1rm'],
         standard: '100'
       })
       this.StrengthTableData.push({
         strength_item: '卧拉(kg)',
         Tscore: this.lastTestDataPersonInfo['strength_score'],
         score: this.lastTestDataPersonInfo['pull_score'],
-        result: this.lastTestDataPersonInfo['pull_result'],
+        result: this.lastTestDataPersonInfo['bench_pull_1rm'],
         standard: '70'
       })
       this.StrengthTableData.push({
         strength_item: '卧推(kg)',
         Tscore: this.lastTestDataPersonInfo['strength_score'],
         score: this.lastTestDataPersonInfo['press_score'],
-        result: this.lastTestDataPersonInfo['press_result'],
+        result: this.lastTestDataPersonInfo['bench_press_1rm'],
         standard: '70'
       })
     },
@@ -1022,22 +1022,22 @@ export default {
         strength_item: '深蹲(kg)',
         Tscore: this.TestDataPersonInfo['strength_score'],
         score: this.TestDataPersonInfo['squat_score'],
-        result: this.TestDataPersonInfo['squat_result'],
-        diff: this.TestDataPersonInfo.squat_result - this.lastTestDataPersonInfo.squat_result
+        result: this.TestDataPersonInfo['deep_squat_1rm'],
+        diff: this.TestDataPersonInfo.deep_squat_1rm - this.lastTestDataPersonInfo.deep_squat_1rm
       })
       this.lastStrengthTableData.push({
         strength_item: '卧拉(kg)',
         Tscore: this.TestDataPersonInfo['strength_score'],
         score: this.TestDataPersonInfo['pull_score'],
-        result: this.TestDataPersonInfo['pull_result'],
-        diff: this.TestDataPersonInfo.pull_result - this.lastTestDataPersonInfo.pull_result
+        result: this.TestDataPersonInfo['bench_pull_1rm'],
+        diff: this.TestDataPersonInfo.bench_pull_1rm - this.lastTestDataPersonInfo.bench_pull_1rm
       })
       this.lastStrengthTableData.push({
         strength_item: '卧推(kg)',
         Tscore: this.TestDataPersonInfo['strength_score'],
         score: this.TestDataPersonInfo['press_score'],
-        result: this.TestDataPersonInfo['press_result'],
-        diff: this.TestDataPersonInfo.press_result - this.lastTestDataPersonInfo.press_result
+        result: this.TestDataPersonInfo['bench_press_1rm'],
+        diff: this.TestDataPersonInfo.bench_press_1rm - this.lastTestDataPersonInfo.bench_press_1rm
       })
     },
     getData () {
@@ -1047,6 +1047,7 @@ export default {
         }
       }).then(res => {
         const d = res.data[0]
+        console.log(d)
         // console.log(this.athleteId)
         this.personInfo = d
         this.athleteId = d.athlete_id
@@ -1059,8 +1060,11 @@ export default {
           }
         }).then(res => {
           this.allData = res.data
+          // 最近一次的数据
           this.lastTestDataPersonInfo = res.data[0]
+          // // 倒数第二次的数据
           this.TestDataPersonInfo = res.data[1]
+          // 设置时间
           this.lastTestDataPersonInfo.test_date = this.lastTestDataPersonInfo.test_date.split('T')[0]
           // this.setDivContent()
           this.TestDataPersonInfo.test_date = this.TestDataPersonInfo.test_date.split('T')[0]
@@ -1069,16 +1073,13 @@ export default {
           this.formatStrengthTableData()
           this.formatLastCGYTableData()
           this.formatLastStrengthTableData()
-          // 最近一次的数据
-          // this.getLastTestDataPersonInfo()
-          // // 倒数第二次的数据
-          // this.getTestDataPersonInfo()
           this.setChart()
         })
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
     },
+    // 获取时间
     getDate (id) {
       // console.log(id)
       myAxios.get('/quickview/getTestPersonInfo', {
@@ -1132,78 +1133,6 @@ export default {
         this.setChart()
       })
     },
-    // getLastTestDataPersonInfo () {
-    //   this.Erg2k[0].score = this.lastTestDataPersonInfo.cgy2000m_score
-    //   this.Erg2k[0].result = this.lastTestDataPersonInfo.cgy2000m_result
-    //   this.Erg2k[0].pace = this.lastTestDataPersonInfo.cgy2000m_pace
-
-    //   this.Erg5k[0].score = this.lastTestDataPersonInfo.cgy5000m_score
-    //   this.Erg5k[0].result = this.lastTestDataPersonInfo.cgy5000m_result
-    //   this.Erg5k[0].pace = this.lastTestDataPersonInfo.cgy5000m_pace
-
-    //   this.Erg30[0].score = this.lastTestDataPersonInfo.cgy30min20str_score
-    //   this.Erg30[0].result = this.lastTestDataPersonInfo.cgy30min20str_result
-    //   this.Erg30[0].pace = this.lastTestDataPersonInfo.cgy30min20str_pace
-
-    //   this.Erg500m[0].score = this.lastTestDataPersonInfo.cgy500m_score
-    //   this.Erg500m[0].result = this.lastTestDataPersonInfo.cgy500m_result
-    //   this.Erg500m[0].pace = this.lastTestDataPersonInfo.cgy500m_pace
-
-    //   this.Erg10str[0].score = this.lastTestDataPersonInfo.cgy10str_score
-    //   this.Erg10str[0].result = this.lastTestDataPersonInfo.cgy10str_result
-    //   this.Erg10str[0].pace = this.lastTestDataPersonInfo.cgy10str_pace
-
-    //   this.strengthBackSquat[0].tScore = this.lastTestDataPersonInfo.strength_score
-    //   this.strengthBackSquat[0].score = this.lastTestDataPersonInfo.squat_score
-    //   this.strengthBackSquat[0].result = this.lastTestDataPersonInfo.squat_result
-
-    //   this.benchPull[0].score = this.lastTestDataPersonInfo.pull_score
-    //   this.benchPull[0].result = this.lastTestDataPersonInfo.pull_result
-
-    //   this.benchPress[0].score = this.lastTestDataPersonInfo.press_score
-    //   this.benchPress[0].result = this.lastTestDataPersonInfo.press_result
-    //   this.lastTestDate = this.lastTestDataPersonInfo.test_date
-    // },
-    // getTestDataPersonInfo () {
-    //   this.Erg2kTest[0].score = this.TestDataPersonInfo.cgy2000m_score
-    //   this.Erg2kTest[0].result = this.TestDataPersonInfo.cgy2000m_result
-    //   this.Erg2kTest[0].pace = this.TestDataPersonInfo.cgy2000m_pace
-    //   this.Erg2kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
-
-    //   this.Erg5kTest[0].score = this.TestDataPersonInfo.cgy5000m_score
-    //   this.Erg5kTest[0].result = this.TestDataPersonInfo.cgy5000m_result
-    //   this.Erg5kTest[0].pace = this.TestDataPersonInfo.cgy5000m_pace
-    //   this.Erg5kTest[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
-
-    //   this.Erg30Test[0].score = this.TestDataPersonInfo.cgy30min20str_score
-    //   this.Erg30Test[0].result = this.TestDataPersonInfo.cgy30min20str_result
-    //   this.Erg30Test[0].pace = this.TestDataPersonInfo.cgy30min20str_pace
-    //   this.Erg30Test[0].diff = -(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_result)) + 's'
-
-    //   this.Erg500mTest[0].score = this.TestDataPersonInfo.cgy500m_score
-    //   this.Erg500mTest[0].result = this.TestDataPersonInfo.cgy500m_result
-    //   this.Erg500mTest[0].pace = this.TestDataPersonInfo.cgy500m_pace
-    //   this.Erg500mTest[0].diff = this.TestDataPersonInfo.cgy500m_result - this.lastTestDataPersonInfo.cgy500m_result
-
-    //   this.Erg10strTest[0].score = this.TestDataPersonInfo.cgy10str_score
-    //   this.Erg10strTest[0].result = this.TestDataPersonInfo.cgy10str_result
-    //   this.Erg10strTest[0].pace = this.TestDataPersonInfo.cgy10str_pace
-    //   this.Erg10strTest[0].diff = this.TestDataPersonInfo.cgy10str_result - this.lastTestDataPersonInfo.cgy10str_result
-
-    //   this.strengthBackSquatTest[0].tScore = this.TestDataPersonInfo.strength_score
-    //   this.strengthBackSquatTest[0].score = this.TestDataPersonInfo.squat_score
-    //   this.strengthBackSquatTest[0].result = this.TestDataPersonInfo.squat_result
-    //   this.strengthBackSquatTest[0].diff = this.TestDataPersonInfo.squat_result - this.lastTestDataPersonInfo.squat_result
-
-    //   this.benchPullTest[0].score = this.TestDataPersonInfo.pull_score
-    //   this.benchPullTest[0].result = this.TestDataPersonInfo.pull_result
-    //   this.benchPullTest[0].diff = this.TestDataPersonInfo.pull_result - this.lastTestDataPersonInfo.pull_result
-
-    //   this.benchPressTest[0].score = this.TestDataPersonInfo.press_score
-    //   this.benchPressTest[0].result = this.TestDataPersonInfo.press_result
-    //   this.benchPressTest[0].diff = this.TestDataPersonInfo.press_result - this.lastTestDataPersonInfo.press_result
-    //   this.testDate = this.TestDataPersonInfo.test_date
-    // },
     setRowStyle ({row, rowIndex}) {
       return {
         background: 'rgba(144, 147, 153, 0.2)'

@@ -68,11 +68,11 @@
                 :header-cell-style="{'text-align': 'center'}"
                 border
               >
-                <el-table-column prop="date" label="测试日期" align="center" width="160"></el-table-column>
+                <el-table-column prop="test_date" label="测试日期" align="center" width="160"></el-table-column>
                 <el-table-column prop="name" label="姓名" align="center" width="160"></el-table-column>
                 <el-table-column prop="sprint_run_30m" label="30m冲刺跑/s" align="center" width="160"></el-table-column>
-                <el-table-column prop="dynamometer_30min" label="测功仪30分钟20桨频/s" align="center" width="200"></el-table-column>
-                <el-table-column prop="dynamometer_2000m" label="测功仪2000m/s" align="center" width="180"></el-table-column>
+                <el-table-column prop="cgy30min20str_tresult" label="测功仪30分钟20桨频/s" align="center" width="200"></el-table-column>
+                <el-table-column prop="cgy2000m_result" label="测功仪2000m/s" align="center" width="180"></el-table-column>
                 <el-table-column prop="pull_up" label="引体向上/个" align="center" width="180"></el-table-column>
                 <el-table-column prop="standing_jump_both_legs" label="立定跳远/cm" align="center" width="170"></el-table-column>
                 <el-table-column prop="deep_squat_1rm" label="深蹲/kg" align="center" width="170"></el-table-column>
@@ -103,7 +103,7 @@
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
 import { formatDate } from '@/utils/formatDate'
-import { formatSeconds, formatMMToSeconds } from '@/utils/formatTime'
+import { formatSeconds, formatMMToSeconds, formatMS } from '@/utils/formatTime'
 import { secondToMinute } from '@/utils/secondToMinute'
 export default {
   data () {
@@ -111,7 +111,7 @@ export default {
       id: 0,
       // switchValue: true,
       tableData: [],
-      // pickerOptions: null,
+      pickerOptions: null,
       selectDate: [],
       selectItemValues: {},
       tinengData: {},
@@ -148,58 +148,17 @@ export default {
   mounted () {
     this.getPlayerId()
   },
-  // watch: {
-  //   selectDate: {
-  //     handler (newValue, oldValue) {
-  //       if (this.switchValue) this.setTiNengChart1()
-  //       else this.setTable()
-  //     },
-  //     deep: true
-  //   },
-  //   selectItemValues: {
-  //     handler (newValue, oldValue) {
-  //       if (this.switchValue) this.setTiNengChart1()
-  //       else this.setTable()
-  //     },
-  //     deep: true
-  //   }
-  // },
+
   methods: {
-    // formatLabel (item) {
-    //   const label = this.tinengOptions.filter(i => i.value === item)[0].label
-    //   let danwei = ''
-    //   if (label === '基础体能-30m冲刺跑') danwei = 's'
-    //   if (label === '基础体能-卧推1RM' || label === '基础体能-深蹲1RM') danwei = 'kg'
-    //   if (label === '基础体能-引体向上') danwei = '个'
-    //   if (label === '基础体能-立定跳远(双腿)') danwei = 'cm'
-    //   if (label === '专项体能-测功仪2000m' || label === '专项体能-测功仪30min-20SR') danwei = "mm'ss.00"
-    //   return label + '（' + danwei + '）'
-    // },
-    // setCellStyle ({rowIndex, columnIndex, row, column}) {
-    //   const tmpMax = {}
-    //   const tmpMin = {}
-    //   for (var k in this.selectItemValues) {
-    //     tmpMax[k] = Math.max(...this.selectItemValues[k])
-    //     tmpMin[k] = Math.min(...this.selectItemValues[k])
-    //   }
-    //   for (var k1 in this.selectItemValues) {
-    //     if (row[k1] === tmpMax[k1] && column.property === k1) return 'font-weight: 700;'
-    //     else if (row[k1] === tmpMin[k1] && column.property === k1) return 'font-weight: 700; color: red'
-    //   }
-    // },
-    // handleSwitchChange (v) {
-    //   if (v) this.setTiNengChart1()
-    //   else this.setTable()
-    // },
     setTable () {
       this.tableData = []
-      for (var i = 0; i < this.tinengDataShow.date.length; i++) {
+      for (var i = 0; i < this.tinengDataShow.test_date.length; i++) {
         var dictionary = {}
-        dictionary['date'] = this.tinengDataShow.date[i]
+        dictionary['test_date'] = this.tinengDataShow.test_date[i]
         dictionary['name'] = this.tinengDataShow.name[i]
         dictionary['sprint_run_30m'] = this.tinengDataShow.sprint_run_30m[i]
-        dictionary['dynamometer_30min'] = this.tinengDataShow.dynamometer_30min[i]
-        dictionary['dynamometer_2000m'] = this.tinengDataShow.dynamometer_2000m[i]
+        dictionary['cgy30min20str_tresult'] = this.tinengDataShow.cgy30min20str_tresult[i]
+        dictionary['cgy2000m_result'] = this.tinengDataShow.cgy2000m_result[i]
         dictionary['pull_up'] = this.tinengDataShow.pull_up[i]
         dictionary['standing_jump_both_legs'] = this.tinengDataShow.standing_jump_both_legs[i]
         dictionary['deep_squat_1rm'] = this.tinengDataShow.deep_squat_1rm[i]
@@ -208,12 +167,18 @@ export default {
       }
     },
     handleReset () {
-      this.selectDate = this.tinengData.date.map(item => formatDate(item))
+      this.selectDate = this.tinengData.test_date.map(item => formatDate(item))
       this.tinengForm.dateRange = []
       this.tinengForm.tinengSelectValues = []
-      const dateLength = this.tinengData.date.length
-      for (var key in this.tinengData) {
-        this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
+      const dateLength = this.tinengData.test_date.length
+      if (dateLength > 6) {
+        for (var key in this.tinengData) {
+          this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
+        }
+      } else {
+        for (var key1 in this.tinengData) {
+          this.tinengDataShow[key1] = this.tinengData[key1]
+        }
       }
       this.setTiNengChart1()
       this.setTiNengChart2()
@@ -239,19 +204,19 @@ export default {
       // this.setTiNengChart5()
       // this.setTiNengChart6()
       // this.setTable()
-      var timeArray = this.tinengData.date
+      var timeArray = this.tinengData.test_date
       var selectedTimes = timeArray.filter((time) => {
         var currentDate = new Date(time)
         return currentDate >= startDate && currentDate <= endDate
       })
       var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
-      // console.log(sortedTimes)
-      // console.log(this.tinengData.date)
+      console.log('s', sortedTimes)
+      console.log('t', this.tinengData.test_date)
       var indexes = []
       sortedTimes.forEach(item => {
         // console.log(item)
-        if (this.tinengData.date.includes(item)) {
-          indexes.push(this.tinengData.date.indexOf(item))
+        if (this.tinengData.test_date.includes(item)) {
+          indexes.push(this.tinengData.test_date.indexOf(item))
         }
       })
       // console.log(indexes)
@@ -307,31 +272,6 @@ export default {
       // if (this.switchValue) this.setTiNengChart1()
       // else this.setTable()
     },
-    // handleTinengSelectChange () {
-    //   this.series = []
-    //   let tmp = {}
-    //   this.tinengForm.tinengSelectValues.forEach(item => {
-    //     tmp[item] = this.tinengData[item]
-    //   })
-    //   this.selectItemValues = tmp
-    //   for (var key in this.selectItemValues) {
-    //     this.series.push({
-    //       name: this.tinengOptions.filter(item => item.value === key)[0].label,
-    //       data: this.selectItemValues[key],
-    //       type: 'line',
-    //       // stack: `Total${i}`,
-    //       markPoint: {
-    //         data: [
-    //           { type: 'max', name: 'Max' },
-    //           { type: 'min', name: 'Min' }
-    //         ]
-    //       },
-    //       showBackground: true
-    //     })
-    //   }
-    //   if (this.switchValue) this.setTiNengChart1()
-    //   else this.setTable()
-    // },
     getPlayerId () {
       const auth = window.sessionStorage.getItem('auth')
       if (auth === '2') {
@@ -368,8 +308,8 @@ export default {
         const basicData = res[0].data
         const proData = res[1].data.map(item => (
           {
-            dynamometer_2000m: item.dynamometer_2000m,
-            dynamometer_30min: item.dynamometer_30min
+            cgy2000m_result: item.cgy2000m_result,
+            cgy30min20str_tresult: item.cgy30min20str_tresult
           }
         ))
         let tmp = {}
@@ -388,24 +328,40 @@ export default {
             tmp[key].push(d)
           }
         })
+        console.log('tmp1:', tmp)
         proData.forEach(item => {
           for (var key in item) {
+            console.log(key)
             var d = item[key]
-            if (key === 'dynamometer_2000m' || key === 'dynamometer_30min') {
+            if (key === 'cgy2000m_result') {
+              d = formatMS(d)
+              console.log(d)
+            }
+            if (key === 'cgy30min20str_tresult') {
               d = formatMMToSeconds(d)
+              console.log(d)
             }
             tmp[key].push(d)
           }
         })
         this.tinengData = tmp
-        const dateLength = this.tinengData.date.length
-        for (var key in this.tinengData) {
-          this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
+        console.log(this.tinengData)
+        const dateLength = this.tinengData.test_date.length
+        console.log(dateLength)
+        if (dateLength > 6) {
+          for (var key in this.tinengData) {
+            this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
+          }
+        } else {
+          for (var item in this.tinengData) {
+            this.tinengDataShow[item] = this.tinengData[item]
+          }
         }
         // this.tinengDataShow = this.tinengData
         // console.log(this.tinengData)
         // console.log(this.tinengDataShow)
-        this.selectDate = this.tinengData.date.map(item => formatDate(item))
+        this.selectDate = this.tinengData.test_date.map(item => formatDate(item))
+        console.log('a', this.selectDate)
         this.setTiNengChart1()
         this.setTiNengChart2()
         this.setTiNengChart3()
@@ -413,7 +369,8 @@ export default {
         this.setTiNengChart5()
         this.setTiNengChart6()
         this.setTable()
-        const timeArray = this.tinengData.date
+        const timeArray = this.tinengData.test_date
+        console.log('b', timeArray)
         const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))) - 8 * 60 * 60 * 1000)
         const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))) + 16 * 60 * 60 * 1000)
         // console.log(minDate, maxDate)
@@ -432,7 +389,7 @@ export default {
       var chartDom = document.getElementById('tineng_show1')
       var myChart = echarts.init(chartDom)
       var option
-      const l = this.tinengDataShow.date.length
+      const l = this.tinengDataShow.test_date.length
       const rotate = l > 6 ? 0 : 20
       const interval = l > 6 ? 3 : 0
       option = {
@@ -479,7 +436,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.tinengDataShow.date,
+          data: this.tinengDataShow.test_date,
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
@@ -519,7 +476,7 @@ export default {
       var chartDom = document.getElementById('tineng_show2')
       var myChart = echarts.init(chartDom)
       var option
-      const l = this.tinengDataShow.date.length
+      const l = this.tinengDataShow.test_date.length
       const rotate = l > 6 ? 0 : 20
       const interval = l > 6 ? 3 : 0
       option = {
@@ -568,7 +525,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.tinengDataShow.date,
+          data: this.tinengDataShow.test_date,
           // name: '日期',
           // nameLocation: 'center',
           nameTextStyle: {
@@ -607,7 +564,7 @@ export default {
       var chartDom = document.getElementById('tineng_show3')
       var myChart = echarts.init(chartDom)
       var option
-      const l = this.tinengDataShow.date.length
+      const l = this.tinengDataShow.test_date.length
       const rotate = l > 6 ? 0 : 20
       const interval = l > 6 ? 3 : 0
       option = {
@@ -656,7 +613,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.tinengDataShow.date,
+          data: this.tinengDataShow.test_date,
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
@@ -709,7 +666,7 @@ export default {
       var chartDom = document.getElementById('tineng_show4')
       var myChart = echarts.init(chartDom)
       var option
-      const l = this.tinengDataShow.date.length
+      const l = this.tinengDataShow.test_date.length
       const rotate = l > 6 ? 0 : 20
       const interval = l > 6 ? 3 : 0
 
@@ -759,7 +716,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.tinengDataShow.date,
+          data: this.tinengDataShow.test_date,
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
@@ -796,7 +753,7 @@ export default {
       var chartDom = document.getElementById('tineng_show5')
       var myChart = echarts.init(chartDom)
       var option
-      const l = this.tinengDataShow.date.length
+      const l = this.tinengDataShow.test_date.length
       const rotate = l > 6 ? 0 : 20
       const interval = l > 6 ? 3 : 0
 
@@ -846,7 +803,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.tinengDataShow.date,
+          data: this.tinengDataShow.test_date,
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
@@ -862,8 +819,8 @@ export default {
         },
         yAxis: {
           type: 'value',
-          min: Math.floor(Math.min(...this.tinengDataShow.dynamometer_30min) - 10),
-          max: Math.floor(Math.max(...this.tinengDataShow.dynamometer_30min) + 10),
+          min: Math.floor(Math.min(...this.tinengDataShow.cgy30min20str_tresult) - 10),
+          max: Math.floor(Math.max(...this.tinengDataShow.cgy30min20str_tresult) + 10),
           axisLabel: {
             textStyle: {
               color: '#000'
@@ -873,7 +830,7 @@ export default {
         series: [{
           name: '专项体能-测功仪30min-20SR',
           type: 'line',
-          data: this.tinengDataShow.dynamometer_30min
+          data: this.tinengDataShow.cgy30min20str_tresult
         }]
       }
 
@@ -883,7 +840,7 @@ export default {
       var chartDom = document.getElementById('tineng_show6')
       var myChart = echarts.init(chartDom)
       var option
-      const l = this.tinengDataShow.date.length
+      const l = this.tinengDataShow.test_date.length
       const rotate = l > 6 ? 0 : 20
       const interval = l > 6 ? 3 : 0
 
@@ -934,7 +891,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          data: this.tinengDataShow.date,
+          data: this.tinengDataShow.test_date,
           nameTextStyle: {
             padding: [10, 0, 0, 400]
           },
@@ -950,8 +907,8 @@ export default {
         },
         yAxis: {
           type: 'value',
-          min: Math.floor(Math.min(...this.tinengDataShow.dynamometer_2000m) - 10),
-          max: Math.floor(Math.max(...this.tinengDataShow.dynamometer_2000m) + 10),
+          min: Math.floor(Math.min(...this.tinengDataShow.cgy2000m_result) - 10),
+          max: Math.floor(Math.max(...this.tinengDataShow.cgy2000m_result) + 10),
           axisLabel: {
             textStyle: {
               color: '#000'
@@ -961,7 +918,7 @@ export default {
         series: [{
           name: '专项体能-测功仪2000m',
           type: 'line',
-          data: this.tinengDataShow.dynamometer_2000m
+          data: this.tinengDataShow.cgy2000m_result
         }]
       }
 

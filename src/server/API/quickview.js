@@ -1,7 +1,8 @@
 let db = require('../db2/index')
 
 exports.getTestPersonInfo = (req, res) => { // 获取用户基本数据
-  var sql = `SELECT * FROM test_monishuju WHERE athlete_id = ? ORDER BY test_date DESC`
+  // var sql = `SELECT * FROM test_monishuju WHERE athlete_id = ? ORDER BY test_date DESC`
+  var sql = 'SELECT b.athlete_id,b.`name`,b.test_date,b.bench_press_1rm,b.press_score,b.deep_squat_1rm,b.squat_score,b.bench_pull_1rm, b.pull_score,b.strength_score,p.cgy500m_result,p.cgy500m_score,p.cgy500m_pace,p.cgy2000m_result,p.cgy2000m_score,p.cgy2000m_pace,p.cgy5000m_score,p.cgy5000m_result,p.cgy5000m_pace,p.cgy30min20str_score,p.cgy30min20str_result,p.cgy30min20str_pace,p.cgy10str_score,p.cgy10str_result,p.cgy10str_pace FROM fb b, fp p WHERE p.athlete_id = b.athlete_id and p.test_date = b.test_date and b.athlete_id = ? ORDER BY test_date DESC'
   db.query(sql, [req.query.id], (err, data) => {
     if (err) {
       return res.send('错误：' + err.message)
@@ -10,7 +11,8 @@ exports.getTestPersonInfo = (req, res) => { // 获取用户基本数据
   })
 }
 exports.getTestInfoByDate = (req, res) => { // 获取用户基本数据
-  var sql = `SELECT * FROM test_monishuju WHERE athlete_id = ? and test_date = ?`
+  // var sql = `SELECT * FROM test_monishuju WHERE athlete_id = ? and test_date = ?`
+  var sql = 'SELECT b.athlete_id,b.`name`,b.test_date,b.bench_press_1rm,b.press_score,b.deep_squat_1rm,b.squat_score,b.bench_pull_1rm, b.pull_score,b.strength_score,p.cgy500m_result,p.cgy500m_score,p.cgy500m_pace,p.cgy2000m_result,p.cgy2000m_score,p.cgy2000m_pace,p.cgy5000m_score,p.cgy5000m_result,p.cgy5000m_pace,p.cgy30min20str_score,p.cgy30min20str_result,p.cgy30min20str_pace,p.cgy10str_score,p.cgy10str_result,p.cgy10str_pace FROM fb b, fp p WHERE p.athlete_id = b.athlete_id and p.test_date = b.test_date and b.athlete_id = ? and b.test_date = ?'
   db.query(sql, [req.query.id, req.query.test_date], (err, data) => {
     if (err) {
       return res.send('错误：' + err.message)

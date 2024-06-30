@@ -1,7 +1,7 @@
 let db = require('../db2/index')
 
 exports.getBloodData = (req, res) => { // 获取血液数据
-  var sql = 'SELECT name,date,wbc,rbc,hb,hct,mcv FROM blood_monishuju where athlete_id = ? ORDER BY date '
+  var sql = 'SELECT name,date,wbc,rbc,hb,hct,mcv FROM function_blood_routine_test where athlete_id = ? ORDER BY date '
   db.query(sql, [req.query.id], (err, data) => {
     if (err) {
       return res.send('错误：' + err.message)
@@ -19,7 +19,7 @@ exports.getBloodData = (req, res) => { // 获取血液数据
 //   })
 // }
 exports.getTestData = (req, res) => { // 获取血液数据
-  var sql = 'SELECT name,date,t,c,fe,bun,ck,iga,igm,igg FROM blood_monishuju where athlete_id = ? ORDER BY date'
+  var sql = 'SELECT name,date,t,c,fe,bun,ck,iga,igm,igg FROM function_blood_phase_test where athlete_id = ? ORDER BY date'
   db.query(sql, [req.query.id], (err, data) => {
     if (err) {
       return res.send('错误：' + err.message)

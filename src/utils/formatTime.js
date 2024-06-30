@@ -71,3 +71,20 @@ export function formatMMToSeconds (timeString) {
     return totalSeconds1
   }
 }
+
+export function formatMS (timeString) {
+  var timeParts = timeString.split(":")
+  var minutes = parseInt(timeParts[0])
+  let secondsParts = timeParts[1]
+  if (secondsParts.indexOf('.') !== -1) {
+    var tmp = secondsParts.split('.')
+    var seconds = parseInt(tmp[0])
+    var milliseconds = parseInt(tmp[1])
+    var totalSeconds = minutes * 60 + seconds + milliseconds / 10
+    return totalSeconds
+  } else {
+    var seconds1 = parseInt(secondsParts)
+    var totalSeconds1 = minutes * 60 + seconds1
+    return totalSeconds1
+  }
+}
