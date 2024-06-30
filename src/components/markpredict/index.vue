@@ -407,6 +407,8 @@ export default {
         yAxis: {
           name: '成绩/s',
           type: 'value',
+          min: Math.min.apply(null, valueList[0].data) - 20,
+          max: Math.max.apply(null, valueList[0].data) + 20,
           axisLabel: {
             color: '#000'
           },
