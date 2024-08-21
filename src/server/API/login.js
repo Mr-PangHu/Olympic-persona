@@ -16,10 +16,11 @@ function getCurrentDateTimeForDatabase() {
 }
 function getCurrentDateTimeForDatabase1() {
   var date = new Date();
+  date.setHours(date.getHours() + 3);
   var year = date.getFullYear();
   var month = (date.getMonth() + 1).toString().padStart(2, '0'); // getMonth()是0-based
   var day = date.getDate().toString().padStart(2, '0');
-  var hours = (date.getHours() + 3).toString().padStart(2, '0');
+  var hours = (date.getHours()).toString().padStart(2, '0');
   var minutes = date.getMinutes().toString().padStart(2, '0');
   var seconds = date.getSeconds().toString().padStart(2, '0');
 
