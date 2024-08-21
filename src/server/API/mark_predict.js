@@ -11,168 +11,192 @@ async function modelPredict (inputs) {
 
 // 查找所有运动员的历史数据并训练
 exports.getPlayersHisDataAll = (req, res) => { // 通过赛事项目获取成绩预测
-  var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-  'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-  'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-  'fitness_pro_monishuju.dynamometer_30min' +
-   ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-  ' AND fitness_basic_monishuju.date = fitness_pro_monishuju.date'
-  db.query(sql, '', (err, data) => {
+  db.getConnection((err, connection) => {
     if (err) {
-      return res.send('错误：' + err.message)
+      return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    // 使用data训练
-    var _inputs = []
-    for (let i = 0; i < data.length; i++) {
-      var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
-        data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
-        convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
-      ]
-      _inputs.push(rows)
-    }
-    const xs = tf.tensor2d(_inputs.map(row => row.slice(1)))
-    const ys = tf.tensor2d(_inputs.map(row => [row[0]]))
-    // 定义模型
-    const model = tf.sequential()
-    model.add(tf.layers.dense({ units: 1, inputShape: [6] }))
-    // 定义损失函数和优化器
-    model.compile({ loss: 'meanSquaredError', optimizer: tf.train.adam(0.1) })
-    // model.summary()
-    // 训练模型
-    model.fit(xs, ys, { epochs: 100 }).then(() => {
-      // 保存模型
-      model.save('file://mpmodel')
-      // 输出模型参数
-      const weights = model.getWeights()
-      console.log('Weights:')
-      for (let i = 0; i < weights.length; i++) {
-        console.log(weights[i].dataSync())
+    var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+    'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+    'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+    'fitness_pro_monishuju.dynamometer_30min' +
+    ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+    ' AND fitness_basic_monishuju.date = fitness_pro_monishuju.date'
+    connection.query(sql, '', (err, data) => {
+      connection.release()
+      if (err) {
+        return res.send('错误：' + err.message)
       }
+      // 使用data训练
+      var _inputs = []
+      for (let i = 0; i < data.length; i++) {
+        var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
+          data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
+          convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
+        ]
+        _inputs.push(rows)
+      }
+      const xs = tf.tensor2d(_inputs.map(row => row.slice(1)))
+      const ys = tf.tensor2d(_inputs.map(row => [row[0]]))
+      // 定义模型
+      const model = tf.sequential()
+      model.add(tf.layers.dense({ units: 1, inputShape: [6] }))
+      // 定义损失函数和优化器
+      model.compile({ loss: 'meanSquaredError', optimizer: tf.train.adam(0.1) })
+      // model.summary()
+      // 训练模型
+      model.fit(xs, ys, { epochs: 100 }).then(() => {
+        // 保存模型
+        model.save('file://mpmodel')
+        // 输出模型参数
+        const weights = model.getWeights()
+        console.log('Weights:')
+        for (let i = 0; i < weights.length; i++) {
+          console.log(weights[i].dataSync())
+        }
+      })
+      return res.send(data)
     })
-    return res.send(data)
   })
 }
 
 // 根据运动员id获取数据并推理
 exports.predictByID = (req, res) => { // 通过赛事项目获取成绩预测
-  var id = req.query.id
-  var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-  'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-  'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-  'fitness_pro_monishuju.dynamometer_30min' +
-   ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-  'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
-  ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 1;'
-  db.query(sql, id, (err, data) => {
+  db.getConnection((err, connection) => {
     if (err) {
-      return res.send('错误：' + err.message)
+      return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    // 使用data训练
-    var _inputs = []
-    for (let i = 0; i < data.length; i++) {
-      var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
-        data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
-        convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
-      ]
-      _inputs.push(rows)
-    }
-    if ((_inputs).length !== 1) {
-      res.send('no data')
-    } else {
-      if (!checkArray(_inputs[0])) {
-        res.send('data not enough')
-      } else {
-        const xs = tf.tensor2d(_inputs.map(row => row.slice(1)))
-        modelPredict(xs).then((result) => {
-          // 加载数据文件
-          res.send(result)
-        })
+    var id = req.query.id
+    var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+    'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+    'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+    'fitness_pro_monishuju.dynamometer_30min' +
+    ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+    'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
+    ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 1;'
+    connection.query(sql, id, (err, data) => {
+      connection.release()
+      if (err) {
+        return res.send('错误：' + err.message)
       }
-    }
+      // 使用data训练
+      var _inputs = []
+      for (let i = 0; i < data.length; i++) {
+        var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
+          data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
+          convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
+        ]
+        _inputs.push(rows)
+      }
+      if ((_inputs).length !== 1) {
+        res.send('no data')
+      } else {
+        if (!checkArray(_inputs[0])) {
+          res.send('data not enough')
+        } else {
+          const xs = tf.tensor2d(_inputs.map(row => row.slice(1)))
+          modelPredict(xs).then((result) => {
+            // 加载数据文件
+            res.send(result)
+          })
+        }
+      }
+    })
   })
 }
 
 // 根据id查找某一个运动员的历史数据
 exports.getPlayersHisData = (req, res) => { // 通过赛事项目获取成绩预测
-  var id = req.query.id
-  var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-  'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-  'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-  'fitness_pro_monishuju.dynamometer_30min' +
-   ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-  'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
-  ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 5;'
-  db.query(sql, id, (err, data) => {
+  db.getConnection((err, connection) => {
     if (err) {
-      return res.send('错误：' + err.message)
+      return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    return res.send(data)
+    var id = req.query.id
+    var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+    'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+    'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+    'fitness_pro_monishuju.dynamometer_30min' +
+    ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+    'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
+    ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 5;'
+    connection.query(sql, id, (err, data) => {
+      connection.release()
+      if (err) {
+        return res.send('错误：' + err.message)
+      }
+      return res.send(data)
+    })
   })
 }
 
 exports.getPredictMark = (req, res) => {
-  var sql = 'select * from person_info'
-  db.query(sql, (err, data) => {
+  db.getConnection((err, connection) => {
     if (err) {
-      return res.send('错误：' + err.message)
+      return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    const tmp = data
-    let needList = []
-    if (tmp.length > 0) {
-      var sql2 = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-      'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-      'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-      'fitness_pro_monishuju.dynamometer_30min' +
-      ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-      'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
-      ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 2;'
-      async.forEachOf(tmp, function (item, i, callback) {
-        db.query(sql2, item['athlete_id'], function (err, tmp2) {
-          // 执行 SQL 语句失败
-          if (err) return err
-          var _inputs = []
-          var _his = []
-          for (let i = 0; i < tmp2.length; i++) {
-            var rows = [convertToSeconds(tmp2[i]['dynamometer_2000m']), tmp2[i]['bench_press_1rm'],
-              tmp2[i]['deep_squat_1rm'], tmp2[i]['standing_jump_both_legs'], tmp2[i]['pull_up'],
-              convertToMiniSeconds(tmp2[i]['sprint_run_30m']), convertToSeconds(tmp2[i]['dynamometer_30min'])
-            ]
-            if (_inputs.length === 0) {
-              _inputs.push(rows)
-            } else {
-              _his.push(rows)
+    var sql = 'select * from person_info'
+    connection.query(sql, (err, data) => {
+      connection.release()
+      if (err) {
+        return res.send('错误：' + err.message)
+      }
+      const tmp = data
+      let needList = []
+      if (tmp.length > 0) {
+        var sql2 = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+        'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+        'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+        'fitness_pro_monishuju.dynamometer_30min' +
+        ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+        'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
+        ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 2;'
+        async.forEachOf(tmp, function (item, i, callback) {
+          db.query(sql2, item['athlete_id'], function (err, tmp2) {
+            // 执行 SQL 语句失败
+            if (err) return err
+            var _inputs = []
+            var _his = []
+            for (let i = 0; i < tmp2.length; i++) {
+              var rows = [convertToSeconds(tmp2[i]['dynamometer_2000m']), tmp2[i]['bench_press_1rm'],
+                tmp2[i]['deep_squat_1rm'], tmp2[i]['standing_jump_both_legs'], tmp2[i]['pull_up'],
+                convertToMiniSeconds(tmp2[i]['sprint_run_30m']), convertToSeconds(tmp2[i]['dynamometer_30min'])
+              ]
+              if (_inputs.length === 0) {
+                _inputs.push(rows)
+              } else {
+                _his.push(rows)
+              }
             }
-          }
-          if ((_inputs).length !== 1) {
-            needList.push({project: '2000m', id: item['athlete_id'], name: item['name'], sex: item['gender'], lastmark: '暂无数据', premark: '暂无数据', reason: get暂无数据Reason(), date: getTodayDate()})
-          } else {
-            if (!checkArray(_inputs[0])) {
+            if ((_inputs).length !== 1) {
               needList.push({project: '2000m', id: item['athlete_id'], name: item['name'], sex: item['gender'], lastmark: '暂无数据', premark: '暂无数据', reason: get暂无数据Reason(), date: getTodayDate()})
             } else {
-              const xs = tf.tensor2d(_inputs.map(row => row.slice(1)))
-              modelPredict(xs).then((result) => {
-                needList.push({project: '2000m',
-                  id: item['athlete_id'],
-                  name: item['name'],
-                  sex: item['gender'],
-                  lastmark: secondsToMinutesAndSeconds(floatToInteger(_inputs[0][0])),
-                  premark: secondsToMinutesAndSeconds(floatToInteger(result[0])),
-                  reason: getReason(secondsToMinutesAndSeconds(floatToInteger(_inputs[0][0])), secondsToMinutesAndSeconds(floatToInteger(result[0])), _his, _inputs),
-                  date: getTodayDate()})
-              })
+              if (!checkArray(_inputs[0])) {
+                needList.push({project: '2000m', id: item['athlete_id'], name: item['name'], sex: item['gender'], lastmark: '暂无数据', premark: '暂无数据', reason: get暂无数据Reason(), date: getTodayDate()})
+              } else {
+                const xs = tf.tensor2d(_inputs.map(row => row.slice(1)))
+                modelPredict(xs).then((result) => {
+                  needList.push({project: '2000m',
+                    id: item['athlete_id'],
+                    name: item['name'],
+                    sex: item['gender'],
+                    lastmark: secondsToMinutesAndSeconds(floatToInteger(_inputs[0][0])),
+                    premark: secondsToMinutesAndSeconds(floatToInteger(result[0])),
+                    reason: getReason(secondsToMinutesAndSeconds(floatToInteger(_inputs[0][0])), secondsToMinutesAndSeconds(floatToInteger(result[0])), _his, _inputs),
+                    date: getTodayDate()})
+                })
+              }
             }
+            callback();
+          });
+        }, function (err) {
+          if (err) {
+            return err
+          } else {
+            // whatever you wanna do after all the iterations are done
+            return res.send(needList)
           }
-          callback();
         });
-      }, function (err) {
-        if (err) {
-          return err
-        } else {
-          // whatever you wanna do after all the iterations are done
-          return res.send(needList)
-        }
-      });
-    }
+      }
+    })
   })
 }
 
