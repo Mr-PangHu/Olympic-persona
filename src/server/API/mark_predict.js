@@ -15,12 +15,20 @@ exports.getPlayersHisDataAll = (req, res) => { // 通过赛事项目获取成绩
     if (err) {
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-    'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-    'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-    'fitness_pro_monishuju.dynamometer_30min' +
-    ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-    ' AND fitness_basic_monishuju.date = fitness_pro_monishuju.date'
+    // var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+    // 'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+    // 'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+    // 'fitness_pro_monishuju.dynamometer_30min' +
+    // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+    // ' AND fitness_basic_monishuju.date = fitness_pro_monishuju.date'
+    
+    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
+    'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
+    'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
+    'fitness_pro.cgy30min20str_score' +
+    ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
+    ' AND fitness_basic.date = fitness_pro.date'
+    
     connection.query(sql, '', (err, data) => {
       connection.release()
       if (err) {
@@ -29,9 +37,13 @@ exports.getPlayersHisDataAll = (req, res) => { // 通过赛事项目获取成绩
       // 使用data训练
       var _inputs = []
       for (let i = 0; i < data.length; i++) {
-        var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
+        // var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
+        //   data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
+        //   convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
+        // ]
+        var rows = [convertToSeconds(data[i]['cgy2000m_score']), data[i]['bench_press_1rm'],
           data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
-          convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
+          convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['cgy30min20str_score'])
         ]
         _inputs.push(rows)
       }
@@ -66,13 +78,22 @@ exports.predictByID = (req, res) => { // 通过赛事项目获取成绩预测
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
     var id = req.query.id
-    var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-    'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-    'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-    'fitness_pro_monishuju.dynamometer_30min' +
-    ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-    'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
-    ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 1;'
+    // var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+    // 'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+    // 'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+    // 'fitness_pro_monishuju.dynamometer_30min' +
+    // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+    // 'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
+    // ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 1;'
+
+    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
+    'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
+    'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
+    'fitness_pro.cgy30min20str_score' +
+    ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
+    'AND fitness_basic.date = fitness_pro.date' +
+    ' where fitness_basic.athlete_id=(?)  ORDER BY date desc Limit 1;'
+    
     connection.query(sql, id, (err, data) => {
       connection.release()
       if (err) {
@@ -81,9 +102,13 @@ exports.predictByID = (req, res) => { // 通过赛事项目获取成绩预测
       // 使用data训练
       var _inputs = []
       for (let i = 0; i < data.length; i++) {
-        var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
+        // var rows = [convertToSeconds(data[i]['dynamometer_2000m']), data[i]['bench_press_1rm'],
+        //   data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
+        //   convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
+        // ]
+        var rows = [convertToSeconds(data[i]['cgy2000m_score']), data[i]['bench_press_1rm'],
           data[i]['deep_squat_1rm'], data[i]['standing_jump_both_legs'], data[i]['pull_up'],
-          convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['dynamometer_30min'])
+          convertToMiniSeconds(data[i]['sprint_run_30m']), convertToSeconds(data[i]['cgy30min20str_score'])
         ]
         _inputs.push(rows)
       }
@@ -111,13 +136,20 @@ exports.getPlayersHisData = (req, res) => { // 通过赛事项目获取成绩预
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
     var id = req.query.id
-    var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-    'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-    'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-    'fitness_pro_monishuju.dynamometer_30min' +
-    ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-    'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
-    ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 5;'
+    // var sql = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+    // 'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+    // 'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+    // 'fitness_pro_monishuju.dynamometer_30min' +
+    // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+    // 'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
+    // ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 5;'
+    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
+    'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
+    'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
+    'fitness_pro.cgy30min20str_score' +
+    ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
+    'AND fitness_basic.date = fitness_pro.date' +
+    ' where fitness_basic.athlete_id=(?)  ORDER BY date desc Limit 5;'
     connection.query(sql, id, (err, data) => {
       connection.release()
       if (err) {
@@ -142,13 +174,20 @@ exports.getPredictMark = (req, res) => {
       const tmp = data
       let needList = []
       if (tmp.length > 0) {
-        var sql2 = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
-        'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
-        'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
-        'fitness_pro_monishuju.dynamometer_30min' +
-        ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
-        'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
-        ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 2;'
+        // var sql2 = 'SELECT fitness_basic_monishuju.id,fitness_basic_monishuju.athlete_id,fitness_basic_monishuju.name,fitness_basic_monishuju.date,' +
+        // 'fitness_basic_monishuju.sprint_run_30m,fitness_basic_monishuju.bench_press_1rm,fitness_basic_monishuju.deep_squat_1rm,' +
+        // 'fitness_basic_monishuju.standing_jump_both_legs,fitness_basic_monishuju.pull_up,fitness_pro_monishuju.dynamometer_2000m,' +
+        // 'fitness_pro_monishuju.dynamometer_30min' +
+        // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
+        // 'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
+        // ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 2;'
+        var sql2 = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
+        'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
+        'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
+        'fitness_pro.cgy30min20str_score' +
+        ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
+        'AND fitness_basic.date = fitness_pro.date' +
+        ' where fitness_basic.athlete_id=(?)  ORDER BY date desc Limit 2;'
         async.forEachOf(tmp, function (item, i, callback) {
           db.query(sql2, item['athlete_id'], function (err, tmp2) {
             // 执行 SQL 语句失败
@@ -156,9 +195,13 @@ exports.getPredictMark = (req, res) => {
             var _inputs = []
             var _his = []
             for (let i = 0; i < tmp2.length; i++) {
-              var rows = [convertToSeconds(tmp2[i]['dynamometer_2000m']), tmp2[i]['bench_press_1rm'],
+              // var rows = [convertToSeconds(tmp2[i]['dynamometer_2000m']), tmp2[i]['bench_press_1rm'],
+              //   tmp2[i]['deep_squat_1rm'], tmp2[i]['standing_jump_both_legs'], tmp2[i]['pull_up'],
+              //   convertToMiniSeconds(tmp2[i]['sprint_run_30m']), convertToSeconds(tmp2[i]['dynamometer_30min'])
+              // ]
+              var rows = [convertToSeconds(tmp2[i]['cgy2000m_score']), tmp2[i]['bench_press_1rm'],
                 tmp2[i]['deep_squat_1rm'], tmp2[i]['standing_jump_both_legs'], tmp2[i]['pull_up'],
-                convertToMiniSeconds(tmp2[i]['sprint_run_30m']), convertToSeconds(tmp2[i]['dynamometer_30min'])
+                convertToMiniSeconds(tmp2[i]['sprint_run_30m']), convertToSeconds(tmp2[i]['cgy30min20str_score'])
               ]
               if (_inputs.length === 0) {
                 _inputs.push(rows)
