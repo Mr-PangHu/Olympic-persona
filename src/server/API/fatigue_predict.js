@@ -246,7 +246,7 @@ exports.getAllFatigueData2 = (req, res) => {
     //     INNER JOIN`function_blood_phase_test` c ON a.athlete_id = c.athlete_id and a.date = c.date 
     //     INNER JOIN`function_blood_routine_test` d ON a.athlete_id = d.athlete_id and a.date = d.date 
     //     INNER JOIN`person_info` e ON a.athlete_id = e.athlete_id) AS k ORDER BY k.athlete_id, k.date DESC';
-    sql = 'SELECT * FROM (SELECT a.athlete_id,e.name,e.gender,e.age,c.date,a.cgy2000m_score,a.cgy30min20str_score,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id AND a.date=b.date INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id and a.date=c.date INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id and a.date=d.date INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
+    sql = 'SELECT * FROM (SELECT a.athlete_id,e.name,e.gender,e.age,c.date,a.cgy2000m_score,a.cgy30min20str_score,b.vo2max_rel,b.p4,b.bench_pull_1rm,b.dead_lift_1rm,b.bench_press_1rm,b.deep_squat_1rm,c.ck,d.hb,c.t,c.bun,d.wbc,d.hct,c.c,d.rbc,c.fe FROM `fitness_pro` a INNER JOIN `vsdatamock` b on a.athlete_id=b.athlete_id AND a.test_date=b.date INNER JOIN `function_blood_phase_test` c ON a.athlete_id=c.athlete_id and a.test_date=c.date INNER JOIN `function_blood_routine_test` d ON a.athlete_id=d.athlete_id and a.test_date=d.date INNER JOIN `person_info` e ON a.athlete_id=e.athlete_id) AS k ORDER BY k.athlete_id,k.date DESC';
     connection.query(sql, (err, data) => {
       connection.release()
       if (err) {

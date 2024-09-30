@@ -22,12 +22,7 @@ exports.getPlayersHisDataAll = (req, res) => { // 通过赛事项目获取成绩
     // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
     // ' AND fitness_basic_monishuju.date = fitness_pro_monishuju.date'
     
-    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
-    'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
-    'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
-    'fitness_pro.cgy30min20str_score' +
-    ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
-    ' AND fitness_basic.date = fitness_pro.date'
+    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.test_date,fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,fitness_pro.cgy30min20str_score FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id AND fitness_basic.test_date = fitness_pro.test_date'
     
     connection.query(sql, '', (err, data) => {
       connection.release()
@@ -86,13 +81,7 @@ exports.predictByID = (req, res) => { // 通过赛事项目获取成绩预测
     // 'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
     // ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 1;'
 
-    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
-    'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
-    'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
-    'fitness_pro.cgy30min20str_score' +
-    ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
-    'AND fitness_basic.date = fitness_pro.date' +
-    ' where fitness_basic.athlete_id=(?)  ORDER BY date desc Limit 1;'
+    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.test_date,fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,fitness_pro.cgy30min20str_score FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id AND fitness_basic.test_date = fitness_pro.test_date where fitness_basic.athlete_id=(?)  ORDER BY fitness_basic.test_date desc Limit 1;'
     
     connection.query(sql, id, (err, data) => {
       connection.release()
@@ -143,13 +132,7 @@ exports.getPlayersHisData = (req, res) => { // 通过赛事项目获取成绩预
     // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
     // 'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
     // ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 5;'
-    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
-    'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
-    'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
-    'fitness_pro.cgy30min20str_score' +
-    ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
-    'AND fitness_basic.date = fitness_pro.date' +
-    ' where fitness_basic.athlete_id=(?)  ORDER BY date desc Limit 5;'
+    var sql = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.test_date,fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,fitness_pro.cgy30min20str_score FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id AND fitness_basic.test_date = fitness_pro.test_date where fitness_basic.athlete_id=(?)  ORDER BY fitness_basic.test_date desc Limit 5;'
     connection.query(sql, id, (err, data) => {
       connection.release()
       if (err) {
@@ -181,13 +164,7 @@ exports.getPredictMark = (req, res) => {
         // ' FROM fitness_basic_monishuju LEFT JOIN fitness_pro_monishuju ON fitness_basic_monishuju.athlete_id = fitness_pro_monishuju.athlete_id ' +
         // 'AND fitness_basic_monishuju.date = fitness_pro_monishuju.date' +
         // ' where fitness_basic_monishuju.athlete_id=(?)  ORDER BY date desc Limit 2;'
-        var sql2 = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.date,' +
-        'fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,' +
-        'fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,' +
-        'fitness_pro.cgy30min20str_score' +
-        ' FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id ' +
-        'AND fitness_basic.date = fitness_pro.date' +
-        ' where fitness_basic.athlete_id=(?)  ORDER BY date desc Limit 2;'
+        var sql2 = 'SELECT fitness_basic.id,fitness_basic.athlete_id,fitness_basic.name,fitness_basic.test_date,fitness_basic.sprint_run_30m,fitness_basic.bench_press_1rm,fitness_basic.deep_squat_1rm,fitness_basic.standing_jump_both_legs,fitness_basic.pull_up,fitness_pro.cgy2000m_score,fitness_pro.cgy30min20str_score FROM fitness_basic LEFT JOIN fitness_pro ON fitness_basic.athlete_id = fitness_pro.athlete_id AND fitness_basic.test_date = fitness_pro.test_date where fitness_basic.athlete_id=(?)  ORDER BY fitness_basic.test_date desc Limit 2;'
         async.forEachOf(tmp, function (item, i, callback) {
           db.query(sql2, item['athlete_id'], function (err, tmp2) {
             // 执行 SQL 语句失败
