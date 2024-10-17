@@ -103,7 +103,7 @@
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
 import { formatDate } from '@/utils/formatDate'
-import { formatSeconds, formatMMToSeconds, formatMS } from '@/utils/formatTime'
+import { formatSeconds, formatMS } from '@/utils/formatTime'
 import { secondToMinute } from '@/utils/secondToMinute'
 export default {
   data () {
@@ -306,45 +306,111 @@ export default {
       })
       Promise.all([getBasicTinengData, getProTinengData]).then(res => {
         const basicData = res[0].data
+        // console.log(basicData)
         const proData = res[1].data.map(item => (
           {
+            name: item.name,
+            test_date: item.test_date,
             cgy2000m_result: item.cgy2000m_result,
             cgy30min20str_tresult: item.cgy30min20str_tresult
           }
         ))
-        let tmp = {}
-        for (var key1 in basicData[0]) {
-          tmp[key1] = []
-        }
-        for (var key2 in proData[0]) {
-          tmp[key2] = []
-        }
-        basicData.forEach(item => {
+        console.log(proData)
+        const basicDates = new Set(basicData.map(item => item.test_date));
+        const proDates = new Set(proData.map(item => item.test_date));
+        // 合并并去重日期
+        const allDates = Array.from(new Set([...basicDates, ...proDates])).sort()
+        // let tmp = {}
+        // for (var key1 in basicData[0]) {
+        //   tmp[key1] = []
+        // }
+        // for (var key2 in proData[0]) {
+        //   tmp[key2] = []
+        // }
+        // console.log(tmp)
+        const result = allDates.map(date => {
+          const basicItem = basicData.find(item => item.test_date === date) || {};
+          const proItem = proData.find(item => item.test_date === date) || {};
+          return {
+            test_date: date,
+            name: basicItem.name === (null || undefined) ? proItem.name : basicItem.name,
+            sprint_run_30m: basicItem.sprint_run_30m || null,
+            run_3000m: basicItem.run_3000m || null,
+            bench_press_1rm: basicItem.bench_press_1rm || null,
+            deep_squat_1rm: basicItem.deep_squat_1rm || null,
+            bench_pull_1rm: basicItem.bench_pull_1rm || null,
+            standing_jump_both_legs: basicItem.standing_jump_both_legs || null,
+            pull_up: basicItem.pull_up || null,
+            dead_lift_1rm: basicItem.dead_lift_1rm || null,
+            cgy2000m_result: proItem.cgy2000m_result || null,
+            cgy30min20str_tresult: proItem.cgy30min20str_tresult || null,
+          };
+        });
+        console.log(result);
+        let tmp2 = {}
+        const keys = [
+          'test_date',
+          'name',
+          'sprint_run_30m',
+          'run_3000m',
+          'bench_press_1rm',
+          'deep_squat_1rm',
+          'bench_pull_1rm',
+          'standing_jump_both_legs',
+          'pull_up',
+          'dead_lift_1rm',
+          'cgy2000m_result',
+          'cgy30min20str_tresult'
+        ];
+        keys.forEach(key => {
+          tmp2[key] = []
+        })
+        result.forEach(item => {
           for (var key in item) {
             var d = item[key]
-            if (key === 'sprint_run_30m') {
-              d = formatSeconds(d)
+            if (d === null || d === undefined || d === '') {
+              d = null
+            } else {
+              if (key === 'sprint_run_30m') {
+                d = formatSeconds(d)
+              }
+              if (key === 'cgy2000m_result' || key === 'cgy30min20str_tresult') {
+                d = formatMS(d)
+              }
             }
-            tmp[key].push(d)
+            tmp2[key].push(d)
           }
         })
-        console.log('tmp1:', tmp)
-        proData.forEach(item => {
-          for (var key in item) {
-            console.log(key)
-            var d = item[key]
-            if (key === 'cgy2000m_result') {
-              d = formatMS(d)
-              console.log(d)
-            }
-            if (key === 'cgy30min20str_tresult') {
-              d = formatMMToSeconds(d)
-              console.log(d)
-            }
-            tmp[key].push(d)
-          }
-        })
-        this.tinengData = tmp
+        console.log('tmp2')
+        console.log(tmp2)
+
+        // basicData.forEach(item => {
+        //   for (var key in item) {
+        //     var d = item[key]
+        //     if (key === 'sprint_run_30m') {
+        //       d = formatSeconds(d)
+        //     }
+        //     tmp[key].push(d)
+        //   }
+        // })
+        // console.log(tmp)
+        // console.log('tmp1:', tmp)
+        // proData.forEach(item => {
+        //   for (var key in item) {
+        //     console.log(key)
+        //     var d = item[key]
+        //     if (key === 'cgy2000m_result') {
+        //       d = formatMS(d)
+        //       console.log(d)
+        //     }
+        //     if (key === 'cgy30min20str_tresult') {
+        //       d = formatMS(d)
+        //       console.log(d)
+        //     }
+        //     tmp[key].push(d)
+        //   }
+        // })
+        this.tinengData = tmp2
         console.log(this.tinengData)
         const dateLength = this.tinengData.test_date.length
         console.log(dateLength)
@@ -461,12 +527,14 @@ export default {
         series: [{
           name: '基础体能-卧推1RM',
           type: 'line',
-          data: this.tinengDataShow.bench_press_1rm
+          data: this.tinengDataShow.bench_press_1rm,
+          connectNulls: true
         },
         {
           name: '基础体能-深蹲1RM',
           type: 'line',
-          data: this.tinengDataShow.deep_squat_1rm
+          data: this.tinengDataShow.deep_squat_1rm,
+          connectNulls: true
         }]
       }
 
@@ -554,7 +622,8 @@ export default {
         series: [{
           name: '基础体能-30m冲刺跑',
           type: 'line',
-          data: this.tinengDataShow.sprint_run_30m
+          data: this.tinengDataShow.sprint_run_30m,
+          connectNulls: true
         }]
       }
 
@@ -639,6 +708,7 @@ export default {
           name: '基础体能-引体向上',
           type: 'line',
           data: this.tinengDataShow.pull_up,
+          connectNulls: true,
           markLine: {
             symbol: ['none', 'none'],
             itemStyle: {
@@ -743,7 +813,8 @@ export default {
         series: [{
           name: '基础体能-立定跳远(双腿)',
           type: 'line',
-          data: this.tinengDataShow.standing_jump_both_legs
+          data: this.tinengDataShow.standing_jump_both_legs,
+          connectNulls: true
         }]
       }
 
@@ -830,7 +901,8 @@ export default {
         series: [{
           name: '专项体能-测功仪30min-20SR',
           type: 'line',
-          data: this.tinengDataShow.cgy30min20str_tresult
+          data: this.tinengDataShow.cgy30min20str_tresult,
+          connectNulls: true
         }]
       }
 
@@ -918,7 +990,8 @@ export default {
         series: [{
           name: '专项体能-测功仪2000m',
           type: 'line',
-          data: this.tinengDataShow.cgy2000m_result
+          data: this.tinengDataShow.cgy2000m_result,
+          connectNulls: true
         }]
       }
 

@@ -95,11 +95,11 @@
           <el-descriptions-item>
             <template slot="label">
               <div class="main__top-description-label">
-                <div class="main__top-description-label-first">级别</div>
-                <div>Class</div>
+                <div class="main__top-description-label-first">运动等级</div>
+                <div>Sport Level</div>
               </div>
             </template>
-            ：LW
+            ：{{personInfo.sports_level}}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -108,7 +108,7 @@
                 <div>Group</div>
               </div>
             </template>
-            ：LWx
+            ：
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -117,7 +117,7 @@
                 <div>Pro Training Years</div>
               </div>
             </template>
-            ：10
+            ：{{personInfo.professional_training_years}}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -775,6 +775,7 @@
 <script>
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
+// import { diff } from 'semver';
 // import { formatDate } from '@/utils/formatDate'
 // import 'echarts/extension/bmap/bmap'
 export default {
@@ -923,35 +924,35 @@ export default {
         score: this.lastTestDataPersonInfo['cgy2000m_score'],
         result: this.lastTestDataPersonInfo['cgy2000m_result'],
         pace: this.lastTestDataPersonInfo['cgy2000m_pace'],
-        standard: '06:57.0'
+        standard: this.personInfo.gender === 'M' ? '05:50.0' : '06:46.0'
       })
       this.CGYTableData.push({
         cgy_item: '测功仪5000m',
         score: this.lastTestDataPersonInfo['cgy5000m_score'],
         result: this.lastTestDataPersonInfo['cgy5000m_result'],
         pace: this.lastTestDataPersonInfo['cgy5000m_pace'],
-        standard: '18:15.0'
+        standard: this.personInfo.gender === 'M' ? '17:50.0' : '17:39.0'
       })
       this.CGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
         score: this.lastTestDataPersonInfo['cgy30min20str_score'],
-        result: this.lastTestDataPersonInfo['cgy30min20str_result'],
+        result: this.lastTestDataPersonInfo['cgy30min20str_tresult'],
         pace: this.lastTestDataPersonInfo['cgy30min20str_pace'],
-        standard: 'U20国际标准'
+        standard: this.personInfo.gender === 'M' ? '9000/01:40.0' : '8000/01:52.0'
       })
       this.CGYTableData.push({
         cgy_item: '测功仪500m(W)',
         score: this.lastTestDataPersonInfo['cgy500m_score'],
         result: this.lastTestDataPersonInfo['cgy500m_result'],
         pace: this.lastTestDataPersonInfo['cgy500m_pace'],
-        standard: '360'
+        standard: this.personInfo.gender === 'M' ? '360' : '360'
       })
       this.CGYTableData.push({
         cgy_item: '测功仪10桨(W)',
         score: this.lastTestDataPersonInfo['cgy10str_score'],
         result: this.lastTestDataPersonInfo['cgy10str_result'],
         pace: this.lastTestDataPersonInfo['cgy10str_pace'],
-        standard: '530'
+        standard: this.personInfo.gender === 'M' ? '530' : '530'
       })
     },
     formatStrengthTableData () {
@@ -961,21 +962,21 @@ export default {
         Tscore: this.lastTestDataPersonInfo['strength_score'],
         score: this.lastTestDataPersonInfo['squat_score'],
         result: this.lastTestDataPersonInfo['deep_squat_1rm'],
-        standard: '100'
+        standard: this.personInfo.gender === 'M' ? '140' : '110'
       })
       this.StrengthTableData.push({
         strength_item: '卧拉(kg)',
         Tscore: this.lastTestDataPersonInfo['strength_score'],
         score: this.lastTestDataPersonInfo['pull_score'],
         result: this.lastTestDataPersonInfo['bench_pull_1rm'],
-        standard: '70'
+        standard: this.personInfo.gender === 'M' ? '105' : '80'
       })
       this.StrengthTableData.push({
         strength_item: '卧推(kg)',
         Tscore: this.lastTestDataPersonInfo['strength_score'],
         score: this.lastTestDataPersonInfo['press_score'],
         result: this.lastTestDataPersonInfo['bench_press_1rm'],
-        standard: '70'
+        standard: this.personInfo.gender === 'M' ? '105' : '80'
       })
     },
     formatLastCGYTableData () {
@@ -997,9 +998,10 @@ export default {
       this.lastCGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
         score: this.TestDataPersonInfo['cgy30min20str_score'],
-        result: this.TestDataPersonInfo['cgy30min20str_result'],
+        result: this.TestDataPersonInfo['cgy30min20str_tresult'],
         pace: this.TestDataPersonInfo['cgy30min20str_pace'],
-        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_pace) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_pace)) + 's'
+        // diff: this.TestDataPersonInfo.cgy30min20str_result - this.lastTestDataPersonInfo.cgy30min20str_result
+        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_tresult) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_tresult)) + 's'
       })
       this.lastCGYTableData.push({
         cgy_item: '测功仪500m(W)',

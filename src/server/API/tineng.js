@@ -6,7 +6,7 @@ exports.getBasicTinengData = (req, res) => { // 获取全部体能数据
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
     // var sql = 'SELECT * FROM fitness_basic_monishuju where athlete_id = ? ORDER BY date'
-    var sql = 'SELECT * FROM fb where athlete_id = ? ORDER BY test_date'
+    var sql = 'SELECT * FROM fitness_basic where athlete_id = ? ORDER BY test_date'
     connection.query(sql, [req.query.id], (err, data) => {
       connection.release()
       if (err) {
@@ -32,7 +32,7 @@ exports.getProTinengData = (req, res) => { // 获取全部体能数据
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
     // var sql = 'SELECT * FROM fitness_pro_monishuju where athlete_id = ? ORDER BY date'
-    var sql = 'SELECT * FROM fp where athlete_id = ? ORDER BY test_date'
+    var sql = 'SELECT * FROM fitness_pro where athlete_id = ? ORDER BY test_date'
     connection.query(sql, [req.query.id], (err, data) => {
       connection.release()
       if (err) {

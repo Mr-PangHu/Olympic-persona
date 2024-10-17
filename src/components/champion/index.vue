@@ -338,7 +338,7 @@ export default {
         }
       }).then(res => {
         const gender = res.data[0].gender
-        this.isMan = gender === '男'
+        this.isMan = gender === 'M'
         console.log(this.isMan)
         this.Province = this.isMan ? MAN_PROVINCE : WOMAN_PROVINCE
         this.Country = this.isMan ? MAN_COUNTRY : WOMAN_COUNTRY

@@ -160,12 +160,12 @@ export default {
       playerGender: '',
       playerGenderDisabled: false,
       playerGenderOptions: [{
-        label: '男',
-        value: '男'
+        label: 'M',
+        value: 'M'
       },
       {
-        label: '女',
-        value: '女'
+        label: 'W',
+        value: 'W'
       }],
       educationLevelOptions: [{
         label: '初中',
