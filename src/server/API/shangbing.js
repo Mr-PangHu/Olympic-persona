@@ -5,7 +5,7 @@ exports.getFMSData = (req, res) => { // 获取全部伤病数据
     if (err) {
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    var sql = 'SELECT * FROM injury_fms_monishuju where athlete_id = ?'
+    var sql = 'SELECT * FROM injury_fms where athlete_id = ?'
     connection.query(sql, [req.query.id], (err, data) => {
       connection.release()
       if (err) {

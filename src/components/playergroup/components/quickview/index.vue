@@ -3,7 +3,7 @@
       <div>
         <el-form :inline="true" ref="dateForm">
           <el-form-item>
-            <el-select
+            <!-- <el-select
               v-model="chooseDate1"
               placeholder="测试日期(左侧)"
               size="small"
@@ -32,7 +32,7 @@
                 :label="item.label"
                 :value="item.value">
               </el-option>
-            </el-select>
+            </el-select> -->
           </el-form-item>
         </el-form>
       </div>
@@ -126,7 +126,7 @@
                 <div>Rank</div>
               </div>
             </template>
-            ：{{lastTestDataPersonInfo.test_rank}}
+            ：
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -135,7 +135,7 @@
                 <div>Total Score</div>
               </div>
             </template>
-            ：{{lastTestDataPersonInfo.cgy10str_score + lastTestDataPersonInfo.cgy2000m_score + lastTestDataPersonInfo.cgy30min20str_score + lastTestDataPersonInfo.cgy500m_score + lastTestDataPersonInfo.cgy5000m_score + lastTestDataPersonInfo.strength_score}}
+            ：{{latestTestDataInfo.cgy10str_score + latestTestDataInfo.cgy2000m_score + latestTestDataInfo.cgy30min20str_score + latestTestDataInfo.cgy500m_score + latestTestDataInfo.cgy5000m_score + latestTestDataInfo.strength_score}}
           </el-descriptions-item>
           <el-descriptions-item>
             <template slot="label">
@@ -144,7 +144,7 @@
                 <div>Test Date</div>
               </div>
             </template>
-            ：{{lastTestDataPersonInfo.test_date}}
+            ：
           </el-descriptions-item>
         </el-descriptions>
         <!-- <el-button id="return" type="primary" @click="returnView">返回总览</el-button> -->
@@ -152,16 +152,16 @@
       <div class="main__middle">
         <div class="main__middle-left">
           <el-table
-            :data="CGYTableData"
+            :data="latestCGYTableData"
             style="width: 100%"
-            key="CGYTableData"
+            key="latestCGYTableData"
             :cell-style="setCellStyle"
           >
-            <el-table-column label="日期" width="160" align="center">
+            <el-table-column label="测试情况" width="160" align="center">
               <el-table-column prop="cgy_item" label="测功仪指标" width="160" align="center"></el-table-column>
             </el-table-column>
             <el-table-column width="120" align="center">
-              <template #header>{{lastTestDataPersonInfo.test_date}}</template>
+              <template #header>最近一次</template>
               <el-table-column prop="score" label="得分" width="80" align="center"></el-table-column>
               <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
               <el-table-column prop="pace" label="配速" width="80" align="center"></el-table-column>
@@ -169,9 +169,9 @@
             </el-table-column>
           </el-table>
           <el-table
-            :data="StrengthTableData"
+            :data="latestStrengthTableData"
             style="width: 100%"
-            key="StrengthTableData"
+            key="latestStrengthTableData"
             border
             :cell-style="setCellStyle"
           >
@@ -181,217 +181,22 @@
             <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
             <el-table-column prop="standard" label="标准" width="110" align="center"></el-table-column>
           </el-table>
-          <!-- <el-table
-            :data="Erg2k"
-            border
-            style="width: 100%"
-            :cell-style="setCellStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{lastTestDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="score" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="成绩（mm:ss.0）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="100">
-                <template slot="header" >
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="110">
-                <template slot="header">
-                  <div>标准</div>
-                  <div>Standard</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg5k"
-            border
-            style="width: 100%"
-            :cell-style="setCellStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{lastTestDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="score" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="成绩（mm:ss.0）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="100">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="110">
-                <template slot="header">
-                  <div>标准</div>
-                  <div>Standard</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg30"
-            border
-            style="width: 100%"
-            :cell-style="setCellStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{lastTestDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="score" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="距离（m）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="100">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="110">
-                <template slot="header">
-                  <div>标准</div>
-                  <div>Standard</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg500m"
-            border
-            style="width: 100%"
-            :cell-style="setCellStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{lastTestDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="score" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="功率（W）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="100">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="110">
-                <template slot="header">
-                  <div>标准</div>
-                  <div>Standard</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg10str"
-            border
-            style="width: 100%"
-            :cell-style="setCellStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{lastTestDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="score" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="功率（W）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="100">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="110">
-                <template slot="header">
-                  <div>标准</div>
-                  <div>Standard</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table> -->
         </div>
         <div class="main__middle-middle">
           <div class="main__middle-middle-echarts" id="chart_show"></div>
         </div>
         <div class="main__middle-right">
           <el-table
-            :data="lastCGYTableData"
+            :data="bestCGYTableData"
             style="width: 100%"
-            key="lastCGYTableData"
+            key="bestCGYTableData"
             :cell-style="setCellStyle"
           >
-            <el-table-column label="日期" width="160" align="center">
+            <el-table-column label="测试情况" width="160" align="center">
               <el-table-column prop="cgy_item" label="测功仪指标" width="160" align="center"></el-table-column>
             </el-table-column>
             <el-table-column width="120" align="center">
-              <template #header>{{TestDataPersonInfo.test_date}}</template>
+              <template #header>最好一次</template>
               <el-table-column prop="score" label="得分" width="80" align="center"></el-table-column>
               <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
               <el-table-column prop="pace" label="配速" width="80" align="center"></el-table-column>
@@ -399,9 +204,9 @@
             </el-table-column>
           </el-table>
           <el-table
-            :data="lastStrengthTableData"
+            :data="bestStrengthTableData"
             style="width: 100%"
-            key="lastStrengthTableData"
+            key="bestStrengthTableData"
             border
             :cell-style="setCellStyle"
           >
@@ -411,635 +216,173 @@
             <el-table-column prop="result" label="实测值" width="80" align="center"></el-table-column>
             <el-table-column prop="diff" label="差值" width="110" align="center"></el-table-column>
           </el-table>
-          <!-- <el-table
-            :data="Erg2kTest"
-            border
-            style="width: 100%"
-            :row-style="setRowStyle"
-          >
-            <el-table-column prop="score" width="100">
-              <template #header>
-                <div class="testDate">{{testDate}}</div>
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="成绩（mm:ss.0）" align="center">
-              <el-table-column prop="result" width="80">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="80">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="80">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg5kTest"
-            border
-            style="width: 100%"
-            :row-style="setRowStyle"
-          >
-            <el-table-column prop="score" width="100">
-              <template #header>
-                <div class="testDate">{{testDate}}</div>
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="成绩（mm:ss.0）" align="center">
-              <el-table-column prop="result" width="80">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="80">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="80">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg30Test"
-            border
-            style="width: 100%"
-            :row-style="setRowStyle"
-          >
-            <el-table-column prop="score" width="100">
-              <template #header>
-                <div class="testDate">{{testDate}}</div>
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="距离（m）" align="center">
-              <el-table-column prop="result" width="80">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="80">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="80">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg500mTest"
-            border
-            style="width: 100%"
-            :row-style="setRowStyle"
-          >
-            <el-table-column prop="score" width="100">
-              <template #header>
-                <div class="testDate">{{testDate}}</div>
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="功率（W）" align="center">
-              <el-table-column prop="result" width="80">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="80">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="80">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="Erg10strTest"
-            border
-            style="width: 100%"
-            :row-style="setRowStyle"
-          >
-            <el-table-column prop="score" width="100">
-              <template #header>
-                <div class="testDate">{{testDate}}</div>
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="功率（W）" align="center">
-              <el-table-column prop="result" width="80">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="pace" width="80">
-                <template slot="header">
-                  <div>配速</div>
-                  <div>Pace</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="80">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table> -->
         </div>
       </div>
-      <!-- <div class="main__bottom">
-        <div class="main__bottom-top">
-          <el-table
-            :data="strengthBackSquat"
-            border
-            :cell-style="setCellStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{lastTestDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="tScore" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="深蹲（kg）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="100">
-                <template slot="header">
-                  <div>标准</div>
-                  <div>Standard</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="score" width="110">
-                <template slot="header">
-                  <div>评分</div>
-                  <div>score</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="benchPull"
-            border
-            :cell-style="setCellStyle"
-          >
-            <el-table-column label="卧拉（kg）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="130">
-                <template slot="header">
-                  <div>冠军值</div>
-                  <div>Gold Standard</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="score" width="110">
-                <template slot="header">
-                  <div>评分</div>
-                  <div>score</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="benchPress"
-            border
-            :cell-style="setCellStyle"
-          >
-            <el-table-column label="卧推（kg）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="standard" width="130">
-                <template slot="header">
-                  <div>冠军值</div>
-                  <div>Gold Standard</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="score" width="110">
-                <template slot="header">
-                  <div>评分</div>
-                  <div>score</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="main__bottom-bottom">
-          <el-table
-            :data="strengthBackSquatTest"
-            border
-            :row-style="setRowStyle"
-          >
-            <el-table-column prop="item" width="160">
-              <template #header>
-                <div>{{testDate}}</div>
-                <div>指标</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="tScore" width="100">
-              <template slot="header">
-                <div>得分</div>
-                <div>Score</div>
-              </template>
-            </el-table-column>
-            <el-table-column label="深蹲（kg）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="100">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="score" width="110">
-                <template slot="header">
-                  <div>评分</div>
-                  <div>score</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="benchPullTest"
-            border
-            :row-style="setRowStyle"
-          >
-            <el-table-column label="卧拉（kg）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="130">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="score" width="110">
-                <template slot="header">
-                  <div>评分</div>
-                  <div>score</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-          <el-table
-            :data="benchPressTest"
-            border
-            :row-style="setRowStyle"
-          >
-            <el-table-column label="卧推（kg）" align="center">
-              <el-table-column prop="result" width="100">
-                <template slot="header">
-                  <div>实测值</div>
-                  <div>Result</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="diff" width="130">
-                <template slot="header">
-                  <div>差值</div>
-                  <div>Diff</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="score" width="110">
-                <template slot="header">
-                  <div>评分</div>
-                  <div>score</div>
-                </template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-        </div>
-      </div> -->
     </div>
 </template>
 
 <script>
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
-// import { diff } from 'semver';
-// import { formatDate } from '@/utils/formatDate'
-// import 'echarts/extension/bmap/bmap'
 export default {
   data () {
     return {
-      // Erg2k: [{
-      //   item: '测功仪2000m',
-      //   standard: '06:57.0',
-      //   score: [],
-      //   result: [],
-      //   pace: []
-      // }],
-      // Erg5k: [{
-      //   item: '测功仪5000m',
-      //   standard: '18:15.0',
-      //   score: [],
-      //   result: [],
-      //   pace: []
-      // }],
-      // Erg30: [{
-      //   item: '测功仪30分钟/20桨频',
-      //   standard: 'U20国际标准',
-      //   score: [],
-      //   result: [],
-      //   pace: []
-      // }],
-      // Erg500m: [{
-      //   item: '测功仪500m',
-      //   standard: '360',
-      //   score: [],
-      //   result: [],
-      //   pace: []
-      // }],
-      // Erg10str: [{
-      //   item: '测功仪10桨',
-      //   standard: '530',
-      //   score: [],
-      //   result: [],
-      //   pace: []
-      // }],
-      // strengthBackSquat: [{
-      //   item: '力量',
-      //   tScore: [],
-      //   result: [],
-      //   standard: '100',
-      //   score: []
-      // }],
-      // benchPull: [{
-      //   result: [],
-      //   standard: '70',
-      //   score: []
-      // }],
-      // benchPress: [{
-      //   result: [],
-      //   standard: '70',
-      //   score: []
-      // }],
-      // Erg2kTest: [{
-      //   score: [],
-      //   result: [],
-      //   pace: [],
-      //   diff: []
-      // }],
-      // Erg5kTest: [{
-      //   score: [],
-      //   result: [],
-      //   pace: [],
-      //   diff: []
-      // }],
-      // Erg30Test: [{
-      //   score: [],
-      //   result: [],
-      //   pace: [],
-      //   diff: []
-      // }],
-      // Erg500mTest: [{
-      //   score: [],
-      //   result: [],
-      //   pace: [],
-      //   diff: []
-      // }],
-      // Erg10strTest: [{
-      //   score: [],
-      //   result: [],
-      //   pace: [],
-      //   diff: []
-      // }],
-      // strengthBackSquatTest: [{
-      //   item: '力量',
-      //   tScore: [],
-      //   result: [],
-      //   diff: [],
-      //   score: []
-      // }],
-      // benchPullTest: [{
-      //   result: [],
-      //   diff: [],
-      //   score: []
-      // }],
-      // benchPressTest: [{
-      //   result: [],
-      //   diff: [],
-      //   score: []
-      // }],
       personInfo: [],
-      lastTestDataPersonInfo: [],
-      CGYTableData: [],
-      StrengthTableData: [],
-      lastCGYTableData: [],
-      lastStrengthTableData: [],
-      TestDataPersonInfo: [],
+      latestTestDataInfo: [],
+      latestCGYTableData: [],
+      latestStrengthTableData: [],
+      bestCGYTableData: [],
+      bestStrengthTableData: [],
+      bestTestDataInfo: [],
       testDate: '',
       lastTestDate: '',
       athleteId: '',
       test_dates: [],
-      chooseDate1: [],
-      chooseDate2: [],
-      chooseDateOptions: [],
-      allData: []
     }
   },
   mounted () {
     this.getData()
   },
   watch: {
-    lastTestDataPersonInfo: {
+    latestTestDataInfo: {
       handler (newValue, oldValue) {
-        this.formatCGYTableData()
-        this.formatStrengthTableData()
+        this.formatLatestCGYTableData()
+        this.formatLatestStrengthTableData()
       },
       deep: true
     },
-    TestDataPersonInfo: {
+    bestTestDataInfo: {
       handler (newValue, oldValue) {
-        this.formatLastCGYTableData()
-        this.formatLastStrengthTableData()
+        this.formatBestCGYTableData()
+        this.formatBestStrengthTableData()
       },
       deep: true
     }
   },
   methods: {
-    formatCGYTableData () {
-      this.CGYTableData = []
-      this.CGYTableData.push({
+    formatLatestCGYTableData () {
+      this.latestCGYTableData = []
+      this.latestCGYTableData.push({
         cgy_item: '测功仪2000m',
-        score: this.lastTestDataPersonInfo['cgy2000m_score'],
-        result: this.lastTestDataPersonInfo['cgy2000m_result'],
-        pace: this.lastTestDataPersonInfo['cgy2000m_pace'],
+        score: this.latestTestDataInfo['cgy2000m_score'],
+        result: this.latestTestDataInfo['cgy2000m_result'],
+        pace: this.latestTestDataInfo['cgy2000m_pace'],
         standard: this.personInfo.gender === 'M' ? '05:50.0' : '06:46.0'
       })
-      this.CGYTableData.push({
+      this.latestCGYTableData.push({
         cgy_item: '测功仪5000m',
-        score: this.lastTestDataPersonInfo['cgy5000m_score'],
-        result: this.lastTestDataPersonInfo['cgy5000m_result'],
-        pace: this.lastTestDataPersonInfo['cgy5000m_pace'],
+        score: this.latestTestDataInfo['cgy5000m_score'],
+        result: this.latestTestDataInfo['cgy5000m_result'],
+        pace: this.latestTestDataInfo['cgy5000m_pace'],
         standard: this.personInfo.gender === 'M' ? '17:50.0' : '17:39.0'
       })
-      this.CGYTableData.push({
+      this.latestCGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
-        score: this.lastTestDataPersonInfo['cgy30min20str_score'],
-        result: this.lastTestDataPersonInfo['cgy30min20str_tresult'],
-        pace: this.lastTestDataPersonInfo['cgy30min20str_pace'],
+        score: this.latestTestDataInfo['cgy30min20str_score'],
+        result: this.latestTestDataInfo['cgy30min20str_tresult'],
+        pace: this.latestTestDataInfo['cgy30min20str_pace'],
         standard: this.personInfo.gender === 'M' ? '9000/01:40.0' : '8000/01:52.0'
       })
-      this.CGYTableData.push({
+      this.latestCGYTableData.push({
         cgy_item: '测功仪500m(W)',
-        score: this.lastTestDataPersonInfo['cgy500m_score'],
-        result: this.lastTestDataPersonInfo['cgy500m_result'],
-        pace: this.lastTestDataPersonInfo['cgy500m_pace'],
+        score: this.latestTestDataInfo['cgy500m_score'],
+        result: this.latestTestDataInfo['cgy500m_result'],
+        pace: this.latestTestDataInfo['cgy500m_pace'],
         standard: this.personInfo.gender === 'M' ? '360' : '360'
       })
-      this.CGYTableData.push({
+      this.latestCGYTableData.push({
         cgy_item: '测功仪10桨(W)',
-        score: this.lastTestDataPersonInfo['cgy10str_score'],
-        result: this.lastTestDataPersonInfo['cgy10str_result'],
-        pace: this.lastTestDataPersonInfo['cgy10str_pace'],
+        score: this.latestTestDataInfo['cgy10str_score'],
+        result: this.latestTestDataInfo['cgy10str_result'],
+        pace: this.latestTestDataInfo['cgy10str_pace'],
         standard: this.personInfo.gender === 'M' ? '530' : '530'
       })
     },
-    formatStrengthTableData () {
-      this.StrengthTableData = []
-      this.StrengthTableData.push({
+    formatLatestStrengthTableData () {
+      this.latestStrengthTableData = []
+      this.latestStrengthTableData.push({
         strength_item: '深蹲(kg)',
-        Tscore: this.lastTestDataPersonInfo['strength_score'],
-        score: this.lastTestDataPersonInfo['squat_score'],
-        result: this.lastTestDataPersonInfo['deep_squat_1rm'],
+        Tscore: this.latestTestDataInfo['strength_score'],
+        score: this.latestTestDataInfo['squat_score'],
+        result: this.latestTestDataInfo['deep_squat_1rm'],
         standard: this.personInfo.gender === 'M' ? '140' : '110'
       })
-      this.StrengthTableData.push({
+      this.latestStrengthTableData.push({
         strength_item: '卧拉(kg)',
-        Tscore: this.lastTestDataPersonInfo['strength_score'],
-        score: this.lastTestDataPersonInfo['pull_score'],
-        result: this.lastTestDataPersonInfo['bench_pull_1rm'],
+        Tscore: this.latestTestDataInfo['strength_score'],
+        score: this.latestTestDataInfo['pull_score'],
+        result: this.latestTestDataInfo['bench_pull_1rm'],
         standard: this.personInfo.gender === 'M' ? '105' : '80'
       })
-      this.StrengthTableData.push({
+      this.latestStrengthTableData.push({
         strength_item: '卧推(kg)',
-        Tscore: this.lastTestDataPersonInfo['strength_score'],
-        score: this.lastTestDataPersonInfo['press_score'],
-        result: this.lastTestDataPersonInfo['bench_press_1rm'],
+        Tscore: this.latestTestDataInfo['strength_score'],
+        score: this.latestTestDataInfo['press_score'],
+        result: this.latestTestDataInfo['bench_press_1rm'],
         standard: this.personInfo.gender === 'M' ? '105' : '80'
       })
     },
-    formatLastCGYTableData () {
-      this.lastCGYTableData = []
-      this.lastCGYTableData.push({
+    formatBestCGYTableData () {
+      this.bestCGYTableData = []
+      this.bestCGYTableData.push({
         cgy_item: '测功仪2000m',
-        score: this.TestDataPersonInfo['cgy2000m_score'],
-        result: this.TestDataPersonInfo['cgy2000m_result'],
-        pace: this.TestDataPersonInfo['cgy2000m_pace'],
-        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy2000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy2000m_result)) + 's'
+        score: this.bestTestDataInfo['cgy2000m_score'],
+        result: this.bestTestDataInfo['cgy2000m_result'],
+        pace: this.bestTestDataInfo['cgy2000m_pace'],
+        diff: -parseInt(this.timeStringToSeconds(this.bestTestDataInfo.cgy2000m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy2000m_result)) + 's'
       })
-      this.lastCGYTableData.push({
+      this.bestCGYTableData.push({
         cgy_item: '测功仪5000m',
-        score: this.TestDataPersonInfo['cgy5000m_score'],
-        result: this.TestDataPersonInfo['cgy5000m_result'],
-        pace: this.TestDataPersonInfo['cgy5000m_pace'],
-        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy5000m_result) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy5000m_result)) + 's'
+        score: this.bestTestDataInfo['cgy5000m_score'],
+        result: this.bestTestDataInfo['cgy5000m_result'],
+        pace: this.bestTestDataInfo['cgy5000m_pace'],
+        diff: -parseInt(this.timeStringToSeconds(this.bestTestDataInfo.cgy5000m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy5000m_result)) + 's'
       })
-      this.lastCGYTableData.push({
+      this.bestCGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
-        score: this.TestDataPersonInfo['cgy30min20str_score'],
-        result: this.TestDataPersonInfo['cgy30min20str_tresult'],
-        pace: this.TestDataPersonInfo['cgy30min20str_pace'],
-        // diff: this.TestDataPersonInfo.cgy30min20str_result - this.lastTestDataPersonInfo.cgy30min20str_result
-        diff: -parseInt(this.timeStringToSeconds(this.TestDataPersonInfo.cgy30min20str_tresult) - this.timeStringToSeconds(this.lastTestDataPersonInfo.cgy30min20str_tresult)) + 's'
+        score: this.bestTestDataInfo['cgy30min20str_score'],
+        result: this.bestTestDataInfo['cgy30min20str_tresult'],
+        pace: this.bestTestDataInfo['cgy30min20str_pace'],
+        // diff: this.bestTestDataInfo.cgy30min20str_result - this.latestTestDataInfo.cgy30min20str_result
+        diff: -parseInt(this.timeStringToSeconds(this.bestTestDataInfo.cgy30min20str_tresult) - this.timeStringToSeconds(this.latestTestDataInfo.cgy30min20str_tresult)) + 's'
       })
-      this.lastCGYTableData.push({
+      this.bestCGYTableData.push({
         cgy_item: '测功仪500m(W)',
-        score: this.TestDataPersonInfo['cgy500m_score'],
-        result: this.TestDataPersonInfo['cgy500m_result'],
-        pace: this.TestDataPersonInfo['cgy500m_pace'],
-        diff: this.TestDataPersonInfo.cgy500m_result - this.lastTestDataPersonInfo.cgy500m_result
+        score: this.bestTestDataInfo['cgy500m_score'],
+        result: this.bestTestDataInfo['cgy500m_result'],
+        pace: this.bestTestDataInfo['cgy500m_pace'],
+        diff: this.bestTestDataInfo.cgy500m_result - this.latestTestDataInfo.cgy500m_result
       })
-      this.lastCGYTableData.push({
+      this.bestCGYTableData.push({
         cgy_item: '测功仪10桨(W)',
-        score: this.TestDataPersonInfo['cgy10str_score'],
-        result: this.TestDataPersonInfo['cgy10str_result'],
-        pace: this.TestDataPersonInfo['cgy10str_pace'],
-        diff: this.TestDataPersonInfo.cgy10str_result - this.lastTestDataPersonInfo.cgy10str_result
+        score: this.bestTestDataInfo['cgy10str_score'],
+        result: this.bestTestDataInfo['cgy10str_result'],
+        pace: this.bestTestDataInfo['cgy10str_pace'],
+        diff: this.bestTestDataInfo.cgy10str_result - this.latestTestDataInfo.cgy10str_result
       })
     },
-    formatLastStrengthTableData () {
-      this.lastStrengthTableData = []
-      this.lastStrengthTableData.push({
+    formatBestStrengthTableData () {
+      this.bestStrengthTableData = []
+      this.bestStrengthTableData.push({
         strength_item: '深蹲(kg)',
-        Tscore: this.TestDataPersonInfo['strength_score'],
-        score: this.TestDataPersonInfo['squat_score'],
-        result: this.TestDataPersonInfo['deep_squat_1rm'],
-        diff: this.TestDataPersonInfo.deep_squat_1rm - this.lastTestDataPersonInfo.deep_squat_1rm
+        Tscore: this.bestTestDataInfo['strength_score'],
+        score: this.bestTestDataInfo['squat_score'],
+        result: this.bestTestDataInfo['deep_squat_1rm'],
+        diff: this.bestTestDataInfo.deep_squat_1rm - this.latestTestDataInfo.deep_squat_1rm
       })
-      this.lastStrengthTableData.push({
+      this.bestStrengthTableData.push({
         strength_item: '卧拉(kg)',
-        Tscore: this.TestDataPersonInfo['strength_score'],
-        score: this.TestDataPersonInfo['pull_score'],
-        result: this.TestDataPersonInfo['bench_pull_1rm'],
-        diff: this.TestDataPersonInfo.bench_pull_1rm - this.lastTestDataPersonInfo.bench_pull_1rm
+        Tscore: this.bestTestDataInfo['strength_score'],
+        score: this.bestTestDataInfo['pull_score'],
+        result: this.bestTestDataInfo['bench_pull_1rm'],
+        diff: this.bestTestDataInfo.bench_pull_1rm - this.latestTestDataInfo.bench_pull_1rm
       })
-      this.lastStrengthTableData.push({
+      this.bestStrengthTableData.push({
         strength_item: '卧推(kg)',
-        Tscore: this.TestDataPersonInfo['strength_score'],
-        score: this.TestDataPersonInfo['press_score'],
-        result: this.TestDataPersonInfo['bench_press_1rm'],
-        diff: this.TestDataPersonInfo.bench_press_1rm - this.lastTestDataPersonInfo.bench_press_1rm
+        Tscore: this.bestTestDataInfo['strength_score'],
+        score: this.bestTestDataInfo['press_score'],
+        result: this.bestTestDataInfo['bench_press_1rm'],
+        diff: this.bestTestDataInfo.bench_press_1rm - this.latestTestDataInfo.bench_press_1rm
       })
     },
     getData () {
@@ -1049,91 +392,137 @@ export default {
         }
       }).then(res => {
         const d = res.data[0]
-        console.log(d)
-        // console.log(this.athleteId)
         this.personInfo = d
         this.athleteId = d.athlete_id
-        this.getDate(d.athlete_id)
         this.personInfo.birthday = this.personInfo.birthday.split('T')[0]
         this.personInfo.weight = this.personInfo.weight || '-'
-        myAxios.get('/quickview/getTestPersonInfo', {
+        myAxios.get('/quickview/getLatestTestInfo', {
           params: {
             id: d.athlete_id
           }
         }).then(res => {
-          this.allData = res.data
-          // 最近一次的数据
-          this.lastTestDataPersonInfo = res.data[0]
-          // // 倒数第二次的数据
-          this.TestDataPersonInfo = res.data[1]
-          // 设置时间
-          this.lastTestDataPersonInfo.test_date = this.lastTestDataPersonInfo.test_date.split('T')[0]
-          // this.setDivContent()
-          this.TestDataPersonInfo.test_date = this.TestDataPersonInfo.test_date.split('T')[0]
-          // console.log(this.lastTestDataPersonInfo)
-          this.formatCGYTableData()
-          this.formatStrengthTableData()
-          this.formatLastCGYTableData()
-          this.formatLastStrengthTableData()
+          this.latestTestDataInfo = res.data[0]
+          this.latestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy30min20str_tresult)
+          this.formatLatestCGYTableData()
+          this.formatLatestStrengthTableData()
           this.setChart()
+          this.getBestTestInfo(d.athlete_id)
+          // this.setChart()
         })
+        // myAxios.get('/quickview/getTestPersonInfo', {
+        //   params: {
+        //     id: d.athlete_id
+        //   }
+        // }).then(res1 => {
+        //   this.bestTestDataInfo = res1.data[1]
+        //   this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
+        //   console.log('最好一次')
+        //   console.log(this.bestTestDataInfo)
+        //   this.formatBestCGYTableData()
+        //   this.formatBestStrengthTableData()
+        //   this.setChart()
+        // })
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
     },
-    // 获取时间
-    getDate (id) {
-      // console.log(id)
-      myAxios.get('/quickview/getTestPersonInfo', {
+    getBestTestInfo(athleteId) {
+      const getBasicData = myAxios.get('/tineng/getBasicTinengData', {
         params: {
-          id: id
+          id: athleteId
         }
-      }).then(res => {
-        res.data.forEach(item => {
-          item.test_date = item.test_date.split('T')[0]
-          this.test_dates.push(item.test_date)
-        })
-        this.chooseDateOptions = Array.from(new Set(this.test_dates)).map(item => {
-          return {
-            label: item,
-            value: item
-          }
-        })
       })
-    },
-    handleSelectTestDate1 () {
-      this.getChooseData1()
-    },
-    handleSelectTestDate2 () {
-      this.getChooseData2()
-    },
-    getChooseData1 () {
-      this.lastTestDataPersonInfo = []
-      myAxios.get('/quickview/getTestInfoByDate', {
+      const getProData = myAxios.get('/tineng/getProTinengData', {
         params: {
-          id: this.athleteId,
-          test_date: this.chooseDate1
+          id: athleteId
         }
-      }).then(res => {
-        this.lastTestDataPersonInfo = res.data[0]
-        // this.getLastTestDataPersonInfo()
-        // this.getTestDataPersonInfo()
+      })
+      Promise.all([getBasicData, getProData]).then(res => {
+        const basic = res[0].data.map(item => ({
+          bench_press_1rm: item.bench_press_1rm,
+          press_score: item.press_score,
+          deep_squat_1rm: item.deep_squat_1rm,
+          squat_score: item.squat_score,
+          bench_pull_1rm: item.bench_pull_1rm,
+          pull_score: item.pull_score,
+          strength_score: item.strength_score
+        }))
+        const pro = res[1].data
+        const length = Math.max(basic.length, pro.length)
+        const finalResultList = []
+        const keys = [
+          'bench_press_1rm',
+          'press_score',
+          'deep_squat_1rm',
+          'squat_score',
+          'bench_pull_1rm',
+          'pull_score',
+          'strength_score',
+          'cgy500m_result',
+          'cgy500m_score',
+          'cgy500m_pace',
+          'cgy2000m_score',
+          'cgy2000m_pace',
+          'cgy2000m_result',
+          'cgy5000m_score',
+          'cgy5000m_result',
+          'cgy5000m_pace',
+          'cgy30min20str_score',
+          'cgy30min20str_result',
+          'cgy30min20str_pace',
+          'cgy10str_score',
+          'cgy10str_pace',
+          'cgy10str_result',
+          'cgy30min20str_tresult'
+        ];
+        for (let i = 0; i < length; i++) {
+          const combinedMap = {}
+          let scoreKey = 'totalScore'
+          var score = 0
+          keys.forEach(key => {
+            combinedMap[key] = null
+          })
+          const basicItem = i < basic.length ? basic[i] : {}
+          const proItem = i < pro.length ? pro[i] : {}
+          const basicKeys = Object.keys(basicItem)
+          // console.log(basicKeys)
+          const proKeys = Object.keys(proItem)
+          // console.log(proKeys)
+          basicKeys.forEach(key => {
+            combinedMap[key] = basicItem[key]
+            if (key === 'strength_score') {
+              score += basicItem[key] === null ? 0 : parseInt(basicItem[key])
+            }
+          })
+          proKeys.forEach(key => {
+            combinedMap[key] = proItem[key]
+            if (key === 'cgy500m_score' || key === 'cgy2000m_score' || key === 'cgy5000m_score' || key === 'cgy30min20str_score' || key === 'cgy10str_score') {
+              score += proItem[key] === null ? 0 : parseInt(proItem[key])
+            }
+          })
+          combinedMap[scoreKey] = score
+          finalResultList.push(combinedMap)
+        }
+        finalResultList.sort((a, b) => {
+          return b.totalScore - a.totalScore;
+        })
+        this.bestTestDataInfo = finalResultList[0]
+        this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
+        console.log('最好一次')
+        console.log(this.bestTestDataInfo)
+        this.formatBestCGYTableData()
+        this.formatBestStrengthTableData()
         this.setChart()
       })
     },
-    getChooseData2 () {
-      this.TestDataPersonInfo = []
-      myAxios.get('/quickview/getTestInfoByDate', {
-        params: {
-          id: this.athleteId,
-          test_date: this.chooseDate2
-        }
-      }).then(res => {
-        this.TestDataPersonInfo = res.data[0]
-        // this.getLastTestDataPersonInfo()
-        // this.getTestDataPersonInfo()
-        this.setChart()
-      })
+    removeBeforeFirstColon(str) {
+      let parts = str.split(':')
+      if (parts.length - 1 === 1) {
+        return str
+      }
+      let index = str.indexOf(':')
+      let newStr = str.substring(index + 1)
+      return newStr
     },
     setRowStyle ({row, rowIndex}) {
       return {
@@ -1144,11 +533,6 @@ export default {
       if ((row['score'] >= 80 && column.property === 'score') || (row['TScore'] >= 80 && column.property === 'TScore')) return 'background-color: rgba(153, 204, 0, 0.3);'
       else if ((row['score'] < 80 && column.property === 'score') || (row['TScore'] < 80 && column.property === 'TScore')) return 'background-color: rgba(255,0,0,0.5);'
     },
-    // setDivContent () {
-    //   var divs = document.getElementsByName('.test')
-    //   console.log(this.lastTestDataPersonInfo.test_date)
-    //   divs.innerText = this.lastTestDataPersonInfo.test_date
-    // },
     timeStringToSeconds (timeString) {
       const timeArr = timeString.split(':')
       const [minutes, seconds] = timeArr.length > 1 ? timeArr.map(Number) : [0, 0]
@@ -1165,8 +549,8 @@ export default {
 
       const data = [
         {
-          value: [this.lastTestDataPersonInfo.cgy2000m_score, this.lastTestDataPersonInfo.cgy5000m_score, this.lastTestDataPersonInfo.cgy30min20str_score, this.lastTestDataPersonInfo.cgy500m_score, this.lastTestDataPersonInfo.cgy10str_score, this.lastTestDataPersonInfo.strength_score],
-          name: this.lastTestDataPersonInfo.test_date,
+          value: [this.latestTestDataInfo.cgy2000m_score, this.latestTestDataInfo.strength_score, this.latestTestDataInfo.cgy10str_score, this.latestTestDataInfo.cgy30min20str_score, this.latestTestDataInfo.cgy500m_score, this.latestTestDataInfo.cgy5000m_score],
+          name: '最近一次',
           areaStyle: {
             color: 'rgba(253, 174, 73, 0.8)'
           },
@@ -1178,8 +562,8 @@ export default {
           }
         },
         {
-          value: [this.TestDataPersonInfo.cgy2000m_score, this.TestDataPersonInfo.cgy5000m_score, this.TestDataPersonInfo.cgy30min20str_score, this.TestDataPersonInfo.cgy500m_score, this.TestDataPersonInfo.cgy10str_score, this.TestDataPersonInfo.strength_score],
-          name: this.TestDataPersonInfo.test_date,
+          value: [this.bestTestDataInfo.cgy2000m_score, this.bestTestDataInfo.strength_score, this.bestTestDataInfo.cgy10str_score, this.bestTestDataInfo.cgy30min20str_score, this.bestTestDataInfo.cgy500m_score, this.bestTestDataInfo.cgy5000m_score],
+          name: '最好一次',
           // areaStyle: {
           //   color: 'rgba(209, 73, 91, 0.8)'
           // },
@@ -1202,7 +586,7 @@ export default {
         },
         legend: {
           top: 5,
-          data: [this.lastTestDataPersonInfo.test_date, this.TestDataPersonInfo.test_date, '标准'],
+          data: ['最近一次', '最好一次', '标准'],
           itemGap: 20,
           textStyle: {
             color: '#000',

@@ -103,7 +103,7 @@
 import * as echarts from 'echarts'
 import myAxios from '@/utils/request'
 import { formatDate } from '@/utils/formatDate'
-import { formatSeconds, formatMS } from '@/utils/formatTime'
+import { formatSeconds, formatMS, removeBeforeFirstColon } from '@/utils/formatTime'
 import { secondToMinute } from '@/utils/secondToMinute'
 export default {
   data () {
@@ -346,7 +346,8 @@ export default {
             cgy30min20str_tresult: proItem.cgy30min20str_tresult || null,
           };
         });
-        console.log(result);
+        console.log('result')
+        console.log(result)
         let tmp2 = {}
         const keys = [
           'test_date',
@@ -365,6 +366,8 @@ export default {
         keys.forEach(key => {
           tmp2[key] = []
         })
+        console.log('tmp21')
+        console.log(tmp2)
         result.forEach(item => {
           for (var key in item) {
             var d = item[key]
@@ -372,16 +375,21 @@ export default {
               d = null
             } else {
               if (key === 'sprint_run_30m') {
-                d = formatSeconds(d)
+                if (d !== null && d !== undefined) {
+                  d = formatSeconds(d)
+                }
               }
               if (key === 'cgy2000m_result' || key === 'cgy30min20str_tresult') {
-                d = formatMS(d)
+                if (d !== null && d !== undefined) {
+                  d = removeBeforeFirstColon(d)
+                  d = formatMS(d)
+                }
               }
             }
             tmp2[key].push(d)
           }
         })
-        console.log('tmp2')
+        console.log('tmp22')
         console.log(tmp2)
 
         // basicData.forEach(item => {

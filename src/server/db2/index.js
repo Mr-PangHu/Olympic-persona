@@ -3,11 +3,18 @@ let mysql = require('mysql')
 let db = mysql.createPool({
   // 崇明
   limit: 100,
+  // host: '112.64.134.154', // 数据库IP地址
+  // user: 'root', // 数据库登录账号
+  // password: 'Ecust2023', // 数据库登录密码
+  // database: 'persona_test', // 要操作的数据库
+  // port: '3308',
+  // timezone: 'Asia/Shanghai'
+  // 复旦
   host: '112.64.134.154', // 数据库IP地址
   user: 'root', // 数据库登录账号
-  password: 'Ecust2023', // 数据库登录密码
-  database: 'persona_test', // 要操作的数据库
-  port: '3308',
+  password: 'WEG9bbZ#Md!c', // 数据库登录密码
+  database: 'row', // 要操作的数据库
+  port: '3306',
   timezone: 'Asia/Shanghai'
 //   // 远程
 //   // host: '172.20.137.141', // 数据库IP地址

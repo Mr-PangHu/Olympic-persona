@@ -49,9 +49,9 @@ export function formatSeconds (seconds) {
     // 计算总秒数
     var totalSeconds = Number(seconds1 + '.' + seconds2)
 
-    return Number(totalSeconds.toFixed(2))
+    return Number(totalSeconds)
   } else {
-    return Number(seconds.toFixed(2))
+    return Number(seconds)
   }
 }
 
@@ -87,4 +87,14 @@ export function formatMS (timeString) {
     var totalSeconds1 = minutes * 60 + seconds1
     return totalSeconds1
   }
+}
+
+export function removeBeforeFirstColon(str) {
+  let parts = str.split(':')
+  if (parts.length - 1 === 1) {
+    return str
+  }
+  let index = str.indexOf(':')
+  let newStr = str.substring(index + 1)
+  return newStr
 }
