@@ -3,7 +3,10 @@
     <div class="jingji__wrapper-filter">
       <el-select
           v-model="category"
+          clearable
+          collapse-tags
           filterable
+          multiple
           placeholder="请选择赛事类别"
           class="compCategory__model-filter-selector"
           @change="handleSelectCategoryChange"
@@ -16,6 +19,9 @@
           </el-option>
       </el-select>
       <el-button type="info" size="small" @click="reset">重置</el-button>
+    </div>
+    <div class="jingji__wrapper-topper">
+      <div class="jingji__wrapper-topper-echarts" id="jingji_show"></div>
     </div>
     <div class="jingji__wrapper-bottom">
       <el-table
@@ -81,13 +87,14 @@ export default {
       tableData: [],
       CompOptions: [],
       dataShow: [],
-      category: null,
+      category: ['奥运会', '亚运会', '世锦赛'],
       tmpSeries: [],
       dates: []
     }
   },
   mounted () {
     this.getPlayerId()
+    // this.setFMSChart()
   },
   methods: {
     getPlayerId () {
@@ -132,7 +139,7 @@ export default {
       this.setJingJiChart()
     },
     reset () {
-      this.category = null
+      this.category = ['奥运会', '亚运会', '世锦赛']
       this.tableData = []
       this.compResult.map(item => {
         this.tableData.push({
@@ -159,7 +166,6 @@ export default {
         }
       }).then(res => {
         const compResult = res.data
-        console.log('竞技赛事名称测试', compResult)
         this.compResult = compResult
         const tempSet = new Set()
         const temp = compResult.map(item => {

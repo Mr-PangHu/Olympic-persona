@@ -89,6 +89,11 @@ export default {
       groundDate: null
     }
   },
+  watch: {
+    dateRange: function(newVal, oldVal) {
+      this.handleDateRangeChange();
+    }
+  },
   mounted () {
     this.getPlayerId()
   },
@@ -136,8 +141,10 @@ export default {
       return formatDate(date) < startDate || formatDate(date) > endDate
     },
     handleDateRangeChange () {
+      console.log('日期选择', this.dateRange)
       var startDate = formatDate(this.dateRange[0]) // 获取选择的起始日期
       var endDate = formatDate(this.dateRange[1]) // 获取选择的结束日期
+      console.log('水上专项日期选择', startDate, endDate)
       // 在这里根据选择的日期范围筛选数据
       var filteredData = this.dataWater.filter((item) => {
         var currentDate = item.training_date
@@ -153,7 +160,7 @@ export default {
       // 使用筛选后的数据进行进一步处理或更新相关变量
     },
     handleReset () {
-      this.dateRange = []
+      // this.dateRange = []
       this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 5, this.dataWater.length)
       this.setWaterChart1()
       this.setWaterChart2()
@@ -223,18 +230,20 @@ export default {
         this.dataWater.sort((a, b) => { // 升序->调换ab降序
           return a.training_date.localeCompare(b.training_date)
         })
-        this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 5, this.dataWater.length)
+        this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 6, this.dataWater.length)
         const temp = this.dataGround.map(item => {
           return {
             label: formatDate(item.date),
             value: formatDate(item.date)
           }
         })
+        console.log("水上专项测试", this.dataWaterShow)
         // 排序数据数组，以确保第一条数据是时间最新的
         this.dataGround.sort((a, b) => {
           return b.date.localeCompare(a.date)
         })
         this.dataShow = this.dataGround[0]
+        // console.log('专项测试', this.dataShow)
         this.dataShow['date'] = formatDate(this.dataShow['date'])
         this.groundDateOptions.push.apply(this.groundDateOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
       }).then(res => {
@@ -780,7 +789,7 @@ export default {
       option = {
         color: ['#003D5B'],
         title: {
-          text: '乳酸浓度',
+          text: '血乳酸浓度（mmol/L）',
           left: 'center'
         },
         tooltip: {
@@ -810,7 +819,7 @@ export default {
         xAxis: {
           type: 'category',
           // boundaryGap: false,
-          data: ['即刻乳酸', '1min乳酸', '3min乳酸', '5min乳酸', '7min乳酸', '10min乳酸'],
+          data: ['即刻血乳酸', '恢复1min血乳酸', '恢复3min血乳酸', '恢复10min血乳酸', '恢复15min血乳酸'],
           axisLabel: {
             rotate: 20,
             textStyle: {
@@ -833,9 +842,9 @@ export default {
         },
         series: [
           {
-            name: '乳酸浓度',
+            name: '血乳酸浓度',
             type: 'line',
-            data: [this.dataShow['immediate_lactate'], this.dataShow['one_minute_lactate'], this.dataShow['three_minute_lactate'], this.dataShow['five_minute_lactate'], this.dataShow['seven_minute_lactate'], this.dataShow['ten_minute_lactate']],
+            data: [this.dataShow['lac'], this.dataShow['lac_1min'], this.dataShow['lac_3min'], this.dataShow['lac_10min'], this.dataShow['lac_15min']],
             markPoint: {
               data: [
                 { type: 'max', name: 'Max' },
@@ -900,7 +909,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: true,
-          data: ['即刻心率', '1min心率', '3min心率'],
+          data: ['最大心率', '恢复3min心率'],
           axisLabel: {
             textStyle: {
               color: '#000'
@@ -909,8 +918,8 @@ export default {
         },
         yAxis: {
           type: 'value',
-          min: Math.min(this.dataShow['immediate_heart_rate'], this.dataShow['one_minute_heart_rate'], this.dataShow['three_minute_heart_rate']) - 5,
-          max: Math.max(this.dataShow['immediate_heart_rate'], this.dataShow['one_minute_heart_rate'], this.dataShow['three_minute_heart_rate']) + 5,
+          min: Math.min(this.dataShow['mhr'], this.dataShow['recovery_heart_rate_3min']) - 5,
+          max: Math.max(this.dataShow['mhr'], this.dataShow['recovery_heart_rate_3min']) + 5,
           // name: '心率（bpm）',
           nameLocation: 'center',
           nameTextStyle: {
@@ -926,7 +935,7 @@ export default {
           {
             name: '心率',
             type: 'line',
-            data: [this.dataShow['immediate_heart_rate'], this.dataShow['one_minute_heart_rate'], this.dataShow['three_minute_heart_rate']],
+            data: [this.dataShow['mhr'], this.dataShow['recovery_heart_rate_3min']],
             // data: [140, 190, 289],
             markPoint: {
               data: [

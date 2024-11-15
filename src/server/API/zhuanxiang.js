@@ -55,7 +55,7 @@ exports.getGroundData = (req, res) => { // 获取全部陆地专项指标数据
     if (err) {
       return res.status(500).json({ error: '数据库连接失败', details: err.message });
     }
-    var sql = 'SELECT *  FROM training_ground_training_monishuju WHERE athlete_id = ?'
+    var sql = 'SELECT *  FROM function_aerobic_capacity WHERE athlete_id = ?'
     connection.query(sql, [req.query.id], (err, data) => {
       connection.release()
       if (err) {
