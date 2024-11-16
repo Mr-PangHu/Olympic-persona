@@ -284,18 +284,18 @@ export default {
         standard: this.personInfo.gender === 'M' ? '9000/01:40.0' : '8000/01:52.0'
       })
       this.latestCGYTableData.push({
-        cgy_item: '测功仪500m(W)',
+        cgy_item: '测功仪500m',
         score: this.latestTestDataInfo['cgy500m_score'],
         result: this.latestTestDataInfo['cgy500m_result'],
         pace: this.latestTestDataInfo['cgy500m_pace'],
-        standard: this.personInfo.gender === 'M' ? '360' : '360'
+        standard: this.personInfo.gender === 'M' ? '01:14.0' : '01:26.0'
       })
       this.latestCGYTableData.push({
-        cgy_item: '测功仪10桨(W)',
+        cgy_item: '测功仪100m',
         score: this.latestTestDataInfo['cgy10str_score'],
         result: this.latestTestDataInfo['cgy10str_result'],
         pace: this.latestTestDataInfo['cgy10str_pace'],
-        standard: this.personInfo.gender === 'M' ? '530' : '530'
+        standard: this.personInfo.gender === 'M' ? '01:17.0' : '01:18.0'
       })
     },
     formatLatestStrengthTableData () {
@@ -329,14 +329,14 @@ export default {
         score: this.bestTestDataInfo['cgy2000m_score'],
         result: this.bestTestDataInfo['cgy2000m_result'],
         pace: this.bestTestDataInfo['cgy2000m_pace'],
-        diff: -parseInt(this.timeStringToSeconds(this.bestTestDataInfo.cgy2000m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy2000m_result)) + 's'
+        diff: -parseFloat(this.timeStringToSeconds(this.bestTestDataInfo.cgy2000m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy2000m_result)).toFixed(2) + 's'
       })
       this.bestCGYTableData.push({
         cgy_item: '测功仪5000m',
         score: this.bestTestDataInfo['cgy5000m_score'],
         result: this.bestTestDataInfo['cgy5000m_result'],
         pace: this.bestTestDataInfo['cgy5000m_pace'],
-        diff: -parseInt(this.timeStringToSeconds(this.bestTestDataInfo.cgy5000m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy5000m_result)) + 's'
+        diff: -parseFloat(this.timeStringToSeconds(this.bestTestDataInfo.cgy5000m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy5000m_result)).toFixed(2) + 's'
       })
       this.bestCGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
@@ -344,21 +344,21 @@ export default {
         result: this.bestTestDataInfo['cgy30min20str_tresult'],
         pace: this.bestTestDataInfo['cgy30min20str_pace'],
         // diff: this.bestTestDataInfo.cgy30min20str_result - this.latestTestDataInfo.cgy30min20str_result
-        diff: -parseInt(this.timeStringToSeconds(this.bestTestDataInfo.cgy30min20str_tresult) - this.timeStringToSeconds(this.latestTestDataInfo.cgy30min20str_tresult)) + 's'
+        diff: -parseFloat(this.timeStringToSeconds(this.bestTestDataInfo.cgy30min20str_tresult) - this.timeStringToSeconds(this.latestTestDataInfo.cgy30min20str_tresult)).toFixed(2) + 's'
       })
       this.bestCGYTableData.push({
-        cgy_item: '测功仪500m(W)',
+        cgy_item: '测功仪500m',
         score: this.bestTestDataInfo['cgy500m_score'],
         result: this.bestTestDataInfo['cgy500m_result'],
         pace: this.bestTestDataInfo['cgy500m_pace'],
-        diff: this.bestTestDataInfo.cgy500m_result - this.latestTestDataInfo.cgy500m_result
+        diff: -parseFloat(this.timeStringToSeconds(this.bestTestDataInfo.cgy500m_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy500m_result)).toFixed(2) + 's'
       })
       this.bestCGYTableData.push({
-        cgy_item: '测功仪10桨(W)',
+        cgy_item: '测功仪100m',
         score: this.bestTestDataInfo['cgy10str_score'],
         result: this.bestTestDataInfo['cgy10str_result'],
         pace: this.bestTestDataInfo['cgy10str_pace'],
-        diff: this.bestTestDataInfo.cgy10str_result - this.latestTestDataInfo.cgy10str_result
+        diff: -parseFloat(this.timeStringToSeconds(this.bestTestDataInfo.cgy10str_result) - this.timeStringToSeconds(this.latestTestDataInfo.cgy10str_result)).toFixed(2) + 's'
       })
     },
     formatBestStrengthTableData () {
@@ -508,8 +508,8 @@ export default {
         })
         this.bestTestDataInfo = finalResultList[0]
         this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
-        console.log('最好一次')
-        console.log(this.bestTestDataInfo)
+        // console.log('最好一次')
+        // console.log(this.bestTestDataInfo)
         this.formatBestCGYTableData()
         this.formatBestStrengthTableData()
         this.setChart()
@@ -598,10 +598,10 @@ export default {
             name: 'Erg 2k',
             max: 140
           }, {
-            name: '力量',
+            name: '基础力量',
             max: 140
           }, {
-            name: 'Erg 10str',
+            name: 'Erg 100m',
             max: 140
           }, {
             name: 'Erg 30@20',
