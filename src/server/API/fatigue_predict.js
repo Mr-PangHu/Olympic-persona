@@ -211,14 +211,18 @@ exports.getAllFatigueData = (req, res) => {
           }
         }
         let mostSimIndex = 0
-        var return_res=[]
+        var return_res = []
+        var names = ['敖子芯', '巴鑫莹', '白著尚', '蔡国庆', '常娟', '陈星榕', '程思涵', '丁铭', '杜凯', '杜雨轩', '凡耘彪', '方青雅', '费玉磊', '冯禹嫣', '付应恒', '盖佳慧']
+        var sexs = ['男', '男', '女', '女', '男', '女', '男', '女', '女', '女', '女', '男', '女', '男', '女', '男']
+        var times = ['2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21', '2024-03-06', '2024-02-21']
+        
         for (let k = 0; k < model_predict_results.length; k++)
         {
           if (model_predict_results[k] == 1)
           {
             temp = transposeArray(_inputs[k])
             let exceptionDataIndex = getFatiguePredictDecision(temp) + 1
-            return_res.push({ name: 'name-' + k, sex: 'sex-' + k, date: 'time-' + k, reason: '第'+exceptionDataIndex+'天出现疲劳', message: '第'+exceptionDataIndex+'天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视', input:temp, mostSim: labelsIndex[mostSimIndex], simData: transposeArray(json[labelsIndex[mostSimIndex]]),times: getTime()})
+            return_res.push({ name: names[k], sex: sexs[k], date: times[k], reason: '第'+exceptionDataIndex+'天出现疲劳', message: '第'+exceptionDataIndex+'天运动员训练状态和身体状态逐渐出现异常，请教练员引起重视', input:temp, mostSim: labelsIndex[mostSimIndex], simData: transposeArray(json[labelsIndex[mostSimIndex]]),times: getTime()})
             mostSimIndex++
           }
         }
