@@ -1,72 +1,55 @@
 <template>
-    <div class="zhuanxiang__wrapper">
-        <div class="zhuanxiang__water">
-            <div class="zhuanxiang__water-title">水上专项</div>
-            <div class="zhuanxiang__water-date">
-              <!-- <el-form :inline="true" ref="zhuanxiangForm" :model="zhuanxiangForm" label-width="70px"> -->
-              <el-form :inline="true" label-width="70px">
-                  <el-form-item label="">
-                    <el-date-picker
-                      v-model="dateRange"
-                      type="daterange"
-                      :picker-options="pickerOptions"
-                      range-separator="至"
-                      start-placeholder="开始日期"
-                      end-placeholder="结束日期"
-                      @change="handleDateRangeChange"
-                    >
-                    </el-date-picker>
-                  </el-form-item>
-                  <el-form-item>
-                    <el-button type="info" size="small" @click="handleReset">重置</el-button>
-                  </el-form-item>
-              </el-form>
-            </div>
-            <div class="zhuanxiang__water-wrapper">
-                <div class="zhuanxiang__water-wrapper-first">
-                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show1"></div>
-                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show2"></div>
-                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show3"></div>
-                </div>
-                <div class="zhuanxiang__water-wrapper-second">
-                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show4"></div>
-                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show5"></div>
-                  <div class="zhuanxiang__water-wrapper-echarts" id="water_show6"></div>
-                </div>
-            </div>
+  <div class="zhuanxiang__wrapper">
+    <div class="zhuanxiang__water">
+      <div class="zhuanxiang__water-title">水上专项</div>
+      <div class="zhuanxiang__water-date">
+        <!-- <el-form :inline="true" ref="zhuanxiangForm" :model="zhuanxiangForm" label-width="70px"> -->
+        <el-form :inline="true" label-width="70px">
+          <el-form-item label="">
+            <el-date-picker v-model="dateRange" type="daterange" :picker-options="pickerOptions" range-separator="至"
+              start-placeholder="开始日期" end-placeholder="结束日期" @change="handleDateRangeChange">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="info" size="small" @click="handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="zhuanxiang__water-wrapper">
+        <div class="zhuanxiang__water-wrapper-first">
+          <div class="zhuanxiang__water-wrapper-echarts" id="water_show1"></div>
+          <div class="zhuanxiang__water-wrapper-echarts" id="water_show2"></div>
+          <div class="zhuanxiang__water-wrapper-echarts" id="water_show3"></div>
         </div>
-        <div class="zhuanxiang__fuhe">
-            <div class="zhuanxiang__fuhe-title">专项训练负荷强度 (测试日期: {{this.dataShow['date']}})</div>
-            <div class="zhuanxiang__fuhe-date">
-              <el-form :inline="true" label-width="70px">
-                <el-form-item label="">
-                  <el-select
-                    v-model="groundDate"
-                    placeholder="示例: 2023-10-25"
-                    size="small"
-                    @change="handleSelectGroundDate"
-                    filterable
-                    :disabled="groundDateDisabled"
-                  >
-                    <el-option
-                      v-for="item in groundDateOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="info" size="small" @click="groundReset">重置</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
-            <div class="zhuanxiang__fuhe-wrapper">
-                <div class="zhuanxiang__fuhe-wrapper-echarts" id="fuhe_show1"></div>
-                <div class="zhuanxiang__fuhe-wrapper-echarts" id="fuhe_show2"></div>
-            </div>
+        <div class="zhuanxiang__water-wrapper-second">
+          <div class="zhuanxiang__water-wrapper-echarts" id="water_show4"></div>
+          <div class="zhuanxiang__water-wrapper-echarts" id="water_show5"></div>
+          <div class="zhuanxiang__water-wrapper-echarts" id="water_show6"></div>
         </div>
+      </div>
     </div>
+    <div class="zhuanxiang__fuhe">
+      <div class="zhuanxiang__fuhe-title">专项训练负荷强度 (测试日期: {{ this.dataShow['date'] }})</div>
+      <div class="zhuanxiang__fuhe-date">
+        <el-form :inline="true" label-width="70px">
+          <el-form-item label="">
+            <el-select v-model="groundDate" placeholder="示例: 2023-10-25" size="small" @change="handleSelectGroundDate"
+              filterable :disabled="groundDateDisabled">
+              <el-option v-for="item in groundDateOptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="info" size="small" @click="groundReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="zhuanxiang__fuhe-wrapper">
+        <div class="zhuanxiang__fuhe-wrapper-echarts" id="fuhe_show1"></div>
+        <div class="zhuanxiang__fuhe-wrapper-echarts" id="fuhe_show2"></div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -74,7 +57,7 @@ import myAxios from '@/utils/request'
 import * as echarts from 'echarts'
 import { formatDate } from '@/utils/formatDate'
 export default {
-  data () {
+  data() {
     return {
       dataWater: [], // 水上数据
       dataWaterShow: [],
@@ -89,37 +72,55 @@ export default {
       groundDate: null
     }
   },
-  watch: {
-    dateRange: function(newVal, oldVal) {
-      this.handleDateRangeChange();
-    }
-  },
-  mounted () {
+  // watch: {
+  //   dateRange: function(newVal, oldVal) {
+  //     this.handleDateRangeChange();
+  //   }
+  // },
+  mounted() {
     this.getPlayerId()
   },
   methods: {
-    getPlayerId () {
-      const auth = window.sessionStorage.getItem('auth')
-      if (auth === '2') {
-        const id = this.$route.params.id
-        myAxios.get('/list/getAthleteId', {
-          params: {
-            id
-          }
-        }).then(res => {
-          const athleteId = res.data[0].athlete_id
-          this.id = athleteId
-        }).then(res => {
-          this.getZhuanxiangData()
-        }).catch(err => {
-          console.log('获取数据失败' + err)
-        })
-      } else {
-        this.id = window.sessionStorage.getItem('id')
-        this.getZhuanxiangData()
+    // getPlayerId () {
+    //   const auth = window.sessionStorage.getItem('auth')
+    //   if (auth === '2') {
+    //     const id = this.$route.params.id
+    //     myAxios.get('/list/getAthleteId', {
+    //       params: {
+    //         id
+    //       }
+    //     }).then(res => {
+    //       const athleteId = res.data[0].athlete_id
+    //       this.id = athleteId
+    //     }).then(res => {
+    //       this.getZhuanxiangData()
+    //     }).catch(err => {
+    //       console.log('获取数据失败' + err)
+    //     })
+    //   } else {
+    //     this.id = window.sessionStorage.getItem('id')
+    //     this.getZhuanxiangData()
+    //   }
+    // },
+    async getPlayerId() {
+      const auth = window.sessionStorage.getItem('auth');
+      try {
+        if (auth === '2') {
+          const id = this.$route.params.id;
+          const res = await myAxios.get('/list/getAthleteId', {
+            params: { id }
+          });
+          const athleteId = res.data[0].athlete_id;
+          this.id = athleteId;
+        } else {
+          this.id = window.sessionStorage.getItem('id');
+        }
+        await this.getZhuanxiangData(); // 等待获取数据完成
+      } catch (err) {
+        console.log('获取数据失败', err);
       }
     },
-    handleSelectGroundDate (groundDate) {
+    handleSelectGroundDate(groundDate) {
       const tmp = this.dataGround.filter(item => {
         return formatDate(item['date']) === groundDate
       })
@@ -128,19 +129,19 @@ export default {
       this.setFuHeChart1()
       this.setFuHeChart2()
     },
-    groundReset () {
+    groundReset() {
       this.groundDate = ''
       this.dataShow = this.dataGround[0]
       this.setFuHeChart1()
       this.setFuHeChart2()
     },
-    disabledDate (date) {
+    disabledDate(date) {
       const startDate = this.dataWater[0]['training_date']
       const endDate = this.dataWater[this.dataWater.length - 1]['training_date']
 
       return formatDate(date) < startDate || formatDate(date) > endDate
     },
-    handleDateRangeChange () {
+    handleDateRangeChange() {
       console.log('日期选择', this.dateRange)
       var startDate = formatDate(this.dateRange[0]) // 获取选择的起始日期
       var endDate = formatDate(this.dateRange[1]) // 获取选择的结束日期
@@ -159,8 +160,8 @@ export default {
       this.setWaterChart6()
       // 使用筛选后的数据进行进一步处理或更新相关变量
     },
-    handleReset () {
-      // this.dateRange = []
+    handleReset() {
+      this.dateRange = []
       this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 5, this.dataWater.length)
       this.setWaterChart1()
       this.setWaterChart2()
@@ -169,7 +170,7 @@ export default {
       this.setWaterChart5()
       this.setWaterChart6()
     },
-    getZhuanxiangData () {
+    getZhuanxiangData() {
       const getAthleteData = myAxios.get('/zhuanxiang/getAthleteData', {
         params: {
           id: this.id
@@ -231,33 +232,63 @@ export default {
           return a.training_date.localeCompare(b.training_date)
         })
         this.dataWaterShow = this.dataWater.slice(this.dataWater.length - 6, this.dataWater.length)
-        const temp = this.dataGround.map(item => {
-          return {
-            label: formatDate(item.date),
-            value: formatDate(item.date)
-          }
-        })
+        // const temp = this.dataGround.map(item => {
+        //   return {
+        //     label: formatDate(item.date),
+        //     value: formatDate(item.date)
+        //   }
+        // })
         console.log("水上专项测试", this.dataWaterShow)
-        // 排序数据数组，以确保第一条数据是时间最新的
-        this.dataGround.sort((a, b) => {
-          return b.date.localeCompare(a.date)
-        })
-        this.dataShow = this.dataGround[0]
-        // console.log('专项测试', this.dataShow)
-        this.dataShow['date'] = formatDate(this.dataShow['date'])
-        this.groundDateOptions.push.apply(this.groundDateOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
-      }).then(res => {
         this.setWaterChart1()
-        this.setFuHeChart2()
+        this.setWaterChart2()
         this.setWaterChart3()
         this.setWaterChart4()
         this.setWaterChart5()
         this.setWaterChart6()
-        this.setFuHeChart1()
-        this.setWaterChart2()
+        if (this.dataGround && this.dataGround.length > 0) {
+          return this.dataGround; // 将 GroundData 传递给下一个 .then() 块
+        } else {
+          return []; // 返回一个空数组，或者根据需要返回其他默认值
+        }
+        // // 排序数据数组，以确保第一条数据是时间最新的
+        // this.dataGround.sort((a, b) => {
+        //   return b.date.localeCompare(a.date)
+        // })
+        // this.dataShow = this.dataGround[0]
+        // // console.log('专项测试', this.dataShow)
+        // this.dataShow['date'] = formatDate(this.dataShow['date'])
+        // this.groundDateOptions.push.apply(this.groundDateOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
+      }).then(dataGround => {
+        if (dataGround.length > 0) {
+          this.dataGround = dataGround;
+
+          // 在这里执行关于 getGroundData 的后续操作
+          // 比如排序、设置数据等
+          const temp = this.dataGround.map(item => {
+            return {
+              label: formatDate(item.date),
+              value: formatDate(item.date)
+            }
+          })
+          // 排序数据数组，以确保第一条数据是时间最新的
+          this.dataGround.sort((a, b) => {
+            return b.date.localeCompare(a.date)
+          })
+          this.dataShow = this.dataGround[0]
+          // console.log('专项测试', this.dataShow)
+          this.dataShow['date'] = formatDate(this.dataShow['date'])
+          this.groundDateOptions.push.apply(this.groundDateOptions, temp)// 使用push.apply()方法将temp数组的元素添加到trainDateOptions数组中
+          this.setWaterChart1();
+          this.setWaterChart2();
+        } else {
+          console.log('GroundData is empty');
+        }
       })
+        .catch(error => {
+          console.error('An error occurred:', error);
+        });
     },
-    setWaterChart1 () {
+    setWaterChart1() {
       var chartDom = document.getElementById('water_show1')
       var myChart = echarts.init(chartDom)
       var option
@@ -343,7 +374,7 @@ export default {
         }
       })
     },
-    setWaterChart2 () {
+    setWaterChart2() {
       var chartDom = document.getElementById('water_show2')
       var myChart = echarts.init(chartDom)
       var option
@@ -430,7 +461,7 @@ export default {
         }
       })
     },
-    setWaterChart3 () {
+    setWaterChart3() {
       var chartDom = document.getElementById('water_show3')
       var myChart = echarts.init(chartDom)
       var option
@@ -518,7 +549,7 @@ export default {
         }
       })
     },
-    setWaterChart4 () {
+    setWaterChart4() {
       var chartDom = document.getElementById('water_show4')
       var myChart = echarts.init(chartDom)
       var option
@@ -605,7 +636,7 @@ export default {
         }
       })
     },
-    setWaterChart5 () {
+    setWaterChart5() {
       var chartDom = document.getElementById('water_show5')
       var myChart = echarts.init(chartDom)
       var option
@@ -693,7 +724,7 @@ export default {
         }
       })
     },
-    setWaterChart6 () {
+    setWaterChart6() {
       var chartDom = document.getElementById('water_show6')
       var myChart = echarts.init(chartDom)
       var option
@@ -781,7 +812,7 @@ export default {
         }
       })
     },
-    setFuHeChart1 () {
+    setFuHeChart1() {
       var chartDom = document.getElementById('fuhe_show1')
       var myChart = echarts.init(chartDom)
       var option
@@ -874,7 +905,7 @@ export default {
         }
       })
     },
-    setFuHeChart2 () {
+    setFuHeChart2() {
       var chartDom = document.getElementById('fuhe_show2')
       var myChart = echarts.init(chartDom)
       var option
@@ -974,10 +1005,12 @@ export default {
 .invisible-date {
   display: none;
 }
+
 .el-form-item__label {
   font-size: 20px;
   font-weight: bold;
 }
+
 .zhuanxiang {
   &__wrapper {
     display: flex;
@@ -986,70 +1019,82 @@ export default {
     padding: 10px 10px 40px 10px;
     width: 100%;
   }
+
   &__water {
     display: flex;
     flex-direction: column;
     width: 100%;
     margin-bottom: 30px;
+
     &-title {
-        font-size: 20px;
-        font-weight: 700;
+      font-size: 20px;
+      font-weight: 700;
     }
+
     &-date {
       display: flex;
-      margin-top: 10px;  // 调整上边距
+      margin-top: 10px; // 调整上边距
     }
+
     &-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      justify-content: center;
+
+      &-first {
         display: flex;
-        flex-direction: column;
-        width: 100%;
-        justify-content: center;
-        &-first {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          align-items: center;
-          justify-content: space-evenly;
-        }
-        &-second {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          align-items: center;
-          justify-content: space-evenly;
-        }
-        &-echarts {
-            flex: 1;
-            width: 30vw;
-            height: 50vh;
-            margin-top: 15px;
-        }
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
+      &-second {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
+      &-echarts {
+        flex: 1;
+        width: 30vw;
+        height: 50vh;
+        margin-top: 15px;
+      }
     }
   }
+
   &__fuhe {
     display: flex;
     flex-direction: column;
     width: 100%;
+
     &-title {
-        font-size: 20px;
-        font-weight: 700;
-        margin-top: 20px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-top: 20px;
     }
+
     &-date {
       display: flex;
-      margin-top: 10px;  // 调整上边距
+      margin-top: 10px; // 调整上边距
     }
+
     &-wrapper {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: space-evenly;
-        &-echarts {
-            margin-top: 20px;
-            width: 700px;
-            height: 500px;
-        }
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-evenly;
+
+      &-echarts {
+        margin-top: 20px;
+        width: 700px;
+        height: 500px;
+      }
     }
   }
 }

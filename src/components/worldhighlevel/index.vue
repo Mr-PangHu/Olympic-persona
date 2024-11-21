@@ -111,6 +111,63 @@
                 </div>
             </div>
         </div>
+        <h2>竞技成绩比较（以国家为单位）</h2>
+        <div class="county_wrapper">
+          <div class="worldhighlevel__model-filter">
+            <el-select
+                v-model="selectCounty"
+                clearable
+                collapse-tags
+                filterable
+                placeholder="请选择比赛国家"
+                class="worldhighlevel__model-filter-selector"
+                @change="handleSelectCountyChange"
+            >
+                <el-option
+                v-for="item in countyOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
+            <el-select
+                v-model="selectCompType"
+                clearable
+                collapse-tags
+                placeholder="请选择赛事类型"
+                class="worldhighlevel__model-filter-selector"
+                @change="handleSelectCompTypeChange"
+            >
+                <el-option
+                v-for="item in compTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
+            <el-select
+                v-model="selectCompName"
+                clearable
+                collapse-tags
+                filterable
+                multiple
+                placeholder="请选择赛事名称"
+                class="worldhighlevel__model-filter-selector"
+                @change="handleSelectCompNameChange"
+            >
+                <el-option
+                v-for="item in compNameOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
+            <!-- <div><el-button id="" type="primary" @click="handleSelectCompNameChange">筛选</el-button></div> -->
+          </div>
+          <div class="worldhighlevel__model-wrapper">
+            <div class="worldhighlevel__model-wrapper-echarts" id="worldhighlevel_show2"></div>
+          </div>
+        </div>
     </el-card>
   </div>
 </template>
@@ -128,12 +185,19 @@ export default {
     return {
       selectYear: '',
       yearOptions: [],
+      selectCounty: '',
+      countyOptions: [],
       selectComp: '',
       compOptions: [],
+      selectCompType: '',
+      compTypeOptions: [],
+      selectCompName: '',
+      compNameOptions: [],
       selectEvent: '',
       eventOptions: [],
       selectEventName: '',
       country: [],
+      compName: [],
       cNumber: 0,
       d500m: [],
       d1000m: [],
@@ -157,10 +221,20 @@ export default {
   },
   mounted () {
     this.getYear()
+    this.getCounty()
   },
   methods: {
     handleSelectYearChange () {
       this.getCompByYear()
+    },
+    handleSelectCountyChange () {
+      this.getCompTypeByCounty()
+    },
+    handleSelectCompTypeChange () {
+      this.getCompNameByType()
+    },
+    handleSelectCompNameChange () {
+      this.getResults()
     },
     handleSelectCompChange () {
       this.getEventById()
@@ -202,6 +276,107 @@ export default {
           }
         ))
       }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getCounty () {
+      myAxios.get('/cm/getCounty').then(res => {
+        const countyArr = res.data
+        console.log(res.data)
+        this.countyOptions = countyArr.map(item => (
+          {
+            value: item,
+            label: item
+          }
+        ))
+        // console.log(this.selectCounty)
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getCompTypeByCounty () {
+      myAxios.get('/cm/getCompTypeByCounty', {
+        params: {
+          county: this.selectCounty
+        }
+      }).then(res => {
+        const compTypeArr = res.data
+        console.log(res.data)
+        this.compTypeOptions = compTypeArr.map(item => (
+          {
+            value: item,
+            label: item
+          }
+        ))
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getCompNameByType () {
+      myAxios.get('/cm/getCompNameByType', {
+        params: {
+          county: this.selectCounty,
+          compType: this.selectCompType
+        }
+      }).then(res => {
+        const compNameArr = res.data
+        console.log(res.data)
+        this.compNameOptions = compNameArr.map(item => (
+          {
+            value: item,
+            label: item
+          }
+        ))
+      }).catch(err => {
+        console.log('获取数据失败' + err)
+      })
+    },
+    getResults () {
+      myAxios.get('/cm/getResults', {
+        params: {
+          county: this.selectCounty,
+          compType: this.selectCompType,
+          compName: this.selectCompName
+        }
+      }).then(res => {
+        const tmp = res.data
+        console.log(res.data)
+        this.compName = tmp.map(item => {
+          return item.comp_name.split('-')[0] + ' ' + item.event_name
+        })
+        this.d500m = tmp.map(item => {
+          return item.d500m === '00:00:00.000' ? 0 : (item.d500m ? Number(formatTime(item.d500m).toFixed(2)) : 0)
+        })
+        this.d1000m = tmp.map(item => {
+          return item.d1000m === '00:00:00.000' ? 0 : (item.d1000m ? (Number(formatTime(item.d1000m).toFixed(2)) - Number(formatTime(item.d500m).toFixed(2))).toFixed(2) : 0)
+        })
+        this.d1500m = tmp.map(item => {
+          return item.d1500m === '00:00:00.000' ? 0 : (item.d1500m ? (Number(formatTime(item.d1500m).toFixed(2)) - Number(formatTime(item.d1000m).toFixed(2))).toFixed(2) : 0)
+        })
+        this.d2000m = tmp.map(item => {
+          return item.d2000m === '00:00:00.000' ? 0 : (item.d2000m ? (Number(formatTime(item.d2000m).toFixed(2)) - Number(formatTime(item.d1500m).toFixed(2))).toFixed(2) : 0)
+        })
+      }).then(
+        () => {
+          const minLists = []
+          this.series = this.compName.map((item, index) => {
+            const dataPoints = [this.d500m[index], this.d1000m[index], this.d1500m[index], this.d2000m[index]]
+            const filteredDataPoints = dataPoints.filter(dataPoint => dataPoint !== 0)
+            minLists.push(Math.min(...filteredDataPoints))
+            const tmp = {
+              name: item,
+              type: 'line',
+              data: filteredDataPoints,
+              showSymbol: filteredDataPoints.map(dataPoint => dataPoint !== 0) // 根据每个数据点的值决定是否显示数据点，只有非零的数据点才会被显示和连线。
+            }
+            return tmp
+          })
+          console.log('series', this.series)
+          minValue = Math.min(...minLists)
+          minValueMe = 0
+          // this.cNumber = this.country.length
+          this.setWorldHighLevelChart2()
+        }).catch(err => {
         console.log('获取数据失败' + err)
       })
     },
@@ -358,7 +533,89 @@ export default {
           // name: '分段',
           type: 'category',
           boundaryGap: false,
-          data: ['d500m', 'd1000m', 'd1500m', 'd2000m'],
+          data: ['1st 500m', '2nd 500m', '3rd 500m', '4th 500m'],
+          axisLabel: {
+            color: '#000'
+          }
+        },
+        yAxis: {
+          // name: '成绩/s',
+          nameGap: 28,
+          nameTextStyle: {
+            align: 'right' // 将y轴名称左
+          },
+          type: 'value',
+          // max: maxValueMe === 0 ? Math.floor(Math.max(maxValue) - 5) : Math.floor(Math.max(maxValue, maxValueMe) - 5),
+          min: minValueMe === 0 ? Math.floor(Math.min(minValue) - 3) : Math.floor(Math.min(minValue, minValueMe) - 3),
+          axisLabel: {
+            formatter: function (value) {
+              // return formatSectoTime(value)
+              return secondToMinute(value)
+            },
+            color: '#000'
+          },
+          inverse: true // 将y轴的值按降序排列
+        },
+        series: this.series
+      }
+
+      option && myChart.setOption(option)
+    },
+    setWorldHighLevelChart2 () {
+      var chartDom = document.getElementById('worldhighlevel_show2')
+      var myChart = echarts.init(chartDom)
+      myChart.clear(); // 清除旧的图表实例
+      var option
+
+      option = {
+        color: ['#EDAE49', '#D1495B', '#00798C', '#30638E'],
+        title: {
+          text: this.selectCounty + ' ' + this.selectCompType,
+          color: '#000'
+        },
+        tooltip: {
+          trigger: 'axis',
+          formatter: function (params) {
+            var result = params[0].name + '<br>'
+
+            params.forEach(function (item) {
+              const seconds = Number(item.value)
+              const formatSeconds = secondToMinute(seconds)
+              result += '<div style="display:flex;flex-direction:row;justify-content:space-between"><span><span style="display:inline-block;margin-right:5px;border-radius:50%;width:10px;height:10px;left:5px;background-color:' + item.color + '"></span>' + item.seriesName + '&nbsp;&nbsp;</span>' + '<span style="font-weight:700">' + formatSeconds + '</span></div>'
+            })
+
+            return result
+          }
+        },
+        legend: {
+          data: this.compName,
+          top: '5%'
+        },
+        grid: {
+          top: '15%',
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          show: true,
+          top: '10%',
+          feature: {
+            dataZoom: {
+              yAxisIndex: 'none'
+            },
+            dataView: { readOnly: false },
+            magicType: { type: ['line', 'bar'] },
+            // restore: {},
+            saveAsImage: {}
+          }
+        },
+        xAxis: {
+          // name: '分段',
+          type: 'category',
+          boundaryGap: false,
+          data: ['1st 500m', '2nd 500m', '3rd 500m', '4th 500m'],
           axisLabel: {
             color: '#000'
           }
