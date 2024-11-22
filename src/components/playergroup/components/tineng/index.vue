@@ -210,8 +210,8 @@ export default {
         return currentDate >= startDate && currentDate <= endDate
       })
       var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
-      console.log('s', sortedTimes)
-      console.log('t', this.tinengData.test_date)
+      // console.log('s', sortedTimes)
+      // console.log('t', this.tinengData.test_date)
       var indexes = []
       sortedTimes.forEach(item => {
         // console.log(item)
@@ -315,7 +315,7 @@ export default {
             cgy30min20str_tresult: item.cgy30min20str_tresult
           }
         ))
-        console.log(proData)
+        // console.log(proData)
         const basicDates = new Set(basicData.map(item => item.test_date));
         const proDates = new Set(proData.map(item => item.test_date));
         // 合并并去重日期
@@ -346,8 +346,8 @@ export default {
             cgy30min20str_tresult: proItem.cgy30min20str_tresult || null,
           };
         });
-        console.log('result')
-        console.log(result)
+        // console.log('result')
+        // console.log(result)
         let tmp2 = {}
         const keys = [
           'test_date',
@@ -366,8 +366,8 @@ export default {
         keys.forEach(key => {
           tmp2[key] = []
         })
-        console.log('tmp21')
-        console.log(tmp2)
+        // console.log('tmp21')
+        // console.log(tmp2)
         result.forEach(item => {
           for (var key in item) {
             var d = item[key]
@@ -389,8 +389,8 @@ export default {
             tmp2[key].push(d)
           }
         })
-        console.log('tmp22')
-        console.log(tmp2)
+        // console.log('tmp22')
+        // console.log(tmp2)
 
         // basicData.forEach(item => {
         //   for (var key in item) {
@@ -419,9 +419,9 @@ export default {
         //   }
         // })
         this.tinengData = tmp2
-        console.log(this.tinengData)
+        // console.log(this.tinengData)
         const dateLength = this.tinengData.test_date.length
-        console.log(dateLength)
+        // console.log(dateLength)
         if (dateLength > 6) {
           for (var key in this.tinengData) {
             this.tinengDataShow[key] = this.tinengData[key].slice(dateLength - 6, dateLength)
@@ -435,7 +435,7 @@ export default {
         // console.log(this.tinengData)
         // console.log(this.tinengDataShow)
         this.selectDate = this.tinengData.test_date.map(item => formatDate(item))
-        console.log('a', this.selectDate)
+        // console.log('a', this.selectDate)
         this.setTiNengChart1()
         this.setTiNengChart2()
         this.setTiNengChart3()
@@ -444,14 +444,14 @@ export default {
         this.setTiNengChart6()
         this.setTable()
         const timeArray = this.tinengData.test_date
-        console.log('b', timeArray)
+        // console.log('b', timeArray)
         const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))) - 8 * 60 * 60 * 1000)
         const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))) + 16 * 60 * 60 * 1000)
         // console.log(minDate, maxDate)
         this.pickerOptions = {
           disabledDate: time => {
             const currentDate = new Date(time)
-            console.log(currentDate)
+            // console.log(currentDate)
             return currentDate < minDate || currentDate > maxDate
           }
         }

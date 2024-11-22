@@ -288,7 +288,7 @@ export default {
           score_2: this.dataShow['rotary_stability_right']
         })
         this.tableData_moren = this.tableData
-        console.log('biefen', this.tableData_moren)
+        // console.log('biefen', this.tableData_moren)
       }).then(res => {
         this.setFMSChart()
       })

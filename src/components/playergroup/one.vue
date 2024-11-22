@@ -7,6 +7,7 @@
         <h1>运动员画像</h1>
       </div>
       <div style="position:absolute; bottom:-43px; right:60px; z-index:100">
+        <el-button id="return" type="primary" >姓名：{{this.name}}</el-button>
         <el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button>
       </div>
     </div>
@@ -46,6 +47,7 @@ import TiNeng from './components/tineng'
 import ZhuanXiang from './components/zhuanxiang'
 import JingJi from './components/jingji'
 import QuickView from './components/quickview'
+import myAxios from '@/utils/request'
 export default {
   components: {
     PersonalInfo,
@@ -58,14 +60,25 @@ export default {
   },
   data () {
     return {
-      activeName: 'qv'
+      activeName: 'qv',
+      name: ''
     }
   },
   mounted () {
+    this.getName()
   },
   methods: {
     returnView () {
       this.$router.push('/label')
+    },
+    getName () {
+      myAxios.get('/list/getPersonInfo', {
+        params: {
+          id: this.$route.params.id
+        }
+      }).then(res => {
+        this.name = res.data[0].name || '-'
+      })
     }
   }
 }

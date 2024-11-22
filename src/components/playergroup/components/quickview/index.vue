@@ -396,32 +396,7 @@ export default {
         this.athleteId = d.athlete_id
         this.personInfo.birthday = this.personInfo.birthday.split('T')[0]
         this.personInfo.weight = this.personInfo.weight || '-'
-        myAxios.get('/quickview/getLatestTestInfo', {
-          params: {
-            id: d.athlete_id
-          }
-        }).then(res => {
-          this.latestTestDataInfo = res.data[0]
-          this.latestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy30min20str_tresult)
-          this.formatLatestCGYTableData()
-          this.formatLatestStrengthTableData()
-          this.setChart()
-          this.getBestTestInfo(d.athlete_id)
-          // this.setChart()
-        })
-        // myAxios.get('/quickview/getTestPersonInfo', {
-        //   params: {
-        //     id: d.athlete_id
-        //   }
-        // }).then(res1 => {
-        //   this.bestTestDataInfo = res1.data[1]
-        //   this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
-        //   console.log('最好一次')
-        //   console.log(this.bestTestDataInfo)
-        //   this.formatBestCGYTableData()
-        //   this.formatBestStrengthTableData()
-        //   this.setChart()
-        // })
+        this.getBestTestInfo(d.athlete_id)
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
@@ -503,11 +478,28 @@ export default {
           combinedMap[scoreKey] = score
           finalResultList.push(combinedMap)
         }
+        // console.log('finalResultList1')
+        // console.log(finalResultList)
+        this.latestTestDataInfo = finalResultList[0]
+        this.latestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy30min20str_tresult)
+        this.latestTestDataInfo.cgy10str_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy10str_result)
+        this.latestTestDataInfo.cgy2000m_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy2000m_result)
+        this.latestTestDataInfo.cgy5000m_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy5000m_result)
+        this.latestTestDataInfo.cgy500m_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy500m_result)
+        this.formatLatestCGYTableData()
+        this.formatLatestStrengthTableData()
+        this.setChart()
         finalResultList.sort((a, b) => {
           return b.totalScore - a.totalScore;
         })
+        // console.log('finalResultList2')
+        // console.log(finalResultList)
         this.bestTestDataInfo = finalResultList[0]
         this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
+        this.bestTestDataInfo.cgy10str_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy10str_result)
+        this.bestTestDataInfo.cgy2000m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy2000m_result)
+        this.bestTestDataInfo.cgy5000m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy5000m_result)
+        this.bestTestDataInfo.cgy500m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy500m_result)
         // console.log('最好一次')
         // console.log(this.bestTestDataInfo)
         this.formatBestCGYTableData()

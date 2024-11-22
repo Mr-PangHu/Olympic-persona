@@ -51,6 +51,7 @@
             </el-select>
           </div>
           <div>
+            <el-button id="return" type="primary" >姓名：{{this.name}}</el-button>
             <el-button id="return" type="primary" @click="returnView">返回运动员总览</el-button>
           </div>
           </div>
@@ -290,6 +291,7 @@ export default {
       xuanbaindicator: [],
       Province: {},
       Country: {},
+      name: '',
       WorldChampionShip: {},
       OlympicGolden: {},
       XuanbaTemplateMap: {},
@@ -319,6 +321,7 @@ export default {
         }).then(res => {
           const athleteId = res.data[0].athlete_id
           this.id = athleteId
+          this.getName()
         }).then(res => {
           this.getPlayerGender()
         }).then(res => {
@@ -330,6 +333,15 @@ export default {
         this.id = window.sessionStorage.getItem('id')
         this.getPlayerData()
       }
+    },
+    getName () {
+      myAxios.get('/list/getPersonInfo', {
+        params: {
+          id: this.$route.params.id
+        }
+      }).then(res => {
+        this.name = res.data[0].name || '-'
+      })
     },
     getPlayerGender () {
       myAxios.get('/list/getPersonInfoByAthleteId', {

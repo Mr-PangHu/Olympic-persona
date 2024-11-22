@@ -142,10 +142,10 @@ export default {
       return formatDate(date) < startDate || formatDate(date) > endDate
     },
     handleDateRangeChange() {
-      console.log('日期选择', this.dateRange)
+      // console.log('日期选择', this.dateRange)
       var startDate = formatDate(this.dateRange[0]) // 获取选择的起始日期
       var endDate = formatDate(this.dateRange[1]) // 获取选择的结束日期
-      console.log('水上专项日期选择', startDate, endDate)
+      // console.log('水上专项日期选择', startDate, endDate)
       // 在这里根据选择的日期范围筛选数据
       var filteredData = this.dataWater.filter((item) => {
         var currentDate = item.training_date
@@ -238,7 +238,7 @@ export default {
         //     value: formatDate(item.date)
         //   }
         // })
-        console.log("水上专项测试", this.dataWaterShow)
+        // console.log("水上专项测试", this.dataWaterShow)
         this.setWaterChart1()
         this.setWaterChart2()
         this.setWaterChart3()

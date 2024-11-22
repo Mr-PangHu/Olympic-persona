@@ -159,7 +159,7 @@ export default {
         }
       }).then(res => {
         const compResult = res.data
-        console.log('竞技赛事名称测试', compResult)
+        // console.log('竞技赛事名称测试', compResult)
         this.compResult = compResult
         const tempSet = new Set()
         const temp = compResult.map(item => {

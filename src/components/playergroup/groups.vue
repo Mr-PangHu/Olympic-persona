@@ -66,8 +66,8 @@
           <el-table-column prop="cgy5000m_pace" label="测功仪5000m配速" align="center" width="115"></el-table-column>
           <el-table-column prop="cgy30min20str_result" label="测功仪30分钟20桨频成绩" align="center" width="115"></el-table-column>
           <el-table-column prop="cgy30min20str_pace" label="测功仪30分钟20桨频配速" align="center" width="115"></el-table-column>
-          <el-table-column prop="cgy10str_result" label="测功仪10桨频成绩" align="center" width="110"></el-table-column>
-          <el-table-column prop="cgy10str_pace" label="测功仪10桨频配速" align="center" width="110"></el-table-column>
+          <el-table-column prop="cgy10str_result" label="测功仪100m成绩" align="center" width="110"></el-table-column>
+          <el-table-column prop="cgy10str_pace" label="测功仪100m配速" align="center" width="110"></el-table-column>
           <el-table-column prop="deep_squat_1rm" label="深蹲" align="center" width="60"></el-table-column>
           <el-table-column prop="bench_press_1rm" label="卧推" align="center" width="60"></el-table-column>
           <el-table-column prop="bench_pull_1rm" label="卧拉" align="center" width="60"></el-table-column>
@@ -111,7 +111,7 @@ const NAMEMAP = {
   cgy2000m_score: '测功仪2000m',
   cgy5000m_score: '测功仪5000m',
   cgy30min20str_score: '测功仪30分钟/20桨频',
-  cgy10str_score: '测功仪10桨',
+  cgy10str_score: '测功仪100m',
   strength_score: '力量'
 }
 export default {
@@ -191,7 +191,6 @@ export default {
         }
       }).then(res => {
         this.tableData = res.data
-        console.log(res.data)
         let mostRecentDate
         let tmp = Infinity
         this.tableData.forEach(item => {
@@ -247,6 +246,113 @@ export default {
           }
         })
       })
+    },
+    // 根据个人id获得某个人的测试数据
+    getTestInfoById(athleteId) {
+      const getBasicData = myAxios.get('/tineng/getBasicTinengData', {
+        params: {
+          id: athleteId
+        }
+      })
+      const getProData = myAxios.get('/tineng/getProTinengData', {
+        params: {
+          id: athleteId
+        }
+      })
+      Promise.all([getBasicData, getProData]).then(res => {
+        const basic = res[0].data.map(item => ({
+          bench_press_1rm: item.bench_press_1rm,
+          press_score: item.press_score,
+          deep_squat_1rm: item.deep_squat_1rm,
+          squat_score: item.squat_score,
+          bench_pull_1rm: item.bench_pull_1rm,
+          pull_score: item.pull_score,
+          strength_score: item.strength_score
+        }))
+        const pro = res[1].data
+        const length = Math.max(basic.length, pro.length)
+        const finalResultList = []
+        const keys = [
+          'bench_press_1rm',
+          'press_score',
+          'deep_squat_1rm',
+          'squat_score',
+          'bench_pull_1rm',
+          'pull_score',
+          'strength_score',
+          'cgy500m_result',
+          'cgy500m_score',
+          'cgy500m_pace',
+          'cgy2000m_score',
+          'cgy2000m_pace',
+          'cgy2000m_result',
+          'cgy5000m_score',
+          'cgy5000m_result',
+          'cgy5000m_pace',
+          'cgy30min20str_score',
+          'cgy30min20str_result',
+          'cgy30min20str_pace',
+          'cgy10str_score',
+          'cgy10str_pace',
+          'cgy10str_result',
+          'cgy30min20str_tresult'
+        ];
+        for (let i = 0; i < length; i++) {
+          const combinedMap = {}
+          let scoreKey = 'totalScore'
+          var score = 0
+          keys.forEach(key => {
+            combinedMap[key] = null
+          })
+          const basicItem = i < basic.length ? basic[i] : {}
+          const proItem = i < pro.length ? pro[i] : {}
+          const basicKeys = Object.keys(basicItem)
+          // console.log(basicKeys)
+          const proKeys = Object.keys(proItem)
+          // console.log(proKeys)
+          basicKeys.forEach(key => {
+            combinedMap[key] = basicItem[key]
+            if (key === 'strength_score') {
+              score += basicItem[key] === null ? 0 : parseInt(basicItem[key])
+            }
+          })
+          proKeys.forEach(key => {
+            combinedMap[key] = proItem[key]
+            if (key === 'cgy500m_score' || key === 'cgy2000m_score' || key === 'cgy5000m_score' || key === 'cgy30min20str_score' || key === 'cgy10str_score') {
+              score += proItem[key] === null ? 0 : parseInt(proItem[key])
+            }
+          })
+          combinedMap[scoreKey] = score
+          finalResultList.push(combinedMap)
+        }
+        this.latestTestDataInfo = finalResultList[0]
+        this.latestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy30min20str_tresult)
+        this.latestTestDataInfo.cgy10str_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy10str_result)
+        this.latestTestDataInfo.cgy2000m_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy2000m_result)
+        this.latestTestDataInfo.cgy5000m_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy5000m_result)
+        this.latestTestDataInfo.cgy500m_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy500m_result)
+        this.formatLatestCGYTableData()
+        this.formatLatestStrengthTableData()
+        this.setChart()
+        finalResultList.sort((a, b) => {
+          return b.totalScore - a.totalScore;
+        })
+        this.bestTestDataInfo = finalResultList[0]
+        this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
+        this.bestTestDataInfo.cgy10str_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy10str_result)
+        this.bestTestDataInfo.cgy2000m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy2000m_result)
+        this.bestTestDataInfo.cgy5000m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy5000m_result)
+        this.bestTestDataInfo.cgy500m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy500m_result)
+      })
+    },
+    removeBeforeFirstColon(str) {
+      let parts = str.split(':')
+      if (parts.length - 1 === 1) {
+        return str
+      }
+      let index = str.indexOf(':')
+      let newStr = str.substring(index + 1)
+      return newStr
     },
     setCompareChart (index, chartData) {
       var chartDom = document.getElementById('compare_show' + index)
@@ -375,66 +481,6 @@ export default {
       }
       option && myChart.setOption(option)
     }
-    // setCompareChart2 () {
-    //   var chartDom = document.getElementById('compare_show2')
-    //   var myChart = echarts.init(chartDom)
-    //   myChart.clear()
-    //   var option
-    //   option = {
-    //     title: {
-    //       text: '测试成绩对比'
-    //     },
-    //     tooltip: {
-    //       trigger: 'axis',
-    //       axisPointer: {
-    //         type: 'shadow'
-    //       }
-    //     },
-    //     toolbox: {
-    //       feature: {
-    //         dataView: { show: true, readOnly: false },
-    //         magicType: { show: true, type: ['line', 'bar'] },
-    //         restore: { show: true },
-    //         saveAsImage: { show: true }
-    //       }
-    //     },
-    //     legend: {
-    //       data: ['深蹲', '卧推', '卧拉']
-    //     },
-    //     grid: {
-    //       left: '3%',
-    //       right: '4%',
-    //       bottom: '3%',
-    //       containLabel: true
-    //     },
-    //     xAxis: {
-    //       type: 'category',
-    //       data: this.test_date,
-    //       name: '日期'
-    //     },
-    //     yAxis: {
-    //       type: 'value'
-    //     },
-    //     series: [
-    //       {
-    //         name: '深蹲',
-    //         type: 'line',
-    //         stack: 'Total'
-    //       },
-    //       {
-    //         name: '卧推',
-    //         type: 'line',
-    //         stack: 'Total'
-    //       },
-    //       {
-    //         name: '卧拉',
-    //         type: 'line',
-    //         stack: 'Total'
-    //       }]
-    //   }
-
-    //   option && myChart.setOption(option)
-    // }
   }
 }
 </script>

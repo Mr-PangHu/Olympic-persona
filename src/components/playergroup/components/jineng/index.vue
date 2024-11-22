@@ -182,9 +182,9 @@ export default {
       const keys = Object.keys(this.jinengDataShow)
       this.columns = keys
       const values = Object.values(this.jinengDataShow)
-      console.log(keys, values)
+      // console.log(keys, values)
       const numRows = values[0].length
-      console.log(numRows)
+      // console.log(numRows)
       const result = []
       for (let i = 0; i < numRows; i++) {
         const rowData = {}
@@ -197,7 +197,7 @@ export default {
         // 将行数据添加到结果数组中
         result.push(rowData)
       }
-      console.log(result)
+      // console.log(result)
       this.tableData = result
       // const rowData = {}
     },
@@ -235,22 +235,22 @@ export default {
       var endDate = this.jinengForm.dateRange[1]
 
       var timeArray = this.jinengDataShow.date
-      console.log(timeArray)
+      // console.log(timeArray)
 
       var selectedTimes = timeArray.filter((time) => {
         var currentDate = new Date(time)
         return currentDate >= startDate && currentDate <= endDate
       })
       var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
-      console.log(sortedTimes)
+      // console.log(sortedTimes)
       var indexes = []
       sortedTimes.forEach(item => {
-        console.log(item)
+        // console.log(item)
         if (this.jinengDataShow.date.includes(item)) {
           indexes.push(this.jinengDataShow.date.indexOf(item))
         }
       })
-      console.log(indexes)
+      // console.log(indexes)
       var tmpDataShow = {}
       for (var key in this.jinengDataShow) {
         tmpDataShow[key] = []
