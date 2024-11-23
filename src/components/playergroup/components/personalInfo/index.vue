@@ -1,6 +1,6 @@
 <template>
-    <div class="personalInfo__wrapper">
-        <!-- <el-descriptions title="运动员基本资料" :labelStyle="labelStyle">
+  <div class="personalInfo__wrapper">
+    <!-- <el-descriptions title="运动员基本资料" :labelStyle="labelStyle">
             <el-descriptions-item label="姓名">{{ personInfo.name }}</el-descriptions-item>
             <el-descriptions-item label="出生日期">{{ formatDate(personInfo.birthday) }}</el-descriptions-item>
             <el-descriptions-item label="年龄">{{ getAge(personInfo.birthday) }}</el-descriptions-item>
@@ -60,54 +60,60 @@
                 xx
             </el-descriptions-item>
         </el-descriptions> -->
-        <div class="personalInfo__topper">
-            <div class="personalInfo__topper-info">
-                <div class="personalInfo__topper-info-title">个人信息</div>
-                <div style="display: flex; justify-content: center">
-                    <div class="personalInfo__topper-info-main">
-                        <div class="personalInfo__topper-info-main-left">
-                            <div class="personalInfo__topper-info-main-left-avatar">
-                                <!-- <el-avatar :size="130" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar> -->
-                                <el-avatar :size="130">
+    <div class="personalInfo__topper">
+      <div class="personalInfo__topper-info">
+        <div class="personalInfo__topper-info-title">个人信息</div>
+        <div style="display: flex; justify-content: center">
+          <div class="personalInfo__topper-info-main">
+            <div class="personalInfo__topper-info-main-left">
+              <div class="personalInfo__topper-info-main-left-avatar">
+                <!-- <el-avatar :size="130" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar> -->
+                <!-- <el-avatar :size="130">
                                   <img v-if="imageDataUrl" :src="imageDataUrl" alt="Image">
                                   <img v-else src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" alt="Default Image">
-                                </el-avatar>
-                            </div>
-                            <div class="personalInfo__topper-info-main-left-name">
-                                {{ personInfo.name }}
-                            </div>
-                            <div class="personalInfo__topper-info-main-left-location">
-                                <i class="el-icon-map-location"></i>
-                                <span class="personalInfo__topper-info-main-left-location-detail"></span>
-                            </div>
-                        </div>
-                        <div class="personalInfo__topper-info-main-right">
-                            <el-descriptions title="基本资料" :labelStyle="labelStyle" :column="1">
-                                <el-descriptions-item label="性别">{{ personInfo.gender }}</el-descriptions-item>
-                                <el-descriptions-item label="运动等级">{{ personInfo.sports_level }}</el-descriptions-item>
-                                <el-descriptions-item label="年龄">{{ getAge(personInfo.birthday) }}</el-descriptions-item>
-                                <el-descriptions-item label="出生日期">{{ formatDate(personInfo.birthday) }}</el-descriptions-item>
-                                <el-descriptions-item label="婚姻状况">{{ personInfo.marital_status || '-' }}</el-descriptions-item>
-                                <el-descriptions-item label="受教育程度">{{ personInfo.education_level || '-' }}</el-descriptions-item>
-                                <el-descriptions-item label="专业训练年限（练赛艇算起）">{{ personInfo.professional_training_years || '-' }}年</el-descriptions-item>
-                                <el-descriptions-item label="训练经历">{{ personInfo.training_experience || '-' }}</el-descriptions-item>
-                            </el-descriptions>
-                        </div>
-                    </div>
-                </div>
+                                </el-avatar> -->
+                <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/"
+                  :show-file-list="false" :on-success="handleAvatarSuccess">
+                  <img v-if="imageDataUrl" :src='imageDataUrl' class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </div>
+              <div class="personalInfo__topper-info-main-left-name">
+                {{ personInfo.name }}
+              </div>
+              <div class="personalInfo__topper-info-main-left-location">
+                <i class="el-icon-map-location"></i>
+                <span class="personalInfo__topper-info-main-left-location-detail"></span>
+              </div>
             </div>
-            <div class="personalInfo__topper-general">
-                <div class="personalInfo__topper-general-title">个人综合评价</div>
-                <div class="personalInfo__topper-general-chart" id="general_show"></div>
+            <div class="personalInfo__topper-info-main-right">
+              <el-descriptions title="基本资料" :labelStyle="labelStyle" :column="1">
+                <el-descriptions-item label="性别">{{ personInfo.gender }}</el-descriptions-item>
+                <el-descriptions-item label="运动等级">{{ personInfo.sports_level }}</el-descriptions-item>
+                <el-descriptions-item label="年龄">{{ getAge(personInfo.birthday) }}</el-descriptions-item>
+                <el-descriptions-item label="出生日期">{{ formatDate(personInfo.birthday) }}</el-descriptions-item>
+                <el-descriptions-item label="婚姻状况">{{ personInfo.marital_status || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="受教育程度">{{ personInfo.education_level || '-' }}</el-descriptions-item>
+                <el-descriptions-item label="专业训练年限（练赛艇算起）">{{ personInfo.professional_training_years || '-'
+                  }}年</el-descriptions-item>
+                <el-descriptions-item label="训练经历">{{ personInfo.training_experience || '-' }}</el-descriptions-item>
+              </el-descriptions>
             </div>
+          </div>
         </div>
-        <div class="personalInfo__middle">
-            <div class="personalInfo__middle-img"></div>
-            <div style="display: flex; justify-content: center">
-                <div class="personalInfo__middle-chart" id="bodyShape_show"></div>
-            </div>
-        </div>
+      </div>
+      <div class="personalInfo__topper-general">
+        <div class="personalInfo__topper-general-title">个人综合评价</div>
+        <div class="personalInfo__topper-general-chart" id="general_show"></div>
+      </div>
     </div>
+    <div class="personalInfo__middle">
+      <div class="personalInfo__middle-img"></div>
+      <div style="display: flex; justify-content: center">
+        <div class="personalInfo__middle-chart" id="bodyShape_show"></div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -116,7 +122,7 @@ import { formatDate } from '@/utils/formatDate'
 import { getAge } from '@/utils/getAge'
 import * as echarts from 'echarts'
 export default {
-  data () {
+  data() {
     return {
       labelStyle: {
         'font-weight': '700'
@@ -130,11 +136,37 @@ export default {
       imageDataUrl: ''
     }
   },
-  mounted () {
+  mounted() {
     this.getPersonInfo()
   },
   methods: {
-    getPersonInfo () {
+    handleAvatarSuccess(res, file) {
+      this.imageDataUrl = URL.createObjectURL(file.raw);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const arrayBuffer = e.target.result;
+        // 将 ArrayBuffer 转换为 base64 编码的字符串
+        const base64String = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+        // 发送 base64 编码的字符串到服务器
+        myAxios({
+          url: '/list/upload',
+          method: 'post',
+          data: {
+            id: this.personInfo.athlete_id,
+            image: base64String
+          }
+        })
+          .then(response => {
+            console.log('Image uploaded successfully');
+          })
+          .catch(error => {
+            console.error('Error uploading image', error);
+          });
+      };
+      // 使用 readAsArrayBuffer
+      reader.readAsArrayBuffer(file.raw);
+    },
+    getPersonInfo() {
       myAxios.get('/list/getPersonInfo', {
         params: {
           id: this.$route.params.id
@@ -146,13 +178,13 @@ export default {
         this.personInfo = d
         this.getChartData(this.personInfo.athlete_id)
         this.setBodyChart()
-        // this.displayImage(this.personInfo.image)
+        this.displayImage(this.personInfo.image)
         // console.log(this.personInfo.image)
       }).catch(err => {
         console.log('获取数据失败' + err)
       })
     },
-    getChartData (athleteId) {
+    getChartData(athleteId) {
       const getBasicData = myAxios.get('/tineng/getBasicTinengData', {
         params: {
           id: athleteId
@@ -252,20 +284,20 @@ export default {
       let newStr = str.substring(index + 1)
       return newStr
     },
-    displayImage (imageBinaryData) {
+    displayImage(imageBinaryData) {
       // 使用Pillow库将二进制数据转换为图像的data URL
       // console.log(imageBinaryData)
       const imageBuffer = Buffer.from(imageBinaryData) // 将数组转换为 Buffer
       const base64Data = imageBuffer.toString('base64') // 将 Buffer 转换为 Base64 编码的字符串
       this.imageDataUrl = `data:image/jpg;base64,${base64Data}` // 将 Base64 编码的图像数据赋值给 imageDataUrl
     },
-    formatDate (d) {
+    formatDate(d) {
       return formatDate(d)
     },
-    getAge (d) {
+    getAge(d) {
       return getAge(formatDate(d))
     },
-    setChart () {
+    setChart() {
       var chartDom = document.getElementById('general_show')
       var myChart = echarts.init(chartDom)
       var option
@@ -339,7 +371,7 @@ export default {
 
       option && myChart.setOption(option)
     },
-    setBodyChart () {
+    setBodyChart() {
       var chartDom = document.getElementById('bodyShape_show')
       var myChart = echarts.init(chartDom)
       // console.log(this.personInfo)
@@ -396,6 +428,13 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.avatar {
+  display: flex;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 .personalInfo {
   &__wrapper {
     display: flex;
@@ -403,90 +442,104 @@ export default {
     padding: 20px 10px;
     overflow: auto;
   }
+
   &__topper {
     display: flex;
     flex-direction: row;
     justify-content: center;
+
     &-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-radius: 20px;
+      padding: 5px;
+      margin: 10px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+
+      &-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: rgba(144, 144, 144, 0.8);
+        padding: 10px;
+        border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+      }
+
+      &-main {
         display: flex;
-        flex-direction: column;
-        flex: 1;
-        border-radius: 20px;
-        padding: 5px;
-        margin: 10px;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
-        &-title {
-            font-size: 20px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: auto;
+
+        &-left {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 150px;
+          margin: 0 100px;
+
+          &-name {
+            font-size: 24px;
             font-weight: 700;
-            color: rgba(144, 144, 144, 0.8);
-            padding: 10px;
-            border-bottom: 3px solid rgba(0, 0, 0, 0.1);
-        }
-        &-main {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            height: 400px;
-            &-left {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                min-width: 150px;
-                margin: 0 100px;
-                &-name {
-                    font-size: 24px;
-                    font-weight: 700;
-                    margin: 20px 0;
-                }
-                &-location {
-                    font-size: 16px;
-                    &-detail {
-                        font-weight: 700;
-                        color: rgba(144, 144, 144, 0.8);
-                    }
-                }
+            margin: 20px 0;
+          }
+
+          &-location {
+            font-size: 16px;
+
+            &-detail {
+              font-weight: 700;
+              color: rgba(144, 144, 144, 0.8);
             }
+          }
         }
+      }
     }
+
     &-general {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        border-radius: 20px;
-        padding: 5px;
-        margin: 10px;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
-        &-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: rgba(144, 144, 144, 0.8);
-            padding: 10px;
-            border-bottom: 3px solid rgba(0, 0, 0, 0.1);
-        }
-        &-chart {
-            align-self: center;
-            width: 600px;
-            height: 400px;
-        }
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      border-radius: 20px;
+      padding: 5px;
+      margin: 10px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.25);
+
+      &-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: rgba(144, 144, 144, 0.8);
+        padding: 10px;
+        border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+      }
+
+      &-chart {
+        align-self: center;
+        width: 600px;
+        height: 400px;
+      }
     }
   }
+
   &__middle {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
+
     &-img {
-        width: 600px;
-        height: 600px;
-        background-image: url('../../../../assets/images/body.svg');
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
+      width: 600px;
+      height: 600px;
+      background-image: url('../../../../assets/images/body.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
     }
+
     &-chart {
-        width: 700px;
-        height: 800px;
+      width: 700px;
+      height: 800px;
     }
   }
 }

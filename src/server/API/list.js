@@ -1,5 +1,63 @@
 let db = require('../db2/index')
 
+exports.upload = (req, res) => {
+  db.getConnection((err, connection) => {
+    if (err) {
+      return res.status(500).json({ error: '数据库连接失败', details: err.message });
+    }
+    var id = req.body.id;
+    var base64Image = req.body.image;
+    var imageBuffer = Buffer.from(base64Image, 'base64');
+
+    console.log('Updating image for athlete_id:', id);
+
+    var sql = 'UPDATE person_info SET image = ? WHERE athlete_id = ?';
+    connection.query(sql, [imageBuffer, id], (err, results) => {
+      if (err) {
+        console.error('Update failed:', err.message);
+        connection.release();
+        return res.status(500).json({ error: 'Update failed', details: err.message });
+      }
+
+      if (results.affectedRows === 0) {
+        console.log('No rows matched the query.');
+        connection.release();
+        return res.status(404).json({ error: 'No record found for the given athlete_id' });
+      }
+
+      if (results.changedRows === 0) {
+        console.log('Rows matched, but no data was changed. Possible duplicate data.');
+        // Optional: Retrieve the current image to compare
+        connection.query('SELECT image FROM person_info WHERE athlete_id = ?', [id], (err, rows) => {
+          if (err) {
+            console.error('Failed to retrieve image:', err.message);
+            connection.release();
+            return res.status(500).json({ error: 'Failed to retrieve image', details: err.message });
+          }
+
+          if (rows.length > 0) {
+            var currentImageBuffer = rows[0].image;
+            // Compare the buffers
+            if (imageBuffer.equals(currentImageBuffer)) {
+              console.log('The new image is identical to the current image in the database.');
+            } else {
+              console.log('The new image is different from the current image in the database.');
+              // Handle the discrepancy as needed
+            }
+          }
+
+          connection.release();
+          res.json({ success: false, message: 'No changes made, possibly due to identical data' });
+        });
+      } else {
+        console.log('Update successful, changed rows:', results.changedRows);
+        connection.release();
+        res.json({ success: true, message: 'Image updated successfully' });
+      }
+    });
+  });
+};
+
 exports.getBasicInfo = (req, res) => { // 获取用户基本数据
   db.getConnection((err, connection) => {
     if (err) {

@@ -19,6 +19,7 @@ router.post('/register', login.register)
 router.post('/updatePwd', login.updatePwd)
 router.post('/updateLoginoutTime', login.updateLoginoutTime)
 
+router.post('/list/upload', info.upload)
 router.get('/list/getBasicInfo', info.getBasicInfo)
 router.get('/list/addBasicInfo', info.addBasicInfo)
 router.get('/list/deleteBasicInfo', info.deleteBasicInfo)
