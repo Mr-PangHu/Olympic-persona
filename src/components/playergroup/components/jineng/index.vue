@@ -2,14 +2,6 @@
     <div class="jineng__wrapper">
         <div class="jineng__wsy">
             <div style="display: flex; flex-direction: row; align-items: center; margin-bottom: 10px">
-              <!-- <div class="jineng__wsy-title">机能监控</div>
-              <el-switch
-                v-model="switchValue"
-                active-text="ECharts图"
-                inactive-text="表格"
-                @change="handleSwitchChange"
-              >
-              </el-switch> -->
             </div>
             <div>
               <el-form :inline="true" ref="jinengForm" :model="jinengForm" label-width="70px">
@@ -100,21 +92,35 @@ export default {
         ck: '肌酸激酶',
         iga: '免疫球蛋白A',
         igm: '免疫球蛋白M',
-        igg: '免疫球蛋白G'
+        igg: '免疫球蛋白G',
+        max_power_time: '最大功率时刻',
+        max_pedal_freq: '最大踏频',
+        max_pedal_time: '最大踏频时刻',
+        max_power: '最大功率',
+        max_power_rel: '相对最大功率',
+        min_power: '最小功率',
+        min_power_rel: '相对最小功率',
+        avg_power: '平均功率',
+        avg_power_rel: '相对平均功率',
+        power_div_fatigue: '功率下降率/疲劳指数',
+        la_1min: '1min血乳酸',
+        la_3min: '3min血乳酸',
+        la_5min: '5min血乳酸',
+        la_10min: '10min血乳酸',
+        la_15min: '15min血乳酸'
       },
       id: 0,
       tableData: [],
       pickerOptions: null,
       selectDate: [],
       columns: [],
-      // selectItemValues: {},
       jinengDataTotal: {},
       jinengDataShow: {},
       jinengDataAerobic: {},
       jinengDataBlood: {},
       jinengDataBody: {},
       jinengDataTest: {},
-      // series: [],
+      jinengDataAnaerobic: {},
       jinengForm: {
         jinengSelectValue: ['body'],
         dateRange: ''
@@ -131,6 +137,9 @@ export default {
       }, {
         value: 'test',
         label: '阶段测试'
+      }, {
+        value: 'anaerobic',
+        label: '无氧能力/功率车'
       }]
     }
   },
@@ -147,36 +156,6 @@ export default {
     }
   },
   methods: {
-    // formatLabel (column) {
-    //   // const label = this.jinengOptions.filter(i => i.value === item)[0].label
-    //   // let danwei = ''
-    //   // if (label === '身体成分-体脂肪量' || label === '身体成分-去脂体重' || label === '身体成分-体重') danwei = 'kg'
-    //   // if (label === '身体成分-体脂率') danwei = '%'
-    //   // if (label === '有氧能力-最大摄氧量') danwei = 'l/min'
-    //   // if (label === '有氧能力-相对最大摄氧量') danwei = 'ml/min/kg'
-    //   // if (label === '血常规-白细胞' || label === '血常规-红细胞') danwei = '个/L'
-    //   // if (label === '血常规-血红蛋白') danwei = 'g/dL'
-    //   // if (label === '血常规-平均红细胞容积') danwei = 'fl'
-    //   // if (label === '阶段测试-睾酮') danwei = 'ng/dL'
-    //   // if (label === '阶段测试-皮质醇') danwei = 'ug/dL'
-    //   // if (label === '阶段测试-铁蛋白') danwei = 'ng/ml'
-    //   // if (label === '阶段测试-血尿素') danwei = 'mmol/L'
-    //   // if (label === '阶段测试-肌酸激酶') danwei = 'U/L'
-    //   // if (label === '阶段测试-免疫球蛋白A' || label === '阶段测试-免疫球蛋白M' || label === '阶段测试-免疫球蛋白G') danwei = 'g/L'
-    //   // return label + '（' + danwei + '）'
-    // },
-    // setCellStyle ({rowIndex, columnIndex, row, column}) {
-    //   const tmpMax = {}
-    //   const tmpMin = {}
-    //   for (var k in this.selectItemValues) {
-    //     tmpMax[k] = Math.max(...this.selectItemValues[k])
-    //     tmpMin[k] = Math.min(...this.selectItemValues[k])
-    //   }
-    //   for (var k1 in this.selectItemValues) {
-    //     if (row[k1] === tmpMax[k1] && column.property === k1) return 'font-weight: 700;'
-    //     else if (row[k1] === tmpMin[k1] && column.property === k1) return 'font-weight: 700; color: red'
-    //   }
-    // },
     setTable () {
       this.tableData = []
       const keys = Object.keys(this.jinengDataShow)
@@ -202,184 +181,58 @@ export default {
       // const rowData = {}
     },
     handleReset () {
-      // this.series = []
       this.jinengForm.dateRange = []
       this.jinengForm.jinengSelectValue = []
       this.jinengDataShow = this.jinengDataBody
       this.selectDate = this.jinengDataShow.date.map(item => formatDate(item))
-      // this.selectDate = this.jinengDataShow.date
-      // this.series.push({
-      //   name: '体重',
-      //   type: 'line',
-      //   data: this.jinengDataShow.weight
-      // },
-      // {
-      //   name: '体脂率',
-      //   type: 'line',
-      //   data: this.jinengDataShow.fat_ratio
-      // },
-      // {
-      //   name: '体脂肪量',
-      //   type: 'line',
-      //   data: this.jinengDataShow.body_fat_mass
-      // },
-      // {
-      //   name: '去脂体重',
-      //   type: 'line',
-      //   data: this.jinengDataShow.free_fat_mass
-      // })
-      // this.setJiNengChart1()
     },
     handleDateRangeChange () {
       var startDate = this.jinengForm.dateRange[0]
       var endDate = this.jinengForm.dateRange[1]
 
       var timeArray = this.jinengDataShow.date
-      // console.log(timeArray)
 
       var selectedTimes = timeArray.filter((time) => {
         var currentDate = new Date(time)
         return currentDate >= startDate && currentDate <= endDate
       })
       var sortedTimes = selectedTimes.sort((a, b) => new Date(a) - new Date(b))
-      // console.log(sortedTimes)
       var indexes = []
       sortedTimes.forEach(item => {
-        // console.log(item)
         if (this.jinengDataShow.date.includes(item)) {
           indexes.push(this.jinengDataShow.date.indexOf(item))
         }
       })
-      // console.log(indexes)
       var tmpDataShow = {}
       for (var key in this.jinengDataShow) {
         tmpDataShow[key] = []
         indexes.forEach(item => {
-          // console.log(this.jinengDataShow[key][item])
           tmpDataShow[key].push(this.jinengDataShow[key][item])
         })
       }
       this.jinengDataShow = tmpDataShow
-      // console.log(this.jinengDataShow)
-      // this.setJiNengChart1()
     },
     handleJinengSelectChange () {
       this.series = []
       if (this.jinengForm.jinengSelectValue === 'body') {
         this.jinengDataShow = this.jinengDataBody
         this.selectDate = this.jinengDataShow.date
-        // this.series.push({
-        //   name: '体重',
-        //   type: 'line',
-        //   data: this.jinengDataShow.weight
-        // },
-        // {
-        //   name: '体脂率',
-        //   type: 'line',
-        //   data: this.jinengDataShow.fat_ratio
-        // },
-        // {
-        //   name: '体脂肪量',
-        //   type: 'line',
-        //   data: this.jinengDataShow.body_fat_mass
-        // },
-        // {
-        //   name: '去脂体重',
-        //   type: 'line',
-        //   data: this.jinengDataShow.free_fat_mass
-        // })
-        // this.setJiNengChart1()
       }
       if (this.jinengForm.jinengSelectValue === 'aerobic') {
         this.jinengDataShow = this.jinengDataAerobic
         this.selectDate = this.jinengDataShow.date
-        // this.series.push({
-        //   name: '最大摄氧量',
-        //   type: 'line',
-        //   data: this.jinengDataShow.vo2max
-        // },
-        // {
-        //   name: '相对最大摄氧量',
-        //   type: 'line',
-        //   data: this.jinengDataShow.vo2max
-        // })
-        // this.setJiNengChart1()
       }
       if (this.jinengForm.jinengSelectValue === 'test') {
         this.jinengDataShow = this.jinengDataTest
         this.selectDate = this.jinengDataShow.date
-        // this.series.push({
-        //   name: '睾酮',
-        //   type: 'line',
-        //   data: this.jinengDataShow.t
-        // },
-        // {
-        //   name: '皮质醇',
-        //   type: 'line',
-        //   data: this.jinengDataShow.c
-        // },
-        // {
-        //   name: '铁蛋白',
-        //   type: 'line',
-        //   data: this.jinengDataShow.fe
-        // },
-        // {
-        //   name: '血尿素',
-        //   type: 'line',
-        //   data: this.jinengDataShow.bun
-        // },
-        // {
-        //   name: '肌酸激酶',
-        //   type: 'line',
-        //   data: this.jinengDataShow.ck
-        // },
-        // {
-        //   name: '免疫球蛋白A',
-        //   type: 'line',
-        //   data: this.jinengDataShow.iga
-        // },
-        // {
-        //   name: '免疫球蛋白M',
-        //   type: 'line',
-        //   data: this.jinengDataShow.igm
-        // },
-        // {
-        //   name: '免疫球蛋白G',
-        //   type: 'line',
-        //   data: this.jinengDataShow.igg
-        // })
-        // this.setJiNengChart1()
-        // this.setTable()
       }
       if (this.jinengForm.jinengSelectValue === 'blood') {
         this.jinengDataShow = this.jinengDataBlood
         this.selectDate = this.jinengDataShow.date
-        // this.series.push({
-        //   name: '白细胞',
-        //   type: 'line',
-        //   data: this.jinengDataShow.wbc
-        // },
-        // {
-        //   name: '红细胞',
-        //   type: 'line',
-        //   data: this.jinengDataShow.rbc
-        // },
-        // {
-        //   name: '血红蛋白',
-        //   type: 'line',
-        //   data: this.jinengDataShow.hb
-        // },
-        // {
-        //   name: '红细胞比积',
-        //   type: 'line',
-        //   data: this.jinengDataShow.hct
-        // },
-        // {
-        //   name: '平均红细胞容积',
-        //   type: 'line',
-        //   data: this.jinengDataShow.mcv
-        // })
-        // this.setJiNengChart1()
+      }
+      if (this.jinengForm.jinengSelectValue === 'anaerobic') {
+        this.jinengDataShow = this.jinengDataAnaerobic
+        this.selectDate = this.jinengDataShow.date
       }
     },
     getPlayerId () {
@@ -393,6 +246,8 @@ export default {
         }).then(res => {
           const athleteId = res.data[0].athlete_id
           this.id = athleteId
+          console.log('jineng ID')
+          console.log(athleteId)
         }).then(res => {
           this.getJinengData()
         }).catch(err => {
@@ -424,22 +279,25 @@ export default {
           id: this.id
         }
       })
-      Promise.all([getBloodData, getAerobicData, getBodyData, getTestData]).then(res => {
+      const getAnaerobicDate = myAxios.get('/jineng/getAnaerobicData', {
+        params: {
+          id: this.id
+        }
+      })
+      Promise.all([getBloodData, getAerobicData, getBodyData, getTestData, getAnaerobicDate]).then(res => {
         const bloodData = res[0].data
         const aerobicData = res[1].data
-        // const aerobicData = res[1].data.map(item => (
-        //   {
-        //     dynamometer_2000m: item.dynamometer_2000m,
-        //     dynamometer_30min: item.dynamometer_30min
-        //   }
-        // ))
         const bodyData = res[2].data
         const testData = res[3].data
+        const anaerobicData = res[4].data
+        console.log('jineng AN')
+        console.log(anaerobicData)
         let tmp = {}
         let tmpBlood = {}
         let tmpAerobic = {}
         let tmpBody = {}
         let tmpTest = {}
+        let tmpAnaerobic = {}
         for (var key1 in bloodData[0]) {
           tmp[key1] = []
           tmpBlood[key1] = []
@@ -455,6 +313,10 @@ export default {
         for (var key4 in testData[0]) {
           tmp[key4] = []
           tmpTest[key4] = []
+        }
+        for (var key5 in anaerobicData[0]) {
+          tmp[key5] = []
+          tmpAnaerobic[key5] = []
         }
         bloodData.forEach(item => {
           for (var key in item) {
@@ -484,34 +346,21 @@ export default {
             tmpTest[key].push(d)
           }
         })
+        anaerobicData.forEach(item => {
+          for (var key in item) {
+            var d = item[key]
+            tmp[key].push(d)
+            tmpAnaerobic[key].push(d)
+          }
+        })
         this.jinengDataTotal = tmp
         this.jinengDataBody = tmpBody
         this.jinengDataBlood = tmpBlood
         this.jinengDataAerobic = tmpAerobic
         this.jinengDataTest = tmpTest
+        this.jinengDataAnaerobic = tmpAnaerobic
         this.jinengDataShow = this.jinengDataBody
         this.selectDate = this.jinengDataShow.date.map(item => formatDate(item))
-        // this.series.push({
-        //   name: '体重',
-        //   type: 'line',
-        //   data: this.jinengDataShow.weight
-        // },
-        // {
-        //   name: '体脂率',
-        //   type: 'line',
-        //   data: this.jinengDataShow.fat_ratio
-        // },
-        // {
-        //   name: '体脂肪量',
-        //   type: 'line',
-        //   data: this.jinengDataShow.body_fat_mass
-        // },
-        // {
-        //   name: '去脂体重',
-        //   type: 'line',
-        //   data: this.jinengDataShow.free_fat_mass
-        // })
-        // this.setJiNengChart1()
         const timeArray = this.jinengDataTotal.date
         const minDate = new Date(Math.min(...timeArray.map(time => new Date(time))) - 8 * 60 * 60 * 1000)
         const maxDate = new Date(Math.max(...timeArray.map(time => new Date(time))) + 16 * 60 * 60 * 1000)
@@ -580,7 +429,6 @@ export default {
         xAxis: {
           type: 'category',
           data: this.jinengDataShow.date,
-          // name: '日期',
           axisLabel: {
             textStyle: {
               color: '#000'
@@ -689,6 +537,81 @@ export default {
           name: '平均红细胞容积',
           type: 'line',
           data: this.jinengDataShow.mcv
+        },
+        {
+          name: '最大功率时刻',
+          type: 'line',
+          data: this.jinengDataShow.max_power_time
+        },
+        {
+          name: '最大踏频',
+          type: 'line',
+          data: this.jinengDataShow.max_pedal_freq
+        },
+        {
+          name: '最大踏频时刻',
+          type: 'line',
+          data: this.jinengDataShow.max_pedal_time
+        },
+        {
+          name: '最大功率',
+          type: 'line',
+          data: this.jinengDataShow.max_power
+        },
+        {
+          name: '相对最大功率',
+          type: 'line',
+          data: this.jinengDataShow.max_power_rel
+        },
+        {
+          name: '最小功率',
+          type: 'line',
+          data: this.jinengDataShow.min_power
+        },
+        {
+          name: '相对最小功率',
+          type: 'line',
+          data: this.jinengDataShow.min_power_rel
+        },
+        {
+          name: '平均功率',
+          type: 'line',
+          data: this.jinengDataShow.avg_power
+        },
+        {
+          name: '相对平均功率',
+          type: 'line',
+          data: this.jinengDataShow.avg_power_rel
+        },
+        {
+          name: '功率下降率/疲劳指数',
+          type: 'line',
+          data: this.jinengDataShow.power_div_fatigue
+        },
+        {
+          name: '1min血乳酸',
+          type: 'line',
+          data: this.jinengDataShow.la_1min
+        },
+        {
+          name: '3min血乳酸',
+          type: 'line',
+          data: this.jinengDataShow.la_3min
+        },
+        {
+          name: '5min血乳酸',
+          type: 'line',
+          data: this.jinengDataShow.la_5min
+        },
+        {
+          name: '10min血乳酸',
+          type: 'line',
+          data: this.jinengDataShow.la_10min
+        },
+        {
+          name: '15min血乳酸',
+          type: 'line',
+          data: this.jinengDataShow.la_15min
         }]
       }
 
