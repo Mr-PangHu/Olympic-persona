@@ -379,8 +379,15 @@ export default {
       var chartDom = document.getElementById('jineng_show1')
       var myChart = echarts.init(chartDom)
       myChart.clear()
+      let legendData = []
+      let legendKeys = Object.keys(this.jinengDataShow).filter((item) => (item !== 'date' && item !== 'name'))
+      legendKeys.forEach((key) => {
+        if (this.NAMEINDEX.hasOwnProperty(key)) {
+          legendData.push(this.NAMEINDEX[key])
+        }
+      })
+      console.log(legendData)
       var option
-
       option = {
         color: ['#EDAE49', '#D1495B', '#00798C', '#30638E'],
         tooltip: {
@@ -419,6 +426,10 @@ export default {
             restore: { show: true },
             saveAsImage: { show: true }
           }
+        },
+        legend: {
+          layout: 'proximate',
+          data: legendData
         },
         grid: {
           left: '3%',
@@ -471,7 +482,7 @@ export default {
         {
           name: '相对最大摄氧量',
           type: 'line',
-          data: this.jinengDataShow.vo2max
+          data: this.jinengDataShow.vo2max_rel
         },
         {
           name: '睾酮',
