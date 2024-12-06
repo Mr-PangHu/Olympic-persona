@@ -274,7 +274,7 @@ export default {
         score: this.latestTestDataInfo['cgy5000m_score'],
         result: this.latestTestDataInfo['cgy5000m_result'],
         pace: this.latestTestDataInfo['cgy5000m_pace'],
-        standard: this.personInfo.gender === 'M' ? '17:50.0' : '17:39.0'
+        standard: this.personInfo.gender === 'M' ? '15:32.0' : '17:39.0'
       })
       this.latestCGYTableData.push({
         cgy_item: '测功仪30分钟/20桨频',
@@ -478,8 +478,8 @@ export default {
           combinedMap[scoreKey] = score
           finalResultList.push(combinedMap)
         }
-        // console.log('finalResultList1')
-        // console.log(finalResultList)
+        console.log('finalResultList')
+        console.log(finalResultList)
         this.latestTestDataInfo = finalResultList[0]
         this.latestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy30min20str_tresult)
         this.latestTestDataInfo.cgy10str_result = this.removeBeforeFirstColon(this.latestTestDataInfo.cgy10str_result)
@@ -492,16 +492,16 @@ export default {
         finalResultList.sort((a, b) => {
           return b.totalScore - a.totalScore;
         })
-        // console.log('finalResultList2')
-        // console.log(finalResultList)
+        console.log('最近一次')
+        console.log(this.latestTestDataInfo)
         this.bestTestDataInfo = finalResultList[0]
         this.bestTestDataInfo.cgy30min20str_tresult = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy30min20str_tresult)
         this.bestTestDataInfo.cgy10str_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy10str_result)
         this.bestTestDataInfo.cgy2000m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy2000m_result)
         this.bestTestDataInfo.cgy5000m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy5000m_result)
         this.bestTestDataInfo.cgy500m_result = this.removeBeforeFirstColon(this.bestTestDataInfo.cgy500m_result)
-        // console.log('最好一次')
-        // console.log(this.bestTestDataInfo)
+        console.log('最好一次')
+        console.log(this.bestTestDataInfo)
         this.formatBestCGYTableData()
         this.formatBestStrengthTableData()
         this.setChart()

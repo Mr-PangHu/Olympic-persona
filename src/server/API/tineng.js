@@ -7,7 +7,7 @@ exports.getBasicTinengData = (req, res) => { // 获取全部体能数据
     }
     // var sql = 'SELECT * FROM fitness_basic_monishuju where athlete_id = ? ORDER BY date'
     console.log(req.query.id)
-    var sql = 'SELECT * FROM fitness_basic where athlete_id = ? ORDER BY test_date'
+    var sql = 'SELECT * FROM fitness_basic where athlete_id = ? ORDER BY test_date DESC'
     connection.query(sql, [req.query.id], (err, data) => {
       connection.release()
       if (err) {
@@ -34,7 +34,7 @@ exports.getProTinengData = (req, res) => { // 获取全部体能数据
     }
     console.log(req.query.id)
     // var sql = 'SELECT * FROM fitness_pro_monishuju where athlete_id = ? ORDER BY date'
-    var sql = 'SELECT * FROM fitness_pro where athlete_id = ? ORDER BY test_date'
+    var sql = 'SELECT * FROM fitness_pro where athlete_id = ? ORDER BY test_date DESC'
     connection.query(sql, [req.query.id], (err, data) => {
       connection.release()
       if (err) {
