@@ -246,6 +246,7 @@ export default {
         this.setWaterChart5()
         this.setWaterChart6()
         if (this.dataGround && this.dataGround.length > 0) {
+          this.groundReset()
           return this.dataGround; // 将 GroundData 传递给下一个 .then() 块
         } else {
           return []; // 返回一个空数组，或者根据需要返回其他默认值
