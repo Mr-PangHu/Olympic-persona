@@ -72,7 +72,7 @@ export default {
       this.viz.stabilize()
     },
     draw () {
-      // this.viz = new NeoVis.default(config)
+      this.viz = new NeoVis.default(config)
       this.viz.render()
       // 点击完搜索全图之后 才能开启搜索功能
       this.isClicked = false

@@ -324,8 +324,6 @@ export default {
           this.getName()
         }).then(res => {
           this.getPlayerGender()
-        }).then(res => {
-          this.getPlayerData()
         }).catch(err => {
           console.log('获取数据失败' + err)
         })
@@ -356,24 +354,23 @@ export default {
         this.Country = this.isMan ? MAN_COUNTRY : WOMAN_COUNTRY
         this.WorldChampionShip = this.isMan ? MAN_WORLDCHAMPIONSHIP : WOMAN_WORLDCHAMPIONSHIP
         this.OlympicGolden = this.isMan ? MAN_OLYMPICGOLDEN : WOMAN_OLYMPICGOLDEN
-        console.log(this.Province)
         this.XuanbaTemplateMap = {
           '省市': this.Province,
           '国家队': this.Country,
           '世锦赛': this.WorldChampionShip
         }
+        console.log('XuanbaTemplateMap1', this.XuanbaTemplateMap)
         this.OlympicTemplateMap = {
           '奥运金牌': this.OlympicGolden
         }
-        console.log(this.XuanbaTemplateMap)
-      }).catch(err => {
-        console.log('获取数据失败' + err)
+        this.getPlayerData()
       })
     },
     returnView () {
       this.$router.push('/label')
     },
     getPlayerData () {
+      console.log('id', this.id)
       myAxios.get('/xuanba/getPlayerData', {
         params: {
           id: this.id
@@ -390,12 +387,11 @@ export default {
           }
         })
         this.playerData = tmp
+        // console.log()
       }).then(() => {
         this.renderIndicator()
         this.setxuanbaChart()
         this.setChampionChart()
-      }).catch(err => {
-        console.log('获取数据失败' + err)
       })
     },
     // 成绩转化为分数，0表示数值越低分数越高，1相反
@@ -407,6 +403,7 @@ export default {
     },
     renderIndicator () {
       this.xuanbaindicator = this.selectXuanbaValue.map(item => {
+        console.log('item', item)
         return {
           name: NameMap[item],
           max: 120
@@ -428,7 +425,9 @@ export default {
       var option
       const mostRecentData = EINDEX.map(item => {
         const t = this.playerData[item]
+        // console.log('item', item)
         let newArr = t
+        // console.log('newArr', newArr)
         if (item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           newArr = t.map(ti => formatMMToSeconds(ti))
         } else if (item === 'fat_ratio' || item === 'incline_brace') {
@@ -436,6 +435,7 @@ export default {
         }
         return newArr[newArr.length - 1]
       })
+      console.log('most', mostRecentData)
       const avgData = EINDEX.map(item => {
         const t = this.playerData[item]
         let newArr = t
@@ -458,15 +458,21 @@ export default {
         if (item === 'incline_brace') newArr = t.map(ti => Number(ti.slice(0, -1)))
         return Math.max(...newArr)
       })
+      console.log('XuanbaTemplateMap2', this.XuanbaTemplateMap)
+      console.log('templateSelect', this.templateSelect)
       const template = this.XuanbaTemplateMap[this.templateSelect]
+      console.log('template', template)
       const mostRecentTempData = this.selectXuanbaValue.map(item => {
+        console.log('rt-item', item)
         const index = EINDEX.indexOf(item)
+        console.log('rt-index', index)
         if (template[NameMap[item]] === -1) return 0
         if (item === 'fat_ratio' || item === 'dynamometer_2000m' || item === 'dynamometer_5000m' || item === 'dynamometer_6000m' || item === 'dynamometer_30min') {
           return this.convert(mostRecentData[index], template[NameMap[item]], 1)
         }
         return this.convert(mostRecentData[index], template[NameMap[item]], 0)
       })
+      console.log('mostRecentTempData', mostRecentTempData)
       const avgTempData = this.selectXuanbaValue.map(item => {
         const index = EINDEX.indexOf(item)
         if (template[NameMap[item]] === -1) return 0
