@@ -75,7 +75,6 @@ let actions = {
       date: outputDate, // 添加date属性
       meals: formData.meals // 添加meals属性
     }
-    console.log('mergedData:', mergedData)
     commit('GETADDMEALS', mergedData)
   },
   // 获取全部食物

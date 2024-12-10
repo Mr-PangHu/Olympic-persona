@@ -95,12 +95,19 @@
             message: '请选择餐次'
           }">
           <el-select v-model="intake_record.meals">
-            <el-option label="早餐" value="0"></el-option>
-            <el-option label="午餐" value="1"></el-option>
-            <el-option label="晚餐" value="2"></el-option>
+            <el-option label="早餐" value="1"></el-option>
+            <el-option label="午餐" value="2"></el-option>
+            <el-option label="晚餐" value="3"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-for="(item, index) in intake_record.dishIds.items" :key="index" label="食物名称">
+        <el-form-item 
+          v-for="(item, index) in intake_record.dishIds.items" 
+          :key="index" label="食物名称"
+          :rules="{
+            required: true,
+            message: '请选择食物名称及数量'
+          }"
+          >
           <template>
             <el-autocomplete 
               v-model='intake_record.dishIds.items[index].name'
@@ -161,8 +168,6 @@ export default {
     },
 
     total_cal () {
-      // const cal = this.$store.state.foodtrack.mainIngredient.ingredient.calories
-      // return parseFloat(cal).toFixed(2);
       const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
       let cal = 0;
       if (ingredient && ingredient.calories) {
@@ -177,8 +182,6 @@ export default {
       return parseFloat(percentage).toFixed(1);
     },
     total_fat () {
-      // const fat = this.$store.state.foodtrack.mainIngredient.ingredient.fat
-      // return parseFloat(fat).toFixed(2);
       const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
       let fat = 0;
 
@@ -195,8 +198,6 @@ export default {
       return parseFloat(percentage).toFixed(1);
     },
     total_carbs () {
-      // const carbs = this.$store.state.foodtrack.mainIngredient.ingredient.carbohydrates
-      // return parseFloat(carbs).toFixed(2);
       const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
       let carbs = 0;
 
@@ -213,8 +214,6 @@ export default {
       return parseFloat(percentage).toFixed(1);
     },
     total_protein () {
-      // const protein = this.$store.state.foodtrack.mainIngredient.ingredient.protein
-      // return parseFloat(protein).toFixed(2);
       const ingredient = this.$store.state.foodtrack.mainIngredient.ingredient;
       let carbs = 0;
 
@@ -282,14 +281,16 @@ export default {
       }
     },
     submitForm (intake_record) {
-      this.dialogVisible = false
       this.$refs[intake_record].validate((valid) => {
         if (valid) {
-          this.$store.dispatch('addMeals', this.intake_record)
           this.$emit('close')
-          this.temp.push(this.$store.state.foodtrack.addMealsResults);
-          sessionStorage.setItem('myTempData', JSON.stringify(this.temp));
-          this.$store.dispatch('getMain')
+          this.$store.dispatch('addMeals', this.intake_record).then(() => {
+            this.$store.dispatch('getMain').then(() => {
+              let item = this.$store.state.foodtrack.addMealsResults
+              this.temp.push(item)
+              sessionStorage.setItem('myTempData', JSON.stringify(this.temp))
+            })
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -324,7 +325,6 @@ export default {
   .custom-span {
     font-size: 16px;
     font-weight: bold;
-    /* 修改字体大小为 16px */
   }
 
   .dashboard {
