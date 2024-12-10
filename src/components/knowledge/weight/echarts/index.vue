@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div id="EChart" style="width: 800px; height: 400px;"></div>
+    <div id="EChart" style="height: 400px;"></div>
   </div>
 </template>
 
@@ -9,7 +9,6 @@ export default {
   name: 'Home',
   methods: {
     getRenderer () {
-      // 基于准备好的dom，初始化echarts实例
       let EChart = this.$echarts.init(document.getElementById('EChart'))
       // 配置参数
       let config = {

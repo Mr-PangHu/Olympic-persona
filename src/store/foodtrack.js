@@ -8,9 +8,9 @@ const state = {
   // 商品分类的数据,仓库里面数据起始数值不要瞎写【服务器返回的是啥】根据接口的返回值初始化
   dishesName: [],
   allMeals: [],
-  dialogVisible: false,
   addMealsResults: {},
-  mainIngredient: {}
+  mainIngredient: {},
+  isVisible: false
 }
 
 // 唯一可以修改仓库数据地方【工人】
@@ -26,6 +26,9 @@ const mutations = {
   },
   GETMAIN (state, mainIngredient) {
     state.mainIngredient = mainIngredient
+  },
+  GETVISIBLE(state, isVisible) {
+    state.isVisible = isVisible
   }
 }
 
@@ -38,6 +41,7 @@ let actions = {
       commit('GETDISHESNAME', result.data)
     }
   },
+  // 新增餐次记录
   async addMeals ({ commit }, formData) {
     console.log('intake_record', formData)
     const intakeRecord = []
@@ -56,15 +60,15 @@ let actions = {
     let outputDate = year + month + day
     const params = {
       id: uuidv4(),
-      // id: 123456789,
-      dishIds: intakeRecord, // intakeRecord,
+      dishIds: intakeRecord,
       date: outputDate,
       userId: window.sessionStorage.getItem('id')
     }
     let result = await reqDishes(params)
-    console.log('addMeals的result', result)
+    // let result = 200;
+
     if (result.code === 200) {
-      console.log('addMeals的result', result)
+      commit('GETVISIBLE', false)
     }
     const mergedData = {
       ...result.ingredient, // 将storeTableData的属性复制到mergedData中
@@ -80,7 +84,6 @@ let actions = {
     commit('GETALLMEALS', result)
   },
   //  获取主要营养素和维生素
-  // async getMain ({ commit }, userDate) {
   async getMain ({ commit }) {
     const currentDate = new Date() // 获取当前日期
 
@@ -92,7 +95,7 @@ let actions = {
     const params = {
       date: formattedDate,
       id: window.sessionStorage.getItem('id')
-    };
+    }
     console.log('reqMain的params', params)
     let result = await reqMain(params)
     console.log('reqMain的result', result)

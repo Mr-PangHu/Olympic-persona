@@ -1,6 +1,6 @@
 <template>
   <div class="Mini">
-    <div id="Minirals" style="width: 1000px; height: 600px;"></div>
+    <div id="Minirals" style="width: 500px; height: 400px;"></div>
   </div>
 </template>
 <script>
@@ -10,6 +10,8 @@ export default {
     getRenderer () {
       // 基于准备好的dom，初始化echarts实例
       let Minirals = this.$echarts.init(document.getElementById('Minirals'))
+      console.log('初始化实例')
+      
       // 配置参数
       let config = {
         xAxis: {

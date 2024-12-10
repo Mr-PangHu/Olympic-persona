@@ -8,113 +8,26 @@
       </div>
     </div>
     <div class="container">
-      <div class="top-section">
-        <el-card>
-          <el-row :gutter="24">
-            <el-col :span="12">
-              <div class="text">
-                <i class="el-icon-s-custom"></i>
-                <label class="custom-span" for="height">身高（cm）：183</label>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="text">
-                <i class="el-icon-s-custom"></i>
-                <label for="weight" class="custom-span">体重（kg）：80</label>
-                <!-- <el-input v-model="input" placeholder="请输入体重"></el-input> -->
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
-      </div>
       <div class="content">
         <el-card>
+          <el-button class="custom-button" type="primary" @click="showForm">新增进餐记录</el-button>
           <div class="vertical-div">
-            <el-row>
-              <el-col :span="10">
-                <el-button class="custom-button" type="primary" @click="showForm"
-                  style="background-color: #00254FCC;border-color: #00254FCC;">新增进餐记录</el-button>
-              </el-col>
-              <el-col :span="10">
-                <el-input class="custom-input" type="text" v-model="keyword" placeholder="请输入关键字"></el-input>
-                <el-button type="primary" icon="el-icon-search" @click="search"
-                  style="background-color: #00254FCC;border-color: #00254FCC;">搜索</el-button>
-                <ul>
-                  <li v-for="result in searchResults" :key="result.id" @click="selectItem(result)">
-                    {{ result.name }}
-                  </li>
-                </ul>
-              </el-col>
-            </el-row>
-            <Dialog></Dialog>
+            <Dialog :is-visible='isVisible' @close="closeDialog"></Dialog>
           </div>
         </el-card>
         <!-- 下方内容 内容为详细的营养分析-->
-        <el-row :gutter="4">
-          <el-col :span="12">
-            <el-card>
-              <div class="custom-span">热量&三大营养素分析</div>
-              <div class="dashboard">
-                <div class="dashboard-item">
-                  <div class="progress-wrapper">
-                    <el-progress type="circle" :percentage="computedCal"></el-progress>
-                  </div>
-                  <div class="content-wrapper">
-                    <p>卡路里（kcal）</p>
-                    <div class="rate">
-                      <h3>{{ total_cal }}</h3>
-                    </div>
-                    <p>实际摄入量</p>
-                  </div>
-                </div>
-                <div class="dashboard-item">
-                  <div class="progress-wrapper">
-                    <el-progress type="circle" :percentage="computedCarbs"></el-progress>
-                  </div>
-                  <div class="content-wrapper">
-                    <p>碳水化合物（g）</p>
-                    <div class="rate">
-                      <h3>{{ total_carbs }}</h3>
-                    </div>
-                    <p>实际摄入量</p>
-                  </div>
-                </div>
-                <div class="dashboard-item">
-                  <div class="progress-wrapper">
-                    <el-progress type="circle" :percentage="computedProtein"></el-progress>
-                  </div>
-                  <div class="content-wrapper">
-                    <p>蛋白质（g）</p>
-                    <div class="rate">
-                      <h3>{{ total_protein }}</h3>
-                    </div>
-                    <p>实际摄入量</p>
-                  </div>
-                </div>
-                <div class="dashboard-item">
-                  <div class="progress-wrapper">
-                    <el-progress type="circle" :percentage="computedFat"></el-progress>
-                  </div>
-                  <div class="content-wrapper">
-                    <p>脂肪（g）</p>
-                    <div class="rate">
-                      <h3>{{ total_fat }}</h3>
-                    </div>
-                    <p>实际摄入量</p>
-                  </div>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-          <el-col :span="12">
-            <el-card class="nutrition-card">
-              <div class="important">
-                <div class="custom-span">重点营养素分析</div>
-              </div>
+        <el-card style="margin-top: 10px;">
+          <div class="bottom">
+            <div class="bottom-left">
+              <span class="custom-span">微量元素分析</span>
               <minirals></minirals>
-            </el-card>
-          </el-col>
-        </el-row>
+            </div>
+            <div class="bottom-right">
+              <span class="custom-span">基本营养素分析</span>
+              <echarts></echarts>
+            </div>
+          </div>
+        </el-card>
       </div>
     </div>
 
@@ -124,17 +37,19 @@
 <script>
 import { mapState } from 'vuex'
 import minirals from '@/components/knowledge/weight/minirals/index.vue'
+import echarts from '@/components/knowledge/weight/echarts/index.vue'
 import Dialog from './dialog.vue'
 export default {
   components: {
     minirals,
-    Dialog
+    Dialog,
+    echarts,
   },
   data () {
     return {
       activeName: 'qv',
       total_data: [],
-      dialogVisible: false, // 控制对话框的显示和隐藏
+      isVisible: false, // 控制对话框的显示和隐藏
       // num: 1,
       pickerOptions: {
         disabledDate (time) {
@@ -162,8 +77,8 @@ export default {
         }]
       },
       value1: '',
-      keyword: '', // 存储用户输入的关键词
-      selectedResult: null // 存储用户选择的结果
+      selectedResult: null, // 存储用户选择的结果
+      addMealDialogVisible: false,
     }
   },
   mounted () {
@@ -173,7 +88,8 @@ export default {
       return percentage === 100 ? '满' : `${percentage}%`
     },
     showForm () {
-      this.$store.state.foodtrack.dialogVisible = true // 点击按钮时显示表单对话框
+      // this.$store.state.foodtrack.dialogVisible = true // 点击按钮时显示表单对话框
+      this.isVisible = true
     },
     handleChange (value) {
       console.log(value)
@@ -192,6 +108,9 @@ export default {
     },
     selectItem (item) {
       this.selectedResult = item
+    },
+    closeDialog() {
+      this.isVisible = false;
     }
   },
   computed: {
@@ -327,17 +246,8 @@ export default {
     flex-direction: column;
   }
 
-  .top-section {
-    height: 80px;
-  }
-
   .content {
     flex: 1;
-  }
-
-  .box-card {
-    margin: 0 auto;
-    width: 95%;
   }
 
   .el-icon-s-custom {
@@ -348,53 +258,30 @@ export default {
     width: 200px;
     margin-left: 16px;
     font-size: 16px;
-  }
-
-  .custom-input {
-    width: 300px;
-    /* 自定义宽度 */
-
-  }
-
-  .important {
-    margin-bottom: 8px;
-  }
-
-  .nutrition-progress {
-    margin-bottom: 8px;
-    /* 添加底部间距为10像素 */
-  }
-
-  .nutrition-card {
-    margin-bottom: 16px;
-    height: 668px;
-    /* 添加底部间距为20像素 */
-  }
-
-  .demo-table-expand {
-    font-size: 0;
-  }
-
-  .demo-table-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
-
-  .demo-table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-    width: 50%;
+    background-color: #00254FCC;
+    border-color: #00254FCC;
   }
 
   .custom-span {
     font-size: 16px;
     font-weight: bold;
-    /* 修改字体大小为 16px */
   }
 
   .vertical-div {
     margin-bottom: 20px;
-    /* 调整竖直方向的间距，这里设为 20px */
+  }
+  
+  .bottom {
+    display: flex;
+  }
+
+  .bottom-left {
+    width: 50vw;
+  }
+
+  .bottom-right {
+    flex: 1;
+    margin-left: 20px;
   }
 
   .dashboard {
